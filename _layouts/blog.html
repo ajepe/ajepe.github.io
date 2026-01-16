@@ -1,0 +1,47 @@
+---
+layout: default
+---
+
+<div class="section">
+  <h1 class="section-title">{{ page.title }}</h1>
+  
+  <div class="blog-posts">
+    {% for post in site.posts %}
+      <article class="card post-card">
+        <header class="post-header">
+          <h2 class="post-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h2>
+          <div class="post-meta">
+            <span class="post-date">{{ post.date | date: "%B %d, %Y" }}</span>
+            {% if post.reading_time %}
+              <span class="post-reading-time">{{ post.reading_time }} min read</span>
+            {% endif %}
+          </div>
+        </header>
+        
+        <div class="post-excerpt">
+          {{ post.excerpt | strip_html | truncatewords: 40 }}
+        </div>
+        
+        <footer class="post-footer">
+          <a href="{{ post.url | relative_url }}" class="read-more">Read more →</a>
+        </footer>
+      </article>
+    {% endfor %}
+  </div>
+  
+  {% if paginate.pages > 1 %}
+    <div class="pagination">
+      {% if paginate.previous_page %}
+        <a href="{{ paginate.previous_page_path | relative_url }}" class="pagination-button">← Previous</a>
+      {% endif %}
+      
+      <span class="pagination-info">Page {{ paginate.page }} of {{ paginate.pages }}</span>
+      
+      {% if paginate.next_page %}
+        <a href="{{ paginate.next_page_path | relative_url }}" class="pagination-button">Next →</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: {{ "/sitemap.xml" | absolute_url }}
+
+# Block access to sensitive files
+Disallow: /_config.yml
+Disallow: /Gemfile
+Disallow: /Gemfile.lock
+Disallow: /README.md
+Disallow: /LICENSE
+Disallow: /node_modules/
+Disallow: /vendor/
+Disallow: /.git/
+Disallow: /.sass-cache/
+Disallow: /.jekyll-cache/
+
+# Block access to Jekyll source files
+Disallow: /_layouts/
+Disallow: /_includes/
+Disallow: /_sass/
+Disallow: /_site/
+
+# Block access to development files
+Disallow: /assets/css/main.scss
+Disallow: /assets/js/main.js
