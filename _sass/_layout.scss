@@ -1,0 +1,224 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+  
+  @media (min-width: $breakpoint-sm) {
+    padding: 0 $spacing-lg;
+  }
+  
+  @media (min-width: $breakpoint-lg) {
+    padding: 0 $spacing-xl;
+  }
+}
+
+.page-header {
+  background-color: $warm-white;
+  border-bottom: 1px solid rgba($medium-brown, 0.2);
+  padding: $spacing-lg 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background-color: rgba($warm-white, 0.95);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-title {
+  font-family: $font-family-serif;
+  font-size: $font-size-xl;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0;
+  
+  a {
+    color: inherit;
+    
+    &:hover {
+      text-decoration: none;
+      color: $medium-brown;
+    }
+  }
+}
+
+.main-nav {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: $spacing-lg;
+  }
+  
+  a {
+    font-weight: 500;
+    color: $text-light;
+    
+    &:hover {
+      color: $dark-brown;
+    }
+    
+    &.active {
+      color: $dark-brown;
+      font-weight: 600;
+    }
+  }
+}
+
+.page-content {
+  min-height: calc(100vh - 200px);
+  padding: $spacing-3xl 0;
+}
+
+.page-footer {
+  background-color: rgba($light-brown, 0.1);
+  border-top: 1px solid rgba($medium-brown, 0.2);
+  padding: $spacing-xl 0;
+  margin-top: $spacing-3xl;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+}
+
+.footer-info {
+  color: $text-light;
+  font-size: $font-size-sm;
+}
+
+.social-links {
+  display: flex;
+  gap: $spacing-md;
+  
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: $warm-white;
+    border: 1px solid rgba($medium-brown, 0.3);
+    border-radius: 50%;
+    color: $text-light;
+    transition: all $transition-fast;
+    
+    &:hover {
+      background-color: $medium-brown;
+      color: $warm-white;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+  }
+}
+
+.hero-section {
+  text-align: center;
+  padding: $spacing-3xl 0;
+  
+  .hero-title {
+    font-size: $font-size-5xl;
+    margin-bottom: $spacing-lg;
+    line-height: 1.2;
+    
+    @media (max-width: $breakpoint-md) {
+      font-size: $font-size-4xl;
+    }
+  }
+  
+  .hero-subtitle {
+    font-size: $font-size-xl;
+    color: $text-light;
+    margin-bottom: $spacing-xl;
+    font-weight: 400;
+    
+    @media (max-width: $breakpoint-md) {
+      font-size: $font-size-lg;
+    }
+  }
+  
+  .hero-description {
+    max-width: 800px;
+    margin: 0 auto $spacing-2xl;
+    font-size: $font-size-lg;
+    line-height: 1.7;
+    color: $text-light;
+  }
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: $medium-brown;
+  color: $warm-white;
+  padding: $spacing-md $spacing-xl;
+  border-radius: $radius-lg;
+  font-weight: 600;
+  font-size: $font-size-lg;
+  transition: all $transition-base;
+  box-shadow: $shadow-md;
+  
+  &:hover {
+    background-color: $dark-brown;
+    color: $warm-white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+.section {
+  padding: $spacing-3xl 0;
+  
+  .section-title {
+    text-align: center;
+    margin-bottom: $spacing-2xl;
+    font-size: $font-size-3xl;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-lg;
+  
+  &.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  &.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+.card {
+  background-color: $warm-white;
+  border: 1px solid rgba($medium-brown, 0.2);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+  transition: all $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+  
+  .card-title {
+    font-size: $font-size-xl;
+    margin-bottom: $spacing-md;
+    color: $text-dark;
+  }
+  
+  .card-content {
+    color: $text-light;
+    line-height: 1.6;
+  }
+}
