@@ -2,19 +2,17 @@
 layout: default
 ---
 
-<div class="hero-section fade-in-up">
-  <h1 class="hero-title">{{ page.title | default: site.title | split: " - " | first }}</h1>
+<div class="home">
+  <h1 class="page-heading">{{ page.title | default: site.title | escape }}</h1>
   {% if page.subtitle %}
-    <p class="hero-subtitle">{{ page.subtitle }}</p>
+    <p class="page-subtitle">{{ page.subtitle }}</p>
   {% endif %}
   {% if page.description %}
-    <p class="hero-description">{{ page.description }}</p>
+    <p class="page-description">{{ page.description }}</p>
   {% endif %}
   {% if page.cta_text and page.cta_link %}
-    <a href="{{ page.cta_link }}" class="cta-button">{{ page.cta_text }}</a>
+    <p><a href="{{ page.cta_link }}" class="btn">{{ page.cta_text }}</a></p>
   {% endif %}
-</div>
-
-<div class="post-content">
+  
   {{ content }}
 </div>

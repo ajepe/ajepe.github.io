@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+<div class="wrapper">
+  <section>
+    <h1>{{ page.title | escape }}</h1>
+    
+    {% if page.subtitle %}
+      <p class="lead">{{ page.subtitle }}</p>
+    {% endif %}
+    
+    {% if page.description %}
+      <p class="description">{{ page.description }}</p>
+    {% endif %}
+    
+    {% if page.cta_text and page.cta_link %}
+      <p><a href="{{ page.cta_link }}" class="btn">{{ page.cta_text }}</a></p>
+    {% endif %}
+    
+    <div class="content">
+      {{ content }}
+    </div>
+  </section>
+</div>

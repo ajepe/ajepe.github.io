@@ -14,10 +14,7 @@ upwork: "https://upwork.com/freelancers/~01b4a3b4a4b4a4b4"
 # Build settings
 markdown: kramdown
 highlighter: rouge
-plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
+theme: minima
 
 # Collections
 collections:
@@ -53,6 +50,9 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
   - README.md
+  - Dockerfile
+  - docker-compose.yml
+  - QUICK_START.md
 
 # SEO
 twitter:
