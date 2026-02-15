@@ -3,9 +3,9 @@ layout: post
 title: "My Journey Building REST APIs in Odoo"
 date: 2024-10-10 10:00:00 +0000
 categories: [Odoo Dev, API]
-tags: [odoo, api, rest, python, integration]
+tags: [odoo, api, rest, python, integration, odoo developer, odoo integration, api development, odoo specialist]
 reading_time: 10
-excerpt: "After building APIs for dozens of Odoo projects, here's what actually works - the hard lessons, the patterns that stuck, and the mistakes I won't make again."
+excerpt: "After building APIs for dozens of Odoo projects, here's what actually works. Learn how to build secure, scalable REST APIs for Odoo from an experienced Odoo developer."
 ---
 
 # My Journey Building REST APIs in Odoo

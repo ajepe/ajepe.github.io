@@ -3,9 +3,9 @@ layout: post
 title: "Building Custom Odoo APIs: What I Learned the Hard Way"
 date: 2024-01-10 10:00:00 +0000
 categories: [Odoo Dev, API]
-tags: [odoo, api, python, integration]
+tags: [odoo, api, python, integration, odoo developer, odoo specialist, hire odoo developer]
 reading_time: 8
-excerpt: "After building dozens of custom Odoo APIs, here are the mistakes I made, lessons I learned, and patterns that actually work in production."
+excerpt: "After building dozens of custom Odoo APIs, here are the mistakes I made, lessons I learned, and patterns that actually work in production. Essential reading for any Odoo developer."
 ---
 
 # Building Custom Odoo APIs: What I Learned the Hard Way

@@ -3,9 +3,9 @@ layout: post
 title: "Odoo OWL Complete Guide: Building Modern Odoo Frontends"
 date: 2025-02-15 10:00:00 +0000
 categories: [Odoo Dev, OWL, JavaScript]
-tags: [odoo, odoo-owl, javascript, frontend, components, tutorial]
+tags: [odoo, odoo-owl, javascript, frontend, components, tutorial, odoo 17, odoo developer, odoo customization, web development]
 reading_time: 25
-excerpt: "The definitive guide to Odoo Web Library (OWL). From basic components to complex forms, RPC calls, and testing - everything you need to build modern Odoo frontends."
+excerpt: "The definitive guide to Odoo Web Library (OWL). Learn how to build modern, reactive frontends in Odoo 17+. Essential reading for Odoo developers looking to level up their frontend skills."
 ---
 
 # Odoo OWL Complete Guide: Building Modern Odoo Frontends

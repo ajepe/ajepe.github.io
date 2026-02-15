@@ -3,9 +3,9 @@ layout: post
 title: "PostgreSQL for Odoo: Things I Wish I Knew Earlier"
 date: 2024-01-15 10:00:00 +0000
 categories: [Odoo Dev, PostgreSQL]
-tags: [odoo, postgresql, database, performance]
+tags: [odoo, postgresql, database, performance, odoo optimization, odoo specialist, odoo consultant, speed up odoo]
 reading_time: 10
-excerpt: "After years of debugging slow Odoo installations, here are the PostgreSQL lessons that actually made a difference - the hard-won kind."
+excerpt: "After years of debugging slow Odoo installations, here are the PostgreSQL lessons that actually made a difference. Fix your slow Odoo system with these practical tips from an Odoo specialist."
 ---
 
 # PostgreSQL for Odoo: Things I Wish I Knew Earlier
