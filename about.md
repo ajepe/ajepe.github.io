@@ -1,6 +1,7 @@
 ---
 layout: simple-page
 title: About Me
+permalink: /about/
 subtitle: Senior Odoo Specialist & Python Developer
 description: Learn more about my background, expertise, and professional journey as a Top-Rated Odoo Specialist with a passion for building scalable ERP solutions.
 ---

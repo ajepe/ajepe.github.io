@@ -1,6 +1,7 @@
 ---
 layout: simple-page
 title: Contact
+permalink: /contact/
 description: Get in touch to discuss your Odoo development needs, API integration projects, or custom ERP solutions. Available for freelance and contract opportunities.
 ---
 

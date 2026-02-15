@@ -1,6 +1,7 @@
 ---
 layout: simple-page
 title: Projects & Case Studies
+permalink: /projects/
 description: Real-world Odoo implementations and custom solutions delivered for enterprise clients across various industries.
 ---
 
