@@ -1,58 +1,55 @@
 ---
 layout: page
-title: Hi, I'm Babatope A. — Senior Odoo Specialist & Python Developer
-subtitle: ERP, Automation, API Integration, and Scalable Odoo Solutions
-description: As a Top-Rated Odoo Specialist with 100% Job Success on Upwork, I deliver custom ERP solutions, API integrations, and performance optimizations for enterprise clients. Specializing in Python, PostgreSQL, Redis, and Vue.js.
-cta_text: Hire Me
+title: Babatope Ajepe — Senior Odoo Specialist & Python Developer
+description: Senior Odoo Specialist and Python Developer. Building scalable ERP solutions, API integrations, and custom Odoo applications.
+cta_text: Get In Touch
 cta_link: "/contact/"
 ---
 
-## 🎯 Odoo Expertise
+<div class="hero-section">
 
-Custom module development, API integrations, performance optimization, and enterprise migrations. Proven track record delivering complex Odoo solutions for fast-moving environments.
+## Hello, I'm **Babatope Ajepe**
 
-## 🚀 Technical Stack
+Senior Odoo Specialist & Python Developer with 5+ years of experience building enterprise-grade ERP solutions. I help businesses transform their operations through custom Odoo implementations, seamless API integrations, and performance optimization.
 
-Python, PostgreSQL, Redis, JavaScript, Vue.js, RESTful APIs, GitHub. Full-stack development with focus on scalable ERP architecture and seamless integrations.
-
-## 📈 Results-Driven
-
-100% Job Success score on Upwork with consistent 5-star reviews. Specialized in delivering measurable business impact through custom Odoo solutions and automation.
-
-## 🔗 Integration Specialist
-
-Expert in connecting Odoo with third-party systems, custom API development, and building robust data workflows that scale with your business growth.
+</div>
 
 ---
 
-## Recent Achievements
+## What I Do
 
-- **50+ Projects Delivered** - Successfully completed custom Odoo implementations and integrations for enterprise clients.
-- **100% Job Success** - Maintained perfect rating on Upwork with consistent client satisfaction and long-term relationships.
-- **5+ Years Experience** - Deep expertise in Odoo ecosystem and enterprise ERP development across multiple versions.
-
-## Core Services
+<div class="services-grid">
 
 ### Custom Odoo Development
-- Custom module development
-- Workflow automation  
-- Performance optimization
-- Version migrations (Odoo 14→16)
+Building tailored Odoo modules and customizations that fit your unique business requirements. From workflow automation to complex business logic.
 
 ### API Integration
-- RESTful API development
-- Third-party system integration
-- Data synchronization
-- Custom connector development
+Connecting Odoo with third-party systems—payment gateways, shipping providers, CRM platforms, and more. Secure, scalable RESTful APIs.
 
-### Database & Performance
-- PostgreSQL optimization
-- Redis caching strategies
-- Query performance tuning
-- Database architecture design
+### Performance Optimization
+Optimizing your Odoo instance for speed and efficiency. PostgreSQL tuning, Redis caching, and query optimization.
 
-### Frontend Development
-- Vue.js application development
-- Custom Odoo frontend
-- Responsive design
-- JavaScript/ES6+ development
+### Enterprise Migrations
+Smooth transitions between Odoo versions (14→16→17) with zero data loss and minimal downtime.
+
+</div>
+
+---
+
+## Featured Articles
+
+<div class="featured-posts">
+
+- [Building Custom Odoo APIs: Best Practices and Security](/blog/building-custom-odoo-apis/)
+- [Optimizing Odoo Performance: A Comprehensive Guide](/blog/optimizing-odoo-performance/)
+- [Getting Started with Odoo REST API](/blog/getting-started-with-odoo-rest-api/)
+
+</div>
+
+---
+
+## Let's Work Together
+
+Whether you need a new Odoo implementation, custom module development, or API integration, I'd love to hear about your project.
+
+<a href="/contact/" class="cta-button">Get In Touch</a>

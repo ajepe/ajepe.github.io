@@ -210,33 +210,52 @@
 }
 
 // Home Page
-.hero {
+.hero-section {
   text-align: center;
-  padding: $spacing-3xl 0;
+  padding: $spacing-2xl 0;
   
-  h1 {
-    font-size: 3rem;
+  h2 {
+    font-size: 2rem;
     margin-bottom: $spacing-lg;
-    background: linear-gradient(135deg, $text-primary, $accent-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: $text-primary;
   }
   
-  .subtitle {
-    font-size: 1.25rem;
+  p {
+    font-size: 1.1rem;
     color: $text-secondary;
-    margin-bottom: $spacing-xl;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
   }
   
-  .description {
-    color: $text-muted;
-    max-width: 700px;
-    margin: 0 auto $spacing-2xl;
-    line-height: 1.8;
+  strong {
+    color: $accent-primary;
+  }
+}
+
+.hero-section > p:first-of-type {
+  font-size: 1.25rem;
+  color: $text-primary;
+  margin-bottom: $spacing-xl;
+}
+
+.featured-posts {
+  margin-top: $spacing-xl;
+  
+  a {
+    display: block;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $border-color;
+    font-weight: 500;
+    
+    &:hover {
+      color: $accent-primary;
+      padding-left: $spacing-sm;
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
   }
 }
 
@@ -248,11 +267,12 @@
   border-radius: $radius-md;
   font-weight: 600;
   transition: all $transition-base;
+  margin-top: $spacing-lg;
   
   &:hover {
     background: #a855f7;
     transform: translateY(-2px);
-    box-shadow: $shadow-glow;
+    box-shadow: $shadow-md;
     text-decoration: none;
     color: white;
   }
@@ -286,5 +306,38 @@
   p {
     font-size: 0.95rem;
     margin: 0;
+  }
+}
+
+// Post Content Enhancements
+.post-content {
+  h2[id], h3[id] {
+    scroll-margin-top: 100px;
+  }
+  
+  ul, ol {
+    padding-left: $spacing-xl;
+    
+    li {
+      margin-bottom: $spacing-sm;
+      line-height: 1.7;
+    }
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: $spacing-xl 0;
+    
+    th, td {
+      padding: $spacing-sm $spacing-md;
+      text-align: left;
+      border: 1px solid $border-color;
+    }
+    
+    th {
+      background: $bg-secondary;
+      font-weight: 600;
+    }
   }
 }
