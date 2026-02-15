@@ -14,7 +14,6 @@ upwork: "https://upwork.com/freelancers/~01b4a3b4a4b4a4b4"
 # Build settings
 markdown: kramdown
 highlighter: rouge
-theme: minima
 
 # Collections
 collections:

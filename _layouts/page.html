@@ -2,17 +2,7 @@
 layout: default
 ---
 
-<div class="home">
-  <h1 class="page-heading">{{ page.title | default: site.title | escape }}</h1>
-  {% if page.subtitle %}
-    <p class="page-subtitle">{{ page.subtitle }}</p>
-  {% endif %}
-  {% if page.description %}
-    <p class="page-description">{{ page.description }}</p>
-  {% endif %}
-  {% if page.cta_text and page.cta_link %}
-    <p><a href="{{ page.cta_link }}" class="btn">{{ page.cta_text }}</a></p>
-  {% endif %}
-  
+<article class="page">
+  <h1>{{ page.title }}</h1>
   {{ content }}
-</div>
+</article>

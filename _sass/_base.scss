@@ -1,97 +1,83 @@
+// Base Styles
 * {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: $font-family-sans;
-  font-size: $font-size-base;
-  line-height: 1.6;
-  color: $text-dark;
-  background-color: $warm-white;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: $font-sans;
+  font-size: 16px;
+  line-height: 1.7;
+  color: $text-primary;
+  background-color: $bg-color;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $font-family-serif;
-  font-weight: 600;
+  font-family: $font-serif;
+  font-weight: 700;
   line-height: 1.3;
-  margin-top: 0;
-  margin-bottom: $spacing-md;
-  color: $text-dark;
+  margin: 0 0 $spacing-md;
+  color: $text-primary;
 }
 
-h1 { font-size: $font-size-4xl; }
-h2 { font-size: $font-size-3xl; }
-h3 { font-size: $font-size-2xl; }
-h4 { font-size: $font-size-xl; }
-h5 { font-size: $font-size-lg; }
-h6 { font-size: $font-size-base; }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
 
 p {
-  margin-top: 0;
-  margin-bottom: $spacing-md;
+  margin: 0 0 $spacing-md;
+  color: $text-secondary;
 }
 
 a {
-  color: $medium-brown;
+  color: $accent;
   text-decoration: none;
-  transition: color $transition-fast;
-
+  
   &:hover {
-    color: $dark-brown;
+    color: $accent-hover;
     text-decoration: underline;
   }
 }
 
 ul, ol {
-  margin-top: 0;
-  margin-bottom: $spacing-md;
+  margin: 0 0 $spacing-md;
   padding-left: $spacing-lg;
-}
-
-li {
-  margin-bottom: $spacing-xs;
+  
+  li {
+    margin-bottom: $spacing-sm;
+  }
 }
 
 img {
   max-width: 100%;
   height: auto;
-  border-radius: $radius-md;
 }
 
 blockquote {
   margin: $spacing-lg 0;
-  padding: $spacing-lg;
-  background-color: rgba($light-brown, 0.1);
-  border-left: 4px solid $medium-brown;
+  padding: $spacing-md $spacing-lg;
+  background: $bg-secondary;
+  border-left: 4px solid $accent;
   font-style: italic;
-  border-radius: $radius-md;
 }
 
 code {
-  font-family: $font-family-mono;
-  background-color: rgba($medium-brown, 0.1);
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $radius-sm;
-  font-size: 0.875em;
+  font-family: $font-mono;
+  background: $bg-secondary;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
 }
 
 pre {
-  background-color: rgba($text-dark, 0.05);
-  padding: $spacing-lg;
-  border-radius: $radius-md;
+  background: $bg-secondary;
+  padding: $spacing-md;
+  border-radius: 6px;
   overflow-x: auto;
-  margin: $spacing-lg 0;
-
+  
   code {
-    background-color: transparent;
+    background: none;
     padding: 0;
   }
 }
@@ -99,28 +85,6 @@ pre {
 hr {
   border: none;
   height: 1px;
-  background-color: rgba($medium-brown, 0.3);
-  margin: $spacing-2xl 0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: $spacing-lg 0;
-  
-  th, td {
-    padding: $spacing-sm $spacing-md;
-    text-align: left;
-    border-bottom: 1px solid rgba($medium-brown, 0.2);
-  }
-  
-  th {
-    font-weight: 600;
-    color: $text-dark;
-    background-color: rgba($light-brown, 0.1);
-  }
-  
-  tbody tr:hover {
-    background-color: rgba($light-brown, 0.05);
-  }
+  background: $border-color;
+  margin: $spacing-xl 0;
 }

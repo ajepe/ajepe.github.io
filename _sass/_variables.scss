@@ -1,55 +1,18 @@
-// Color Palette
-$warm-white: #FAF9F6;
-$light-brown: #D6C3A3;
-$medium-brown: #B89B72;
-$dark-brown: #5D4037;
-$text-dark: #3E2723;
-$text-light: #6D4C41;
+// Variables
+$bg-color: #ffffff;
+$bg-secondary: #f8f9fa;
+$text-primary: #1a1a1a;
+$text-secondary: #6c757d;
+$accent: #0066cc;
+$accent-hover: #0052a3;
+$border-color: #e9ecef;
 
-// Typography
-$font-family-serif: 'Georgia', 'Times New Roman', serif;
-$font-family-sans: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-$font-family-mono: 'Fira Code', 'Monaco', 'Consolas', monospace;
+$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-serif: 'Merriweather', Georgia, serif;
+$font-mono: 'Consolas', Monaco, monospace;
 
-// Font Sizes
-$font-size-xs: 0.75rem;
-$font-size-sm: 0.875rem;
-$font-size-base: 1rem;
-$font-size-lg: 1.125rem;
-$font-size-xl: 1.25rem;
-$font-size-2xl: 1.5rem;
-$font-size-3xl: 1.875rem;
-$font-size-4xl: 2.25rem;
-$font-size-5xl: 3rem;
-
-// Spacing
-$spacing-xs: 0.25rem;
 $spacing-sm: 0.5rem;
 $spacing-md: 1rem;
 $spacing-lg: 1.5rem;
 $spacing-xl: 2rem;
 $spacing-2xl: 3rem;
-$spacing-3xl: 4rem;
-
-// Breakpoints
-$breakpoint-sm: 640px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 1024px;
-$breakpoint-xl: 1280px;
-
-// Shadows
-$shadow-sm: 0 1px 2px 0 rgba(93, 64, 55, 0.05);
-$shadow-md: 0 4px 6px -1px rgba(93, 64, 55, 0.1), 0 2px 4px -1px rgba(93, 64, 55, 0.06);
-$shadow-lg: 0 10px 15px -3px rgba(93, 64, 55, 0.1), 0 4px 6px -2px rgba(93, 64, 55, 0.05);
-$shadow-xl: 0 20px 25px -5px rgba(93, 64, 55, 0.1), 0 10px 10px -5px rgba(93, 64, 55, 0.04);
-
-// Border Radius
-$radius-sm: 0.25rem;
-$radius-md: 0.375rem;
-$radius-lg: 0.5rem;
-$radius-xl: 0.75rem;
-
-// Transitions
-$transition-fast: 150ms ease-in-out;
-$transition-base: 250ms ease-in-out;
-$transition-slow: 350ms ease-in-out;
