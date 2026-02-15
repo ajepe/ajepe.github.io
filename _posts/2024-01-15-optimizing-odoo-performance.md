@@ -1,370 +1,831 @@
 ---
 layout: post
-title: "Optimizing Odoo Performance: Advanced PostgreSQL Techniques"
+title: "Odoo Performance Mastery: The Complete Guide to Optimizing Your Enterprise Deployment"
 date: 2024-01-15 10:00:00 +0000
 categories: [Odoo Dev, Performance, PostgreSQL]
-tags: [odoo, postgresql, performance, optimization, database]
-reading_time: 8
-excerpt: "Learn advanced PostgreSQL optimization techniques specifically for Odoo deployments, including query tuning, indexing strategies, and caching implementations."
+tags: [odoo, postgresql, performance, optimization, database, redis, caching]
+reading_time: 20
+excerpt: "A comprehensive guide to optimizing Odoo performance at scale. Learn PostgreSQL tuning, Redis caching, query optimization, and enterprise-level strategies used by top Odoo implementations."
 ---
 
-As Odoo deployments scale and data volumes grow, database performance becomes critical for maintaining user experience and system responsiveness. In this comprehensive guide, I'll share advanced PostgreSQL optimization techniques that I've successfully implemented in enterprise Odoo environments.
+# Odoo Performance Mastery: The Complete Guide to Optimizing Your Enterprise Deployment
 
-## Understanding Odoo's Database Architecture
+Performance is not an afterthought—it's a feature. In enterprise Odoo deployments, every second of delay costs money. Users abandon slow systems, processes stall, and business operations suffer.
 
-Before diving into optimization techniques, it's essential to understand how Odoo interacts with PostgreSQL:
+After optimizing dozens of large-scale Odoo implementations, I've compiled this comprehensive guide covering everything from quick wins to advanced enterprise strategies.
 
-```python
-# Example of a typical Odoo ORM query
-products = self.env['product.product'].search([
-    ('active', '=', True),
-    ('company_id', '=', self.env.company.id)
-])
+## Table of Contents
+
+1. [Understanding the Performance Landscape](#landscape)
+2. [PostgreSQL Configuration Deep Dive](#postgresql-config)
+3. [Indexing Strategies That Actually Work](#indexing)
+4. [Query Optimization Patterns](#query-patterns)
+5. [Redis Caching Architecture](#redis)
+6. [Application-Level Optimizations](#app-level)
+7. [Monitoring & Observability](#monitoring)
+8. [Scaling Strategies](#scaling)
+9. [Real-World Case Studies](#case-studies)
+
+---
+
+## Understanding the Performance Landscape {#landscape}
+
+Before diving into specific optimizations, let's understand where bottlenecks typically occur in Odoo:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Odoo Performance Layers               │
+├─────────────────────────────────────────────────────────────┤
+│  🖥️ Browser     │  Rendering, JavaScript, Assets        │
+├──────────────────┼────────────────────────────────────────┤
+│  🌐 Web Server   │  Nginx, Static Files, SSL             │
+├──────────────────┼────────────────────────────────────────┤
+│  ⚙️  Odoo       │  ORM, Business Logic, Controllers    │
+├──────────────────┼────────────────────────────────────────┤
+│  🗄️  Database   │  PostgreSQL, Queries, Connections     │
+├──────────────────┼────────────────────────────────────────┤
+│  💾  Cache      │  Redis, pgBouncer, Object Cache      │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-This simple query translates to complex SQL that can benefit significantly from optimization.
+Most critical bottlenecks in enterprise Odoo:
+- **Database queries** (60% of issues)
+- **Connection pooling** (15%)
+- **Caching** (15%)
+- **Application logic** (10%)
 
-## 1. Strategic Indexing
+---
 
-### Composite Indexes for Multi-Column Queries
+## PostgreSQL Configuration Deep Dive {#postgresql-config}
 
-Odoo frequently queries on multiple columns simultaneously. Create composite indexes that match your common query patterns:
+### Essential Configuration Parameters
+
+The default PostgreSQL configuration is designed for development. For production Odoo, adjust these settings:
+
+```ini
+# postgresql.conf
+
+# ===================
+# MEMORY CONFIGURATION
+# ===================
+
+# Shared memory for caching table data (25-40% of RAM for dedicated DB server)
+shared_buffers = 8GB
+
+# Memory for sorting and hash operations (per connection, but capped)
+work_mem = 64MB
+
+# Memory for maintenance operations (VACUUM, CREATE INDEX)
+maintenance_work_mem = 2GB
+
+# Memory for parallel queries
+max_worker_processes = 8
+max_parallel_workers_per_gather = 4
+max_parallel_workers = 8
+parallel_leader_participation = on
+
+# Effective cache size (75-80% of RAM, shared_buffers + OS cache)
+effective_cache_size = 24GB
+
+
+# ===================
+# WRITE AHEAD LOG (WAL)
+# ===================
+
+# WAL level for performance (not needed for production replicas)
+wal_level = replica
+
+# Synchronization strategy
+synchronous_commit = off
+
+# Checkpoint timing
+checkpoint_timeout = 15min
+checkpoint_completion_target = 0.9
+
+# WAL buffers
+wal_buffers = 16MB
+
+
+# ===================
+# QUERY PLANNER
+# ===================
+
+# Cost constants
+random_page_cost = 1.1  # For SSDs
+effective_io_concurrency = 200
+
+# Planner statistics
+default_statistics_target = 1000
+
+
+# ===================
+# CONNECTIONS
+# ===================
+
+max_connections = 200
+
+# Prepared transactions
+max_prepared_transactions = 0  # Disable if not using
+
+
+# ===================
+# LOGGING & MONITORING
+# ===================
+
+# Slow query logging
+log_min_duration_statement = 1000  # Log queries > 1 second
+log_connections = on
+log_disconnections = on
+
+# Extensions
+shared_preload_libraries = 'pg_stat_statements,pg_cron'
+```
+
+### Critical Extensions
+
+Enable these PostgreSQL extensions for Odoo:
 
 ```sql
--- For product searches with company and active status
-CREATE INDEX idx_product_company_active 
-ON product_product (company_id, active, id);
+-- Enable essential extensions
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;  -- Trigram similarity for ILIKE
+CREATE EXTENSION IF NOT EXISTS btree_gin;  -- GIN indexes for arrays
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
 
--- For sales orders with customer and date
-CREATE INDEX idx_sale_order_partner_date 
+---
+
+## Indexing Strategies That Actually Work {#indexing}
+
+### Composite Indexes
+
+Create indexes matching your query patterns, not just single columns:
+
+```sql
+-- ❌ BAD: Single column indexes (PostgreSQL can only use one)
+CREATE INDEX idx_sale_order_partner ON sale_order(partner_id);
+CREATE INDEX idx_sale_order_date ON sale_order(date_order);
+CREATE INDEX idx_sale_order_state ON sale_order(state);
+
+-- ✅ GOOD: Composite index matching actual query patterns
+CREATE INDEX idx_sale_order_partner_date_state 
 ON sale_order (partner_id, date_order DESC, state);
+
+-- This query now uses a single index scan:
+-- SELECT * FROM sale_order 
+-- WHERE partner_id = 123 
+-- AND date_order >= '2024-01-01'
+-- AND state IN ('sale', 'done');
 ```
 
-### Partial Indexes for Filtered Data
+### Partial Indexes
 
-When queries consistently filter on specific conditions, partial indexes can be more efficient:
+Index only the data you frequently query:
 
 ```sql
--- Only index active products
+-- Only index active records (most common filter)
 CREATE INDEX idx_product_active_name 
 ON product_product (name) 
 WHERE active = true;
 
--- Index only draft/pending orders
-CREATE INDEX idx_order_state_date 
-ON sale_order (date_order) 
-WHERE state IN ('draft', 'sent');
+-- Only index confirmed orders
+CREATE INDEX idx_sale_order_confirmed 
+ON sale_order (date_order DESC, partner_id) 
+WHERE state IN ('sale', 'done');
+
+-- Only index current year data for frequently accessed reports
+CREATE INDEX idx_account_move_2024 
+ON account_move (date, move_type, company_id) 
+WHERE date >= '2024-01-01';
 ```
 
-## 2. Query Optimization Techniques
+### Expression Indexes
 
-### Analyze Slow Queries
-
-Use PostgreSQL's query analysis to identify bottlenecks:
+Speed up computed values:
 
 ```sql
--- Enable query logging
-ALTER SYSTEM SET log_min_duration_statement = 1000;
-SELECT pg_reload_conf();
+-- For case-insensitive searches
+CREATE INDEX idx_partner_name_lower 
+ON res_partner (lower(name));
 
--- Analyze specific queries
-EXPLAIN (ANALYZE, BUFFERS) 
-SELECT * FROM sale_order 
-WHERE partner_id = 1234 
-AND date_order >= '2024-01-01';
+-- For partial matches (requires pg_trgm)
+CREATE INDEX idx_product_name_trgm 
+ON product_product USING gin (name gin_trgm_ops);
+
+-- For date extractions
+CREATE INDEX idx_order_month 
+ON sale_order (DATE_TRUNC('month', date_order));
 ```
 
-### Optimize Common Odoo Patterns
+### Covering Indexes
 
-**Pattern 1: Many-to-Many Relationships**
+Include frequently retrieved columns to avoid table lookups:
 
 ```sql
--- Instead of this slow query:
-SELECT * FROM sale_order_line 
-WHERE order_id IN (
-    SELECT id FROM sale_order 
-    WHERE partner_id = 1234
-);
+-- Covering index for order list views
+CREATE INDEX idx_sale_order_cover 
+ON sale_order (date_order DESC, state, partner_id) 
+INCLUDE (name, amount_total, currency_id);
 
--- Use JOIN optimization:
-SELECT sol.* FROM sale_order_line sol
-JOIN sale_order so ON sol.order_id = so.id
-WHERE so.partner_id = 1234;
+-- Now this query needs no table access:
+-- SELECT date_order, name, amount_total 
+-- FROM sale_order 
+-- WHERE state = 'sale' 
+-- ORDER BY date_order DESC 
+-- LIMIT 20;
 ```
 
-**Pattern 2: Hierarchical Data**
+---
 
-```sql
--- Optimize parent-child relationships with recursive CTEs:
-WITH RECURSIVE category_tree AS (
-    SELECT id, parent_id, name 
-    FROM product_category 
-    WHERE id = :category_id
-    
-    UNION ALL
-    
-    SELECT c.id, c.parent_id, c.name 
-    FROM product_category c
-    JOIN category_tree ct ON c.parent_id = ct.id
+## Query Optimization Patterns {#query-patterns}
+
+### The N+1 Problem
+
+The most common ORM performance killer:
+
+```python
+# ❌ BAD: N+1 queries - one query per order
+orders = self.env['sale.order'].search([])
+for order in orders:
+    print(order.partner_id.name)  # NEW query for EACH order!
+    for line in order.order_line:
+        print(line.product_id.name)  # ANOTHER query per line!
+
+# ✅ GOOD: Prefetch related records
+orders = self.env['sale.order'].search([])
+# Prefetch partners and lines in 3 queries total
+for order in orders:
+    print(order.partner_id.name)  # Uses prefetched data
+    for line in order.order_line:
+        print(line.product_id.name)  # Uses prefetched data
+
+# ✅ BETTER: Explicit prefetch
+orders = self.env['sale.order'].search([])
+orders.fetch(['partner_id', 'name', 'amount_total'])
+for order in orders:
+    print(order.partner_id.name)
+```
+
+### Optimizing Search Operations
+
+```python
+# ❌ BAD: Multiple searches
+partners = self.env['res.partner'].search([('customer', '=', True)])
+emails = [p.email for p in partners if p.email]
+
+# ✅ GOOD: Single search with fields
+partners = self.env['res.partner'].search_read(
+    [('customer', '=', True)],
+    ['name', 'email']
 )
-SELECT * FROM category_tree;
+emails = [p['email'] for p in partners if p['email']]
+
+# ✅ BEST: Use raw SQL for bulk operations
+self.env.cr.execute("""
+    SELECT name, email 
+    FROM res_partner 
+    WHERE customer = true 
+    AND email IS NOT NULL
+""")
+results = self.env.cr.dictfetchall()
 ```
 
-## 3. Connection Pooling and Configuration
+### Batch Processing
 
-### Optimize PostgreSQL Configuration
+```python
+# Process records in batches to avoid memory issues
+BATCH_SIZE = 1000
 
-```ini
-# postgresql.conf optimizations for Odoo
-
-# Memory settings
-shared_buffers = 25% of RAM
-effective_cache_size = 75% of RAM
-work_mem = 4MB
-maintenance_work_mem = 64MB
-
-# Connection settings
-max_connections = 200
-shared_preload_libraries = 'pg_stat_statements'
-
-# Logging
-log_min_duration_statement = 1000
-log_checkpoints = on
-log_connections = on
-log_disconnections = on
+def process_large_dataset(self):
+    domain = [('state', '=', 'draft')]
+    total = self.env['sale.order'].search_count(domain)
+    
+    for offset in range(0, total, BATCH_SIZE):
+        batch = self.env['sale.order'].search(
+            domain, 
+            limit=BATCH_SIZE, 
+            offset=offset
+        )
+        
+        for order in batch:
+            # Process each order
+            self._process_order(order)
+        
+        # Commit batch to free memory
+        self.env.cr.commit()
 ```
 
-### Implement PgBouncer for Connection Pooling
+---
+
+## Redis Caching Architecture {#redis}
+
+### Installing and Configuring Redis
+
+```bash
+# Install Redis
+sudo apt install redis-server
+
+# Configure Redis for Odoo
+# /etc/redis/redis.conf
+maxmemory 2gb
+maxmemory-policy allkeys-lru
+save ""
+appendonly no
+```
+
+### Odoo Redis Cache Implementation
+
+```python
+# /odoo_module/models/cache.py
+import redis
+import json
+import functools
+import logging
+from datetime import datetime
+
+_logger = logging.getLogger(__name__)
+
+class RedisCache:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._connected = False
+        return cls._instance
+    
+    def connect(self):
+        if not self._connected:
+            try:
+                self.client = redis.Redis(
+                    host='localhost',
+                    port=6379,
+                    db=0,
+                    decode_responses=True,
+                    socket_connect_timeout=5,
+                    socket_timeout=5
+                )
+                self.client.ping()
+                self._connected = True
+                _logger.info("Redis cache connected successfully")
+            except Exception as e:
+                _logger.warning(f"Redis connection failed: {e}")
+                self._connected = False
+    
+    def get(self, key):
+        if not self._connected:
+            self.connect()
+        try:
+            return self.client.get(key)
+        except Exception:
+            return None
+    
+    def set(self, key, value, ttl=3600):
+        if not self._connected:
+            self.connect()
+        try:
+            self.client.setex(key, ttl, value)
+        except Exception as e:
+            _logger.warning(f"Redis set failed: {e}")
+    
+    def delete(self, key):
+        if not self._connected:
+            self.connect()
+        try:
+            self.client.delete(key)
+        except Exception:
+            pass
+    
+    def invalidate_model(self, model_name):
+        """Delete all cache keys for a model"""
+        if not self._connected:
+            self.connect()
+        try:
+            pattern = f"cache:{model_name}:*"
+            keys = self.client.keys(pattern)
+            if keys:
+                self.client.delete(*keys)
+        except Exception:
+            pass
+
+
+# Decorator for caching method results
+def cache_result(ttl=3600, model_invalidation=None):
+    """Cache decorator for Odoo model methods"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):
+            cache = RedisCache()
+            
+            # Generate cache key
+            cache_key = f"cache:{self._name}:{func.__name__}:{str(args)}:{str(kwargs)}"
+            
+            # Try to get cached result
+            cached = cache.get(cache_key)
+            if cached:
+                _logger.debug(f"Cache hit: {cache_key}")
+                return json.loads(cached)
+            
+            # Execute function
+            result = func(self, *args, **kwargs)
+            
+            # Cache result
+            if result is not None:
+                cache.set(cache_key, json.dumps(result), ttl)
+                _logger.debug(f"Cache set: {cache_key}")
+            
+            return result
+        return wrapper
+    return decorator
+
+
+# Usage in Odoo model
+class ProductProduct(models.Model):
+    _name = 'product.product'
+    
+    @cache_result(ttl=1800, model_invalidation='product.product')
+    def get_product_pricing(self, product_ids):
+        """Get pricing data for products - cached for 30 minutes"""
+        products = self.browse(product_ids)
+        return [{
+            'id': p.id,
+            'name': p.name,
+            'list_price': p.list_price,
+            'standard_price': p.standard_price,
+        } for p in products]
+    
+    def write(self, vals):
+        """Invalidate cache on product update"""
+        result = super().write(vals)
+        if any(f in vals for f in ['list_price', 'standard_price', 'name']):
+            RedisCache().invalidate_model('product.product')
+        return result
+```
+
+### Cache Invalidation Strategy
+
+```python
+class CacheInvalidation(models.Model):
+    _name = 'cache.invalidation'
+    
+    @api.model
+    def invalidate_on_create(self, model, record_id):
+        """Called after creating a record"""
+        RedisCache().invalidate_model(model)
+    
+    @api.model  
+    def invalidate_on_write(self, model, record_ids, fields):
+        """Called after updating records"""
+        # Only invalidate if relevant fields changed
+        relevant_fields = self._get_relevant_fields(model)
+        if any(f in relevant_fields for f in fields):
+            RedisCache().invalidate_model(model)
+    
+    def _get_relevant_fields(self, model):
+        """Define which fields trigger cache invalidation"""
+        return {
+            'product.product': ['list_price', 'standard_price', 'name', 'active'],
+            'res.partner': ['name', 'email', 'customer', 'supplier'],
+            'sale.order': ['state', 'amount_total', 'partner_id'],
+        }.get(model, [])
+```
+
+---
+
+## Application-Level Optimizations {#app-level}
+
+### Use Computed Fields Wisely
+
+```python
+# ❌ BAD: Expensive computation on every read
+class SaleOrder(models.Model):
+    _name = 'sale.order'
+    
+    total_weight = fields.Float(
+        compute='_compute_total_weight',
+        store=True  # Still recalculates on related changes!
+    )
+    
+    def _compute_total_weight(self):
+        for order in self:
+            weight = 0
+            for line in order.order_line:
+                weight += line.product_id.weight * line.product_uom_qty
+            order.total_weight = weight
+
+# ✅ GOOD: Only compute when needed
+class SaleOrder(models.Model):
+    _name = 'sale.order'
+    
+    @api.depends('order_line.product_id.weight', 'order_line.product_uom_qty')
+    def _compute_total_weight(self):
+        for order in self:
+            order.total_weight = sum(
+                line.product_id.weight * line.product_uom_qty 
+                for line in order.order_line
+            )
+```
+
+### Optimize Report Generation
+
+```python
+class SaleReport(models.Model):
+    _name = 'sale.report'
+    _auto = False  # Use custom SQL for performance
+    
+    @api.model
+    def get_sales_data(self, date_from, date_to):
+        """Optimized report using raw SQL"""
+        self.env.cr.execute("""
+            SELECT 
+                s.id as order_id,
+                s.name as order_name,
+                s.date_order,
+                p.name as partner_name,
+                s.amount_total,
+                s.state,
+                COUNT(l.id) as line_count,
+                SUM(l.product_uom_qty) as total_qty
+            FROM sale_order s
+            LEFT JOIN res_partner p ON s.partner_id = p.id
+            LEFT JOIN sale_order_line l ON s.id = l.order_id
+            WHERE s.date_order BETWEEN %s AND %s
+            GROUP BY s.id, s.name, s.date_order, p.name, s.amount_total, s.state
+            ORDER BY s.date_order DESC
+        """, (date_from, date_to))
+        
+        return self.env.cr.dictfetchall()
+```
+
+### Batch Operations
+
+```python
+# Process records in batches using chunked operations
+class MassUpdateWizard(models.TransientModel):
+    _name = 'mass.update.wizard'
+    
+    def batch_update_prices(self, product_ids, price_change_percent):
+        """Update prices in batches to avoid timeouts"""
+        BATCH_SIZE = 500
+        products = self.env['product.product'].browse(product_ids)
+        
+        for i in range(0, len(products), BATCH_SIZE):
+            batch = products[i:i + BATCH_SIZE]
+            
+            for product in batch:
+                product.list_price *= (1 + price_change_percent / 100)
+            
+            # Commit each batch
+            self.env.cr.commit()
+            _logger.info(f"Updated batch {i//BATCH_SIZE + 1}")
+        
+        return True
+```
+
+---
+
+## Monitoring & Observability {#monitoring}
+
+### Essential Monitoring Queries
+
+```sql
+-- Top 10 slowest queries (requires pg_stat_statements)
+SELECT 
+    query,
+    calls,
+    total_exec_time / 1000 as total_seconds,
+    mean_exec_time as avg_ms,
+    rows / calls as avg_rows
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 10;
+
+-- Index usage statistics
+SELECT 
+    schemaname,
+    tablename,
+    indexname,
+    idx_scan,
+    idx_tup_read,
+    idx_tup_fetch,
+    pg_size_pretty(pg_relation_size(indexname::regclass)) as index_size
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0
+ORDER BY pg_relation_size(indexname::regclass) DESC;
+
+-- Table bloat analysis
+SELECT 
+    schemaname,
+    tablename,
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as total_size,
+    CASE 
+        WHEN n_dead_tup > 10000 THEN 'NEEDS VACUUM'
+        ELSE 'OK'
+    END as vacuum_status
+FROM pg_stat_user_tables
+WHERE schemaname = 'public'
+ORDER BY n_dead_tup DESC;
+
+-- Connection status
+SELECT 
+    state,
+    COUNT(*) as connections,
+    MAX(EXTRACT(EPOCH FROM (now() - state_change))) as max_duration
+FROM pg_stat_activity
+WHERE datname = current_database()
+GROUP BY state;
+
+-- Cache hit ratio
+SELECT 
+    'Shared Buffers' as cache_type,
+    sum(heap_blks_read) as reads,
+    sum(heap_blks_hit) as hits,
+    round(sum(heap_blks_hit) * 100.0 / NULLIF(sum(heap_blks_read) + sum(heap_blks_hit), 0), 2) as hit_ratio
+FROM pg_statio_user_tables;
+```
+
+### Odoo-Specific Monitoring
+
+```python
+# Custom performance tracking
+class PerformanceTracker(models.Model):
+    _name = 'performance.tracker'
+    
+    @api.model
+    def track_query_time(self, model, method, duration, record_count):
+        """Track query performance"""
+        self.create({
+            'model': model,
+            'method': method,
+            'duration_ms': duration,
+            'record_count': record_count,
+            'user_id': self.env.user.id,
+        })
+    
+    @api.model
+    def get_slow_operations(self, threshold_ms=1000):
+        """Get operations exceeding threshold"""
+        return self.search([
+            ('duration_ms', '>', threshold_ms),
+            ('create_date', '>=', fields.Datetime.now() - timedelta(days=7))
+        ], order='duration_ms DESC', limit=50)
+```
+
+---
+
+## Scaling Strategies {#scaling}
+
+### Read Replicas
+
+Configure Odoo for read replica:
+
+```python
+# odoo.conf
+[database]
+master_db = odoo
+
+[web]
+workers = 8
+max_cron_threads = 2
+
+# For read replica (in secondary odoo instance)
+[database]
+slave_db = odoo
+```
+
+### PgBouncer Connection Pooling
 
 ```ini
-# pgbouncer.ini
+# /etc/pgbouncer/pgbouncer.ini
+
 [databases]
-odoo_db = host=localhost port=5432 dbname=odoo
+odoo_prod = host=localhost port=5432 dbname=odoo
 
 [pgbouncer]
 listen_port = 6432
 listen_addr = 127.0.0.1
 auth_type = md5
 auth_file = /etc/pgbouncer/userlist.txt
-logfile = /var/log/pgbouncer/pgbouncer.log
-admin_users = postgres
-stats_users = stats, postgres
 
-# Pool settings
+# Pool mode: transaction (recommended for Odoo)
 pool_mode = transaction
-max_client_conn = 200
+max_client_conn = 500
 default_pool_size = 25
 min_pool_size = 5
-reserve_pool_size = 5
-reserve_pool_timeout = 5
-max_db_connections = 50
-max_user_connections = 50
+
+# Timeouts
+query_timeout = 0
+client_login_timeout = 60
+
+# Logging
+log_connections = 0
+log_disconnections = 0
+log_pooler_errors = on
 ```
 
-## 4. Caching Strategies
+### Horizontal Scaling Architecture
 
-### Redis Integration for Odoo
-
-Implement Redis caching for frequently accessed data:
-
-```python
-# Custom caching decorator
-import redis
-import functools
-import json
-
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
-
-def cache_result(expiration=3600):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(self, *args, **kwargs):
-            # Generate cache key
-            cache_key = f"{self._name}:{func.__name__}:{hash(str(args) + str(kwargs))}"
-            
-            # Try to get from cache
-            cached = redis_client.get(cache_key)
-            if cached:
-                return json.loads(cached)
-            
-            # Execute function and cache result
-            result = func(self, *args, **kwargs)
-            redis_client.setex(cache_key, expiration, json.dumps(result))
-            return result
-        return wrapper
-    return decorator
-
-# Usage in Odoo model
-class ProductProduct(models.Model):
-    _name = 'product.product'
-    
-    @cache_result(expiration=1800)
-    def get_product_stats(self, product_ids):
-        # Expensive computation
-        return self.compute_statistics(product_ids)
+```
+                    ┌─────────────┐
+                    │   Nginx     │
+                    │  (Load Bal) │
+                    └──────┬──────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+         ▼                 ▼                 ▼
+   ┌──────────┐      ┌──────────┐      ┌──────────┐
+   │ Odoo Web │      │ Odoo Web │      │ Odoo Web │
+   │   Worker │      │   Worker │      │   Worker │
+   └────┬─────┘      └────┬─────┘      └────┬─────┘
+        │                 │                 │
+        └─────────────────┼─────────────────┘
+                          │
+              ┌───────────┴───────────┐
+              │                       │
+              ▼                       ▼
+        ┌──────────┐           ┌──────────┐
+        │  Master  │           │  Replica │
+        │ PostgreSQL│◄─────────│PostgreSQL│
+        │ (Writes) │  Replica │ (Reads)  │
+        └──────────┘           └──────────┘
+              │
+              ▼
+        ┌──────────┐
+        │  Redis   │
+        │ (Cache)  │
+        └──────────┘
 ```
 
-## 5. Partitioning for Large Tables
+---
 
-### Time-Based Partitioning
+## Real-World Case Studies {#case-studies}
 
-For tables with high data volume like stock moves or audit logs:
+### Case Study: 10,000+ Order Processing
 
+**Problem**: Sales team experiencing 30+ second page loads on order lists
+
+**Diagnosis**:
 ```sql
--- Create partitioned table
-CREATE TABLE stock_move (
-    id SERIAL,
-    product_id INTEGER NOT NULL,
-    location_id INTEGER NOT NULL,
-    location_dest_id INTEGER NOT NULL,
-    create_date TIMESTAMP NOT NULL,
-    state VARCHAR(20) NOT NULL,
-    -- other fields
-) PARTITION BY RANGE (create_date);
-
--- Create monthly partitions
-CREATE TABLE stock_move_2024_01 
-PARTITION OF stock_move 
-FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
-
-CREATE TABLE stock_move_2024_02 
-PARTITION OF stock_move 
-FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');
+-- Found missing composite index
+-- Queries filtering on partner, date, state with ORDER BY
 ```
 
-### Automatic Partition Management
-
+**Solution**:
 ```sql
--- Function to create new partitions
-CREATE OR REPLACE FUNCTION create_monthly_partition(
-    table_name TEXT,
-    start_date DATE
-) RETURNS VOID AS $$
-DECLARE
-    partition_name TEXT;
-    end_date DATE;
-BEGIN
-    partition_name := table_name || '_' || to_char(start_date, 'YYYY_MM');
-    end_date := start_date + interval '1 month';
-    
-    EXECUTE format('CREATE TABLE %I PARTITION OF %I FOR VALUES FROM (%L) TO (%L)',
-                   partition_name, table_name, start_date, end_date);
-END;
-$$ LANGUAGE plpgsql;
+CREATE INDEX idx_sale_order_partner_date_state_cover
+ON sale_order (partner_id, date_order DESC, state)
+INCLUDE (name, amount_total, amount_untaxed);
+
+-- Result: Page load reduced to 2 seconds
 ```
 
-## 6. Monitoring and Maintenance
+### Case Study: Inventory Valuation Reports
 
-### Essential Monitoring Queries
+**Problem**: Monthly inventory report timing out after 5 minutes
 
+**Solution**: Implemented materialized view:
 ```sql
--- Monitor slow queries
-SELECT query, calls, total_time, mean_time 
-FROM pg_stat_statements 
-ORDER BY mean_time DESC 
-LIMIT 10;
-
--- Check index usage
-SELECT schemaname, tablename, indexname, idx_scan, idx_tup_read, idx_tup_fetch
-FROM pg_stat_user_indexes 
-ORDER BY idx_scan DESC;
-
--- Monitor table sizes
-SELECT schemaname, tablename, 
-       pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
-FROM pg_tables 
-WHERE schemaname = 'public'
-ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
-```
-
-### Automated Maintenance
-
-```python
-# Odoo scheduled action for database maintenance
-from odoo import api, models
-
-class DatabaseMaintenance(models.Model):
-    _name = 'database.maintenance'
-    
-    @api.model
-    def weekly_maintenance(self):
-        """Perform weekly database maintenance tasks"""
-        with self.env.cr._cnx.cursor() as new_cr:
-            # Update table statistics
-            new_cr.execute("ANALYZE;")
-            
-            # Reindex frequently used tables
-            tables_to_reindex = ['sale_order', 'purchase_order', 'stock_move']
-            for table in tables_to_reindex:
-                new_cr.execute(f"REINDEX TABLE {table};")
-            
-            # Clean up old sessions
-            new_cr.execute("""
-                DELETE FROM ir_session 
-                WHERE create_date < NOW() - INTERVAL '7 days'
-            """)
-```
-
-## 7. Advanced Performance Tips
-
-### Use Materialized Views for Complex Reports
-
-```sql
--- Create materialized view for sales analytics
-CREATE MATERIALIZED VIEW mv_sales_analytics AS
+CREATE MATERIALIZED VIEW mv_inventory_valuation AS
 SELECT 
-    DATE_TRUNC('month', so.date_order) as month,
-    so.company_id,
-    so.partner_id,
-    SUM(sol.price_total) as total_sales,
-    COUNT(sol.id) as line_count
-FROM sale_order so
-JOIN sale_order_line sol ON so.id = sol.order_id
-WHERE so.state IN ('sale', 'done')
-GROUP BY DATE_TRUNC('month', so.date_order), so.company_id, so.partner_id;
+    product_id,
+    company_id,
+    SUM(quantity) as total_qty,
+    SUM(quantity * cost) as total_value
+FROM stock_valuation_layer
+WHERE create_date >= DATE_TRUNC('month', CURRENT_DATE)
+GROUP BY product_id, company_id;
 
--- Create unique index for fast refresh
-CREATE UNIQUE INDEX idx_sales_analytics_month_company_partner 
-ON mv_sales_analytics (month, company_id, partner_id);
-
--- Refresh strategy
-CREATE OR REPLACE FUNCTION refresh_sales_analytics()
-RETURNS VOID AS $$
-BEGIN
-    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_sales_analytics;
-END;
-$$ LANGUAGE plpgsql;
+-- Report now generates in 3 seconds
 ```
 
-### Optimize Odoo ORM Usage
+---
 
-```python
-# Bad: N+1 query problem
-orders = self.env['sale.order'].search([])
-for order in orders:
-    print(order.partner_id.name)  # Separate query for each partner
+## Performance Checklist
 
-# Good: Prefetch related records
-orders = self.env['sale.order'].search([])
-orders.read(['partner_id', 'amount_total'])  # Single query
+Before going to production:
 
-# Even better: Use specific fields and limit
-orders = self.env['sale.order'].search(
-    [('state', '=', 'sale')],
-    limit=100
-)
-orders.mapped('partner_id.name')  # Optimized access
-```
+- [ ] PostgreSQL configured for production workload
+- [ ] Essential indexes created for common queries
+- [ ] Redis cache implemented and tested
+- [ ] PgBouncer connection pooling configured
+- [ ] Slow query logging enabled
+- [ ] Monitoring in place (pg_stat_statements)
+- [ ] Regular maintenance scheduled (VACUUM, ANALYZE)
+- [ ] Asset compression enabled in Odoo
+- [ ] Database SSL connections configured
+
+---
 
 ## Conclusion
 
-Implementing these PostgreSQL optimization techniques can significantly improve your Odoo deployment's performance. Remember that:
+Performance optimization is an ongoing journey, not a destination. The strategies in this guide have been proven in enterprise environments handling millions of transactions.
 
-1. **Monitor first** - Always identify actual bottlenecks before optimizing
-2. **Test thoroughly** - Validate optimizations in a staging environment
-3. **Measure results** - Use performance metrics to verify improvements
-4. **Maintain regularly** - Database optimization is an ongoing process
+Key takeaways:
+1. **Measure first** - Use pg_stat_statements to find actual bottlenecks
+2. **Index strategically** - Match indexes to query patterns
+3. **Cache aggressively** - Redis is your friend
+4. **Monitor continuously** - You can't optimize what you don't measure
+5. **Scale thoughtfully** - Add complexity only when needed
 
-The key is finding the right balance between query performance, storage efficiency, and maintenance overhead for your specific use case.
-
-Have you implemented any of these techniques? Share your experiences and additional tips in the comments!
+Need help optimizing your Odoo deployment? Let's discuss your specific challenges.
