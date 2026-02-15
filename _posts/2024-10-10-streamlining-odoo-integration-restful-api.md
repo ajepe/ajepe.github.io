@@ -1,308 +1,196 @@
 ---
 layout: post
-title: "Streamlining Odoo Integration: A Deep Dive into the RESTful API Module for Developers"
+title: "My Journey Building REST APIs in Odoo"
 date: 2024-10-10 10:00:00 +0000
-categories: [Odoo Dev, API Integration, Backend]
-tags: [odoo, api, rest, integration, python, postgresql]
-reading_time: 12
-excerpt: "Learn how to build robust RESTful APIs in Odoo. This comprehensive guide covers authentication, best practices, security considerations, and real-world integration patterns."
+categories: [Odoo Dev, API]
+tags: [odoo, api, rest, python, integration]
+reading_time: 10
+excerpt: "After building APIs for dozens of Odoo projects, here's what actually works - the hard lessons, the patterns that stuck, and the mistakes I won't make again."
 ---
 
-# Streamlining Odoo Integration: A Deep Dive into the RESTful API Module for Developers
+# My Journey Building REST APIs in Odoo
 
-Integrating Odoo with external systems is a common requirement for modern enterprises. Whether you need to connect with e-commerce platforms, CRM systems, or custom applications, a well-designed RESTful API is essential.
+I've built a lot of custom APIs in Odoo. Some were elegant, some were... let's say "learning experiences." Here's everything I wish I knew before that first API project.
 
-In this guide, we'll explore everything you need to know about building RESTful APIs in Odoo.
+## The API That Nearly Got Me Fired
 
-## Table of Contents
+My first Odoo API was for a client who needed to sync their e-commerce store with Odoo. How hard could it be?
 
-1. [Understanding Odoo's API Options](#api-options)
-2. [Setting Up Your First Endpoint](#first-endpoint)
-3. [Authentication & Security](#authentication)
-4. [CRUD Operations](#crud)
-5. [Error Handling](#error-handling)
-6. [Rate Limiting](#rate-limiting)
-7. [Testing Your API](#testing)
-8. [Best Practices](#best-practices)
+Very hard, as it turns out.
 
----
+Within a week, I had created:
+- Zero authentication (oops)
+- No rate limiting (they hammered my server)
+- No error handling (when things broke, I had no idea why)
+- No logging (debugging was... creative)
 
-## Understanding Odoo's API Options {#api-options}
+The client called at 11 PM because the API had crashed their production server. Not my finest moment.
 
-Odoo provides multiple ways to expose data externally:
+That project taught me more than any documentation could. Here's what I've learned since.
 
-### 1. XML-RPC
-The traditional approach, available since early Odoo versions:
+## The Foundation: Clean Controller Structure
+
+Every API controller I write now follows this pattern:
 
 ```python
-import xmlrpc.client
-
-url = "http://localhost:8069"
-db = "test_db"
-username = "admin"
-password = "admin"
-
-common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/common")
-uid = common.authenticate(db, username, password, {})
-
-models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/object")
-models.execute_kw(db, uid, password, 'res.partner', 'search_read', [[], ['name', 'email']])
-```
-
-### 2. JSON-RPC
-Lightweight alternative, great for mobile apps:
-
-```javascript
-// Client-side example
-const orm = await ormService.call('res.partner', 'search_read', [[], ['name', 'email']]);
-```
-
-### 3. REST API (Custom)
-The focus of this tutorial - full control over endpoints, authentication, and response format.
-
----
-
-## Setting Up Your First Endpoint {#first-endpoint}
-
-Create a new module for your API:
-
-```python
-# api_module/__init__.py
-from . import controllers
-```
-
-```python
-# api_module/controllers/__init__.py
-from . import api
-```
-
-```python
-# api_module/controllers/api.py
 from odoo import http
 from odoo.http import request
+import logging
 
-class ApiController(http.Controller):
+_logger = logging.getLogger(__name__)
+
+class PartnerAPI(http.Controller):
     
-    @http.route('/api/health', type='json', auth='public', methods=['GET'])
-    def health_check(self):
-        """Health check endpoint"""
-        return {
-            'status': 'ok',
-            'version': '1.0',
-            'timestamp': fields.Datetime.now()
-        }
+    @http.route('/api/v1/partners', type='json', auth='none', methods=['GET'], csrf=False)
+    def list_partners(self, **kwargs):
+        """
+        List partners with pagination
+        
+        Args:
+            page: Page number (default: 1)
+            limit: Items per page (max: 100)
+        
+        Returns:
+            Dict with partners array and pagination info
+        """
+        # Always validate auth first
+        user = self._authenticate()
+        if not user:
+            return {'error': 'Unauthorized'}, 401
+        
+        # Log every request
+        _logger.info(f"API: {request.httprequest.method} {request.httprequest.path}")
+        
+        # Parse and validate params
+        page = int(kwargs.get('page', 1))
+        limit = min(int(kwargs.get('limit', 20)), 100)
+        
+        try:
+            partners = self._get_partners(page, limit)
+            return partners
+        except Exception as e:
+            _logger.exception("Error fetching partners")
+            return {'error': 'Internal error'}, 500
 ```
 
----
+The key lessons here:
+1. Authenticate before doing anything
+2. Log everything - you'll thank yourself later
+3. Always wrap in try/except
+4. Return proper HTTP status codes
 
-## Authentication & Security {#authentication}
+## Authentication That Actually Works
 
-### API Key Authentication
-
-Create a model to store API keys:
+Here's what I use in production:
 
 ```python
-# models/api_key.py
-from odoo import models, fields, api
-import hashlib
-import secrets
+class APIBase(http.Controller):
+    
+    def _authenticate(self):
+        """Validate API key from Authorization header"""
+        auth_header = request.httprequest.headers.get('Authorization', '')
+        
+        if not auth_header.startswith('ApiKey '):
+            return None
+            
+        api_key = auth_header[7:]  # Remove 'ApiKey ' prefix
+        
+        # Look up the key
+        key_record = request.env['api.key'].sudo().search([
+            ('key', '=', api_key),
+            ('active', '=', True)
+        ], limit=1)
+        
+        if not key_record:
+            _logger.warning(f"Invalid API key attempt from {request.httprequest.remote_addr}")
+            return None
+            
+        # Update last used
+        key_record.sudo().write({'last_used': fields.Datetime.now()})
+        
+        return key_record.user_id
+```
 
-class ApiKey(models.Model):
+And the model to store keys:
+
+```python
+class APIKey(models.Model):
     _name = 'api.key'
-    _description = 'API Key'
+    _description = 'API Keys'
     
     name = fields.Char('Description', required=True)
-    key_hash = fields.Char('Key Hash', required=True, readonly=True)
+    key = fields.Char('API Key', required=True)
     user_id = fields.Many2one('res.users', 'User', required=True)
     active = fields.Boolean('Active', default=True)
     last_used = fields.Datetime('Last Used')
     
-    @api.model
-    def generate_key(self, user_id, name):
-        """Generate a new API key"""
-        key = secrets.token_urlsafe(32)
-        key_hash = hashlib.sha256(key.encode()).hexdigest()
-        
-        record = self.create({
-            'name': name,
-            'key_hash': key_hash,
-            'user_id': user_id,
-        })
-        
-        return key  # Return once, store securely!
-    
-    def validate_key(self, key):
-        """Validate an API key"""
-        key_hash = hashlib.sha256(key.encode()).hexdigest()
-        return self.search([('key_hash', 'key_hash'), ('active', '=', True)], limit=1)
+    _sql_constraints = [
+        ('key_unique', 'unique(key)', 'API key must be unique!')
+    ]
 ```
 
-### Controller Authentication
+Pro tips:
+- Store a hash of the key, not the key itself
+- Add `last_used` so you can spot inactive keys
+- Give each integration its own key (easier to revoke)
+
+## Pagination That Doesn't Crash
+
+My first API returned ALL records. For a client with 50,000 partners. You can imagine.
+
+Here's the pattern I use now:
 
 ```python
-class ApiController(http.Controller):
+@http.route('/api/v1/partners', type='json', auth='none', csrf=False)
+def list_partners(self, **kwargs):
+    user = self._authenticate()
+    if not user:
+        return {'error': 'Unauthorized'}, 401
     
-    def _authenticate(self):
-        """Validate API key from header"""
-        auth_header = request.httprequest.headers.get('Authorization', '')
-        
-        if not auth_header.startswith('ApiKey '):
-            return False
-            
-        key = auth_header[7:]  # Remove 'ApiKey ' prefix
-        api_key = request.env['api.key'].sudo().validate_key(key)
-        
-        if not api_key:
-            return False
-            
-        api_key.last_used = fields.Datetime.now()
-        return api_key.user_id.id
+    # Parse params
+    page = max(1, int(kwargs.get('page', 1)))
+    limit = min(max(1, int(kwargs.get('limit', 20))), 100)
+    offset = (page - 1) * limit
     
-    @http.route('/api/partners', type='json', auth='none', methods=['GET'])
-    def get_partners(self, **kwargs):
-        """Get partners list - requires authentication"""
-        user_id = self._authenticate()
-        if not user_id:
-            return {'error': 'Unauthorized', 'code': 401}
-        
-        partners = request.env['res.partner'].sudo().search_read(
-            [],
-            ['name', 'email', 'phone']
-        )
-        
-        return {'data': partners}
-```
-
----
-
-## CRUD Operations {#crud}
-
-### Create Endpoint
-
-```python
-@http.route('/api/partners', type='json', auth='none', methods=['POST'])
-def create_partner(self, **kwargs):
-    """Create a new partner"""
-    user_id = self._authenticate()
-    if not user_id:
-        return {'error': 'Unauthorized', 'code': 401}
+    # Get total count
+    domain = self._build_domain(kwargs)
+    total = request.env['res.partner'].search_count(domain)
     
-    required_fields = ['name']
-    for field in required_fields:
-        if field not in kwargs:
-            return {'error': f'Missing required field: {field}', 'code': 400}
-    
-    try:
-        partner = request.env['res.partner'].sudo().create({
-            'name': kwargs['name'],
-            'email': kwargs.get('email'),
-            'phone': kwargs.get('phone'),
-            'customer_rank': kwargs.get('is_customer', 1),
-        })
-        
-        return {
-            'success': True,
-            'data': {
-                'id': partner.id,
-                'name': partner.name,
-            }
-        }
-    except Exception as e:
-        return {'error': str(e), 'code': 500}
-```
-
-### Read Endpoint with Filters
-
-```python
-@http.route('/api/partners/<int:partner_id>', type='json', auth='none', methods=['GET'])
-def get_partner(self, partner_id, **kwargs):
-    """Get a specific partner"""
-    user_id = self._authenticate()
-    if not user_id:
-        return {'error': 'Unauthorized', 'code': 401}
-    
-    partner = request.env['res.partner'].sudo().browse(partner_id)
-    
-    if not partner.exists():
-        return {'error': 'Partner not found', 'code': 404}
+    # Get records
+    partners = request.env['res.partner'].search_read(
+        domain,
+        ['id', 'name', 'email', 'phone'],
+        limit=limit,
+        offset=offset,
+        order='name'
+    )
     
     return {
-        'data': {
-            'id': partner.id,
-            'name': partner.name,
-            'email': partner.email,
-            'phone': partner.phone,
-            'address': partner.address_get(['invoice'])['invoice'],
+        'data': partners,
+        'pagination': {
+            'page': page,
+            'limit': limit,
+            'total': total,
+            'pages': (total + limit - 1) // limit
         }
     }
 ```
 
-### Update Endpoint
+## Error Handling That Helps Debug
 
-```python
-@http.route('/api/partners/<int:partner_id>', type='json', auth='none', methods=['PUT'])
-def update_partner(self, partner_id, **kwargs):
-    """Update a partner"""
-    user_id = self._authenticate()
-    if not user_id:
-        return {'error': 'Unauthorized', 'code': 401}
-    
-    partner = request.env['res.partner'].sudo().browse(partner_id)
-    
-    if not partner.exists():
-        return {'error': 'Partner not found', 'code': 404}
-    
-    # Only allow updating specific fields
-    allowed_fields = ['name', 'email', 'phone', 'street', 'city']
-    update_data = {k: v for k, v in kwargs.items() if k in allowed_fields}
-    
-    try:
-        partner.write(update_data)
-        return {'success': True, 'data': {'id': partner.id}}
-    except Exception as e:
-        return {'error': str(e), 'code': 500}
-```
-
-### Delete Endpoint
-
-```python
-@http.route('/api/partners/<int:partner_id>', type='json', auth='none', methods=['DELETE'])
-def delete_partner(self, partner_id, **kwargs):
-    """Delete a partner"""
-    user_id = self._authenticate()
-    if not user_id:
-        return {'error': 'Unauthorized', 'code': 401}
-    
-    # Only admin users can delete
-    if request.env.user.id != 1:
-        return {'error': 'Forbidden', 'code': 403}
-    
-    partner = request.env['res.partner'].sudo().browse(partner_id)
-    
-    if not partner.exists():
-        return {'error': 'Partner not found', 'code': 404}
-    
-    try:
-        partner.unlink()
-        return {'success': True}
-    except Exception as e:
-        return {'error': str(e), 'code': 500}
-```
-
----
-
-## Error Handling {#error-handling}
-
-Create a standardized error response system:
+When something goes wrong (and it will), you need to know what happened:
 
 ```python
 class APIError(Exception):
-    """Base API error class"""
-    def __init__(self, message, code=400, details=None):
+    """Base API error"""
+    def __init__(self, message, status=400):
         self.message = message
-        self.code = code
-        self.details = details
+        self.status = status
         super().__init__(message)
+
+class ValidationError(APIError):
+    def __init__(self, message):
+        super().__init__(message, 400)
 
 class NotFoundError(APIError):
     def __init__(self, message="Resource not found"):
@@ -311,246 +199,141 @@ class NotFoundError(APIError):
 class UnauthorizedError(APIError):
     def __init__(self, message="Authentication required"):
         super().__init__(message, 401)
-
-class ValidationError(APIError):
-    def __init__(self, message, details=None):
-        super().__init__(message, 400, details)
 ```
 
+And a decorator to handle them:
+
 ```python
-def handle_errors(func):
-    """Decorator for error handling"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
+def api_handler(func):
+    """Catch errors and return proper responses"""
+    def wrapper(self, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
-        except NotFoundError as e:
-            return {'error': e.message, 'code': e.code}, e.code
-        except UnauthorizedError as e:
-            return {'error': e.message, 'code': e.code}, e.code
+            return func(self, *args, **kwargs)
         except ValidationError as e:
-            return {'error': e.message, 'code': e.code, 'details': e.details}, e.code
+            return {'error': e.message, 'code': 'VALIDATION_ERROR'}, e.status
+        except NotFoundError as e:
+            return {'error': e.message, 'code': 'NOT_FOUND'}, e.status
+        except UnauthorizedError as e:
+            return {'error': e.message, 'code': 'UNAUTHORIZED'}, e.status
         except Exception as e:
-            _logger.exception("Unexpected API error")
-            return {'error': 'Internal server error', 'code': 500}, 500
+            _logger.exception(f"Unexpected error in {func.__name__}")
+            return {'error': 'Internal server error', 'code': 'INTERNAL_ERROR'}, 500
     return wrapper
 ```
 
----
-
-## Rate Limiting {#rate-limiting}
-
-Implement rate limiting using Redis:
+Usage:
 
 ```python
-import redis
-from functools import wraps
-
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
-
-def rate_limit(requests=100, window=3600):
-    """Rate limiting decorator"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            # Get identifier (API key or IP)
-            auth = request.httprequest.headers.get('Authorization', 'anonymous')
-            identifier = hashlib.md5(auth.encode()).hexdigest()
-            
-            key = f"rate_limit:{identifier}"
-            
-            # Get current request count
-            current = redis_client.get(key)
-            current_count = int(current) if current else 0
-            
-            if current_count >= requests:
-                return {
-                    'error': 'Rate limit exceeded',
-                    'code': 429,
-                    'retry_after': window
-                }
-            
-            # Increment counter
-            pipe = redis_client.pipeline()
-            pipe.incr(key)
-            pipe.expire(key, window)
-            pipe.execute()
-            
-            return func(self, *args, **kwargs)
-        return wrapper
-    return decorator
+@http.route('/api/v1/partners', type='json', auth='none', csrf=False)
+@api_handler
+def create_partner(self, **kwargs):
+    if not kwargs.get('name'):
+        raise ValidationError("Name is required")
+    
+    # ... create logic
 ```
 
-```python
-@http.route('/api/partners', type='json', auth='none', methods=['GET'])
-@rate_limit(requests=50, window=3600)
-def get_partners(self, **kwargs):
-    """Get partners with rate limiting"""
-    # Your endpoint code here
-    pass
-```
+## Rate Limiting (Finally)
 
----
-
-## Testing Your API {#testing}
-
-Use Odoo's HTTP testing:
+After that crashed server incident, I take rate limiting seriously:
 
 ```python
-# tests/test_api.py
-from odoo.tests import HttpCase
+from collections import defaultdict
+import time
+import threading
 
-class TestAPI(HttpCase):
+class RateLimiter:
+    """Simple in-memory rate limiter"""
+    _instance = None
+    _lock = threading.Lock()
     
-    def setUp(self):
-        super().setUp()
-        self.api_key = self.env['api.key'].generate_key(
-            self.env.user.id, 'Test Key'
-        )
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._requests = defaultdict(list)
+        return cls._instance
     
-    def test_health_check(self):
-        """Test health check endpoint"""
-        response = self.url_open('/api/health')
-        self.assertEqual(response.status_code, 200)
+    def is_allowed(self, key, limit=100, window=60):
+        now = time.time()
         
-        data = response.json()
-        self.assertEqual(data['status'], 'ok')
-    
-    def test_unauthorized_access(self):
-        """Test unauthorized access returns 401"""
-        response = self.url_open('/api/partners')
-        self.assertEqual(response.status_code, 200)  # Returns JSON error
+        # Clean old requests
+        self._requests[key] = [
+            t for t in self._requests[key] 
+            if now - t < window
+        ]
         
-        data = response.json()
-        self.assertEqual(data['error'], 'Unauthorized')
-    
-    def test_create_partner(self):
-        """Test creating a partner"""
-        headers = {'Authorization': f'ApiKey {self.api_key}'}
+        if len(self._requests[key]) >= limit:
+            return False, limit - len(self._requests[key])
         
-        response = self.url_open('/api/partners', 
-            data=json.dumps({'name': 'Test Partner'}),
-            headers={**headers, 'Content-Type': 'application/json'}
-        )
-        
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertTrue(data['success'])
-        
-        # Verify created
-        partner = self.env['res.partner'].search([('name', '=', 'Test Partner')])
-        self.assertTrue(partner.exists())
+        self._requests[key].append(now)
+        return True, limit - len(self._requests[key]) - 1
 ```
 
----
-
-## Best Practices {#best-practices}
-
-### 1. Use JSON Instead of HTTP
-
 ```python
-# ✅ Good - returns structured JSON
-@http.route('/api/partners', type='json', auth='none')
-
-# ❌ Avoid - returns HTML
-@http.route('/api/partners', type='http', auth='none')
+@http.route('/api/v1/partners', type='json', auth='none', csrf=False)
+def list_partners(self, **kwargs):
+    # Get client identifier (API key or IP)
+    auth = request.httprequest.headers.get('Authorization', '')
+    key = auth or request.httprequest.remote_addr
+    
+    # Check rate limit
+    limiter = RateLimiter()
+    allowed, remaining = limiter.is_allowed(key, limit=50, window=60)
+    
+    if not allowed:
+        return {
+            'error': 'Rate limit exceeded',
+            'retry_after': 60
+        }, 429
+    
+    # ... rest of logic
 ```
 
-### 2. Always Validate Input
+## Versioning from Day One
+
+I always start with `/api/v1/`. Always. Even if I think I won't need versions.
+
+Trust me. You'll need it.
 
 ```python
-def validate_partner_data(self, data):
-    """Validate incoming partner data"""
-    errors = []
-    
-    if not data.get('name'):
-        errors.append('Name is required')
-    
-    email = data.get('email')
-    if email and not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
-        errors.append('Invalid email format')
-    
-    if errors:
-        raise ValidationError('Validation failed', errors)
-```
-
-### 3. Log All Requests
-
-```python
-import logging
-
-_logger = logging.getLogger(__name__)
-
-@http.route('/api/partners', type='json', auth='none', methods=['GET'])
-def get_partners(self, **kwargs):
-    _logger.info(f"API Request: {request.httprequest.method} {request.httprequest.path}")
-    _logger.debug(f"Params: {kwargs}")
-    
-    try:
-        result = # ... your logic
-        _logger.info(f"API Response: 200")
-        return result
-    except Exception as e:
-        _logger.error(f"API Error: {str(e)}")
-        raise
-```
-
-### 4. Version Your API
-
-```python
-@http.route('/api/v1/partners', type='json', auth='none')
-def get_partners_v1(self, **kwargs):
+@http.route('/api/v1/partners', type='json', auth='none', methods=['GET'])
+def list_partners_v1(self, **kwargs):
     """Version 1 - basic partner data"""
-    partners = request.env['res.partner'].search_read([], ['name', 'email'])
+    partners = request.env['res.partner'].search_read(
+        [], ['name', 'email']
+    )
     return {'data': partners}
 
-@http.route('/api/v2/partners', type='json', auth='none')
-def get_partners_v2(self, **kwargs):
-    """Version 2 - extended partner data"""
+@http.route('/api/v2/partners', type='json', auth='none', methods=['GET'])
+def list_partners_v2(self, **kwargs):
+    """Version 2 - extended data with addresses"""
     partners = request.env['res.partner'].search_read(
-        [],
-        ['name', 'email', 'phone', 'street', 'city', 'country_id']
+        [], ['name', 'email', 'phone', 'street', 'city', 'country_id']
     )
     return {'data': partners, 'version': '2.0'}
 ```
 
-### 5. Use Pagination
+## What I'd Do Different
 
-```python
-@http.route('/api/partners', type='json', auth='none')
-def get_partners(self, **kwargs):
-    page = int(kwargs.get('page', 1))
-    limit = min(int(kwargs.get('limit', 20)), 100)
-    offset = (page - 1) * limit
-    
-    partner_count = request.env['res.partner'].search_count([])
-    partners = request.env['res.partner'].search_read(
-        [], ['name', 'email'], limit=limit, offset=offset
-    )
-    
-    return {
-        'data': partners,
-        'pagination': {
-            'page': page,
-            'limit': limit,
-            'total': partner_count,
-            'pages': (partner_count + limit - 1) // limit
-        }
-    }
-```
+If I could go back and tell my past self something:
 
----
+1. **Start with authentication** - not as an afterthought
+2. **Add logging from the first endpoint** - you'll need it
+3. **Version everything** - /api/v1/ from day one
+4. **Test with realistic data** - 10 records tells you nothing
+5. **Document as you build** - future you will thank present you
 
-## Conclusion
+## The Real Truth
 
-Building a RESTful API in Odoo requires careful attention to:
+Building APIs in Odoo isn't technically hard. Building APIs that don't embarrass you in production is harder.
 
-1. **Security** - Implement proper authentication (API keys, OAuth)
-2. **Error Handling** - Return consistent, meaningful error messages
-3. **Rate Limiting** - Protect your API from abuse
-4. **Versioning** - Plan for future changes
-5. **Testing** - Write comprehensive tests
+The things that actually matter:
+- Authentication from the start (always)
+- Pagination always (always)
+- Good error handling (always)
+- Logging everything (always)
+- Versioning early (always)
 
-With these patterns, you can build robust APIs that integrate Odoo with any external system.
-
-Want to learn more about Odoo development? Check out my other tutorials on Odoo OWL and module development.
+What's your API horror story? Share in the comments - we've all been there.
