@@ -1,6 +1,10 @@
 // Base Styles
-* {
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -10,39 +14,53 @@ body {
   font-size: 16px;
   line-height: 1.7;
   color: $text-primary;
-  background-color: $bg-color;
+  background: $bg-primary;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $font-serif;
-  font-weight: 700;
+  font-family: $font-heading;
+  font-weight: 600;
   line-height: 1.3;
-  margin: 0 0 $spacing-md;
+  margin: 0 0 $spacing-lg;
   color: $text-primary;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
+h1 { 
+  font-size: 2.5rem; 
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 { 
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
 h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
 
 p {
   margin: 0 0 $spacing-md;
   color: $text-secondary;
+  line-height: 1.8;
 }
 
 a {
-  color: $accent;
+  color: $accent-primary;
   text-decoration: none;
+  transition: all $transition-fast;
   
   &:hover {
-    color: $accent-hover;
-    text-decoration: underline;
+    color: #a855f7;
+    text-decoration: none;
   }
 }
 
 ul, ol {
   margin: 0 0 $spacing-md;
-  padding-left: $spacing-lg;
+  padding-left: $spacing-xl;
+  color: $text-secondary;
   
   li {
     margin-bottom: $spacing-sm;
@@ -52,39 +70,74 @@ ul, ol {
 img {
   max-width: 100%;
   height: auto;
+  border-radius: $radius-md;
 }
 
 blockquote {
-  margin: $spacing-lg 0;
-  padding: $spacing-md $spacing-lg;
+  margin: $spacing-xl 0;
+  padding: $spacing-lg $spacing-xl;
   background: $bg-secondary;
-  border-left: 4px solid $accent;
+  border-left: 4px solid $accent-primary;
+  border-radius: 0 $radius-md $radius-md 0;
   font-style: italic;
+  color: $text-secondary;
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 code {
   font-family: $font-mono;
-  background: $bg-secondary;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.9em;
+  background: $bg-tertiary;
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  font-size: 0.875em;
+  color: $accent-primary;
 }
 
 pre {
   background: $bg-secondary;
-  padding: $spacing-md;
-  border-radius: 6px;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
   overflow-x: auto;
+  margin: $spacing-xl 0;
+  border: 1px solid $border-color;
   
   code {
     background: none;
     padding: 0;
+    color: $text-primary;
   }
 }
 
 hr {
   border: none;
   height: 1px;
-  background: $border-color;
-  margin: $spacing-xl 0;
+  background: linear-gradient(to right, transparent, $border-color, transparent);
+  margin: $spacing-2xl 0;
+}
+
+// Selection
+::selection {
+  background: $accent-primary;
+  color: white;
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-light;
+  border-radius: 4px;
+  
+  &:hover {
+    background: $accent-primary;
+  }
 }

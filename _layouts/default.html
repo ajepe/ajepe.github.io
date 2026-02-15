@@ -9,33 +9,42 @@
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | relative_url }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="site-header">
-    <nav class="container">
-      <a href="{{ "/" | relative_url }}" class="site-name">{{ site.author }}</a>
-      <ul class="nav-links">
-        <li><a href="{{ "/" | relative_url }}">Home</a></li>
-        <li><a href="{{ "/about/" | relative_url }}">About</a></li>
-        <li><a href="{{ "/blog/" | relative_url }}">Blog</a></li>
-        <li><a href="{{ "/projects/" | relative_url }}">Projects</a></li>
-        <li><a href="{{ "/contact/" | relative_url }}">Contact</a></li>
-      </ul>
-    </nav>
+    <div class="header-container">
+      <a href="{{ "/" | relative_url }}" class="site-brand">
+        <span class="brand-text">{{ site.author }}</span>
+      </a>
+      
+      <nav class="main-nav">
+        <ul class="nav-menu">
+          <li><a href="{{ "/" | relative_url }}" {% if page.url == "/" %}class="active"{% endif %}>Home</a></li>
+          <li><a href="{{ "/about/" | relative_url %}" {% if page.url == "/about/" %}class="active"{% endif %}>About</a></li>
+          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" %}class="active"{% endif %}>Blog</a></li>
+          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active"{% endif %}>Projects</a></li>
+          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active"{% endif %}>Contact</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main class="main-content">
-    {{ content }}
+    <div class="content-wrapper">
+      {{ content }}
+    </div>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>&copy; {{ "now" | date: "%Y" }} {{ site.author }}. All rights reserved.</p>
-      <div class="social-links">
-        <a href="{{ site.github }}" target="_blank">GitHub</a>
-        <a href="{{ site.linkedin }}" target="_blank">LinkedIn</a>
-        <a href="{{ site.upwork }}" target="_blank">Upwork</a>
+    <div class="footer-content">
+      <div class="footer-left">
+        <p>&copy; {{ "now" | date: "%Y" }} {{ site.author }}. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <a href="{{ site.github }}" target="_blank" class="social-link">GitHub</a>
+        <a href="{{ site.linkedin }}" target="_blank" class="social-link">LinkedIn</a>
+        <a href="{{ site.upwork }}" target="_blank" class="social-link">Upwork</a>
       </div>
     </div>
   </footer>

@@ -3,23 +3,35 @@ layout: default
 ---
 
 <section class="blog-list">
-  <h1>Blog</h1>
+  <header class="blog-header">
+    <h1>Blog</h1>
+    <p>Technical articles about Odoo development, API integrations, and best practices.</p>
+  </header>
   
-  {% for post in site.posts %}
-  <article class="blog-item">
-    <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-    <p class="post-meta">
-      <time>{{ post.date | date: "%B %d, %Y" }}</time>
-      {% if post.categories %} • {{ post.categories | first }}{% endif %}
-    </p>
-    {% if post.excerpt %}
-    <p class="excerpt">{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
-    {% endif %}
-    <a href="{{ post.url | relative_url }}" class="read-more">Read more →</a>
-  </article>
-  {% endfor %}
+  <div class="blog-grid">
+    {% for post in site.posts %}
+    <article class="blog-card">
+      <a href="{{ post.url | relative_url }}" class="card-link">
+        <div class="card-meta">
+          <time>{{ post.date | date: "%B %d, %Y" }}</time>
+          <span class="separator">•</span>
+          {% if post.categories %}
+          <span class="category">{{ post.categories | first }}</span>
+          {% endif %}
+        </div>
+        <h2 class="card-title">{{ post.title }}</h2>
+        {% if post.excerpt %}
+        <p class="card-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+        {% endif %}
+        <div class="card-footer">
+          <span class="read-more">Read more →</span>
+        </div>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
   
-  <p class="rss-subscribe">
+  <footer class="blog-footer">
     <a href="{{ "/feed.xml" | relative_url }}">Subscribe via RSS</a>
-  </p>
+  </footer>
 </section>
