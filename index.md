@@ -1,5 +1,5 @@
 ---
-layout: home-page
+layout: page
 title: Hi, I'm Babatope A. — Senior Odoo Specialist & Python Developer
 subtitle: ERP, Automation, API Integration, and Scalable Odoo Solutions
 description: As a Top-Rated Odoo Specialist with 100% Job Success on Upwork, I deliver custom ERP solutions, API integrations, and performance optimizations for enterprise clients. Specializing in Python, PostgreSQL, Redis, and Vue.js.
