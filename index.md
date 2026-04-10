@@ -1,9 +1,9 @@
 ---
 layout: page
-title: Babatope Ajepe — Senior Odoo Specialist & Python Developer
+title: Babatope Ajepe
 description: Senior Odoo Specialist and Python Developer. Building scalable ERP solutions, API integrations, and custom Odoo applications.
 cta_text: Get In Touch
-cta_link: "/contact/"
+cta_link: /contact/
 ---
 
 <div class="hero-section">
@@ -19,16 +19,13 @@ I help businesses transform their operations through custom Odoo implementations
 
 <div class="services-grid">
 
-### 🚀 Custom Odoo Development
-Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.
+1. Custom Odoo Development: Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.
 
-### 🔗 API Integrations
-Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.
+2. API Integrations: Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.
 
-### ⚡ Performance Optimization
-Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.
+3. Performance Optimization: Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.
 
-### 🔄 Enterprise Migrations
+4. Enterprise Migrations
 Executing smooth, risk-free upgrades across Odoo versions (14 -> 19). Ensuring data integrity, minimal downtime, and business continuity.
 
 </div>
