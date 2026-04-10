@@ -8,9 +8,8 @@ cta_link: "/contact/"
 
 <div class="hero-section">
 
-## Hello, I'm **Babatope Ajepe**
-
-Senior Odoo Specialist & Python Developer with 5+ years of experience building enterprise-grade ERP solutions. I help businesses transform their operations through custom Odoo implementations, seamless API integrations, and performance optimization.
+Software Developer & An Odoo Specialist with 6+ years of experience building enterprise-grade ERP solutions. 
+I help businesses transform their operations through custom Odoo implementations, seamless API integrations, and performance optimization.
 
 </div>
 
@@ -20,17 +19,17 @@ Senior Odoo Specialist & Python Developer with 5+ years of experience building e
 
 <div class="services-grid">
 
-### Custom Odoo Development
-Building tailored Odoo modules and customizations that fit your unique business requirements. From workflow automation to complex business logic.
+### 🚀 Custom Odoo Development
+Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.
 
-### API Integration
-Connecting Odoo with third-party systems—payment gateways, shipping providers, CRM platforms, and more. Secure, scalable RESTful APIs.
+### 🔗 API Integrations
+Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.
 
-### Performance Optimization
-Optimizing your Odoo instance for speed and efficiency. PostgreSQL tuning, Redis caching, and query optimization.
+### ⚡ Performance Optimization
+Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.
 
-### Enterprise Migrations
-Smooth transitions between Odoo versions (14→16→17) with zero data loss and minimal downtime.
+### 🔄 Enterprise Migrations
+Executing smooth, risk-free upgrades across Odoo versions (14 -> 19). Ensuring data integrity, minimal downtime, and business continuity.
 
 </div>
 
