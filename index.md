@@ -19,16 +19,25 @@ I help businesses transform their operations through custom Odoo implementations
 
 <div class="services-grid">
 
-<ol>
-<li>Custom Odoo Development: Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.</li>
+<div class="service-card">
+<h3>Custom Odoo Development</h3>
+<p>Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.</p>
+</div>
 
-<li>API Integrations: Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.</li>
+<div class="service-card">
+<h3>API Integrations</h3>
+<p>Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.</p>
+</div>
 
-<li> Performance Optimization: Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.</li>
+<div class="service-card">
+<h3>Performance Optimization</h3>
+<p>Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.</p>
+</div>
 
-<li>Enterprise Migrations
-Executing smooth, risk-free upgrades across Odoo versions (14 -> 19). Ensuring data integrity, minimal downtime, and business continuity.</li>
-</ol>
+<div class="service-card">
+<h3>Enterprise Migrations</h3>
+<p>Executing smooth, risk-free upgrades across Odoo versions (14 → 19). Ensuring data integrity, minimal downtime, and business continuity.</p>
+</div>
 
 </div>
 
@@ -38,9 +47,9 @@ Executing smooth, risk-free upgrades across Odoo versions (14 -> 19). Ensuring d
 
 <div class="featured-posts">
 
-- [Building Custom Odoo APIs: Best Practices and Security](/blog/building-custom-odoo-apis/)
-- [Optimizing Odoo Performance: A Comprehensive Guide](/blog/optimizing-odoo-performance/)
-- [Getting Started with Odoo REST API](/blog/getting-started-with-odoo-rest-api/)
+{% for post in site.posts limit:3 %}
+<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+{% endfor %}
 
 </div>
 

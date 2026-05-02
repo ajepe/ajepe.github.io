@@ -83,6 +83,6 @@ My commitment is to deliver solutions that not only meet your technical requirem
 
 ---
 
-<div style="text-align: center; margin-top: 2rem;">
-  <a href="/contact/" class="btn">Start a Conversation</a>
+<div class="cta-wrapper">
+  <a href="/contact/" class="cta-button">Start a Conversation</a>
 </div>

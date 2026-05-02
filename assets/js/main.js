@@ -6,14 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (navToggle && mainNav && navOverlay) {
     navToggle.addEventListener('click', function() {
-      mainNav.classList.toggle('nav-open');
+      const isOpen = mainNav.classList.toggle('nav-open');
       navOverlay.classList.toggle('overlay-open');
-      document.body.style.overflow = mainNav.classList.contains('nav-open') ? 'hidden' : '';
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     });
     
     navOverlay.addEventListener('click', function() {
       mainNav.classList.remove('nav-open');
       navOverlay.classList.remove('overlay-open');
+      navToggle.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     });
     
@@ -23,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
       link.addEventListener('click', function() {
         mainNav.classList.remove('nav-open');
         navOverlay.classList.remove('overlay-open');
+        navToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       });
     });
@@ -62,84 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }, observerOptions);
   
   // Observe cards and sections
-  const cards = document.querySelectorAll('.card, .section');
+  const cards = document.querySelectorAll('.blog-card, .service-card, .project-card');
   cards.forEach(card => {
     observer.observe(card);
   });
-  
-  // Form validation (if contact form exists)
-  const contactForm = document.querySelector('.contact-form');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const formData = new FormData(this);
-      const submitButton = this.querySelector('.form-submit');
-      const originalText = submitButton.textContent;
-      
-      // Basic validation
-      const name = formData.get('name') || '';
-      const email = formData.get('email') || '';
-      const message = formData.get('message') || '';
-      
-      if (!name || !email || !message) {
-        showAlert('Please fill in all required fields.', 'error');
-        return;
-      }
-      
-      if (!isValidEmail(email)) {
-        showAlert('Please enter a valid email address.', 'error');
-        return;
-      }
-      
-      // Show loading state
-      submitButton.disabled = true;
-      submitButton.textContent = 'Sending...';
-      
-      // Simulate form submission (replace with actual implementation)
-      setTimeout(() => {
-        showAlert('Thank you for your message! I\'ll get back to you soon.', 'success');
-        this.reset();
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-      }, 2000);
-    });
-  }
-  
-  // Helper functions
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-  
-  function showAlert(message, type) {
-    // Remove existing alerts
-    const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-      existingAlert.remove();
-    }
-    
-    // Create new alert
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.textContent = message;
-    
-    // Insert after form title or at the beginning of form
-    const formTitle = document.querySelector('.contact-form h2');
-    if (formTitle) {
-      formTitle.insertAdjacentElement('afterend', alert);
-    } else {
-      contactForm.insertAdjacentElement('afterbegin', alert);
-    }
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-      alert.remove();
-    }, 5000);
-    
-    // Scroll to alert
-    alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
   
   // Reading time calculation for blog posts
   const postContent = document.querySelector('.post-content');

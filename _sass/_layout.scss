@@ -1,5 +1,23 @@
 // Layout Styles
 
+// Skip to content link
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: $spacing-md;
+  background: $accent-primary;
+  color: white;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-sm;
+  font-weight: 500;
+  z-index: 101;
+  transition: top $transition-fast;
+  
+  &:focus {
+    top: $spacing-sm;
+  }
+}
+
 // Header
 .site-header {
   position: sticky;
@@ -38,6 +56,61 @@
     .brand-text {
       color: $accent-primary;
     }
+  }
+}
+
+// Mobile nav toggle
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-sm;
+  gap: 5px;
+  
+  .nav-toggle-bar {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: $text-primary;
+    border-radius: 2px;
+    transition: all $transition-base;
+  }
+  
+  &[aria-expanded="true"] {
+    .nav-toggle-bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .nav-toggle-bar:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle-bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+  }
+}
+
+// Nav overlay
+.nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity $transition-base;
+  
+  &.overlay-open {
+    display: block;
+    opacity: 1;
   }
 }
 
@@ -132,14 +205,45 @@
 // Responsive
 @media (max-width: 768px) {
   .header-container {
-    flex-direction: column;
-    gap: $spacing-md;
+    flex-direction: row;
+    position: relative;
   }
   
-  .main-nav .nav-menu {
-    gap: $spacing-lg;
-    flex-wrap: wrap;
-    justify-content: center;
+  .nav-toggle {
+    display: flex;
+  }
+  
+  .main-nav {
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 280px;
+    height: 100vh;
+    background: $bg-primary;
+    border-left: 1px solid $border-color;
+    box-shadow: $shadow-lg;
+    z-index: 100;
+    padding: $spacing-2xl $spacing-xl;
+    transition: right $transition-base;
+    
+    &.nav-open {
+      right: 0;
+    }
+    
+    .nav-menu {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-lg;
+      
+      a {
+        font-size: 1.1rem;
+        padding: $spacing-sm 0;
+        
+        &::after {
+          bottom: 0;
+        }
+      }
+    }
   }
   
   .footer-content {

@@ -11,12 +11,12 @@ I'm always interested in discussing challenging Odoo projects, custom ERP soluti
 
 Whether you need a complete Odoo implementation, custom module development, API integrations, or performance optimization, I'm here to help you achieve your goals.
 
-### 📧 Direct Contact
+### Direct Contact
 
 **Email:** {{ site.email }}  
 I typically respond within 24 hours for project inquiries.
 
-### 💼 Professional Profiles
+### Professional Profiles
 
 - **Upwork:** {{ site.upwork }}
 - **LinkedIn:** {{ site.linkedin }}
@@ -26,38 +26,38 @@ I typically respond within 24 hours for project inquiries.
 
 ## What I Offer
 
-### 🎯 Odoo Implementation
+### Odoo Implementation
 Complete Odoo deployments from requirements gathering to go-live, including configuration, customization, and user training.
 
-### 🔧 Custom Development
+### Custom Development
 Bespoke Odoo modules, workflow automation, and specialized functionality tailored to your unique business requirements.
 
-### 🔗 API Integration
+### API Integration
 Seamless connections with third-party systems, custom API development, and data synchronization solutions.
 
-### 📈 Performance Optimization
+### Performance Optimization
 Database tuning, query optimization, caching strategies, and system performance enhancements for large-scale deployments.
 
-### 🔄 Migration Services
+### Migration Services
 Odoo version upgrades, data migration from legacy systems, and seamless transitions with minimal business disruption.
 
-### 🛡️ Consulting & Support
+### Consulting & Support
 Technical consulting, code reviews, architecture design, and ongoing support for Odoo environments.
 
 ---
 
 ## What to Expect
 
-### 📋 Initial Consultation
+### Initial Consultation
 We'll schedule a call to discuss your project requirements, technical challenges, and business objectives. This helps me understand your needs and provide accurate recommendations.
 
-### 📄 Detailed Proposal
+### Detailed Proposal
 After our consultation, I'll provide a comprehensive proposal including project scope, timeline, deliverables, and transparent pricing.
 
-### 🚅 Project Kickoff
+### Project Kickoff
 Once we agree on terms, we'll establish communication channels, set up project management tools, and begin development process.
 
-### 📊 Regular Updates
+### Regular Updates
 You'll receive regular progress reports, demo sessions, and opportunities for feedback throughout the project lifecycle.
 
 ---
@@ -81,10 +81,8 @@ I offer ongoing support packages, bug fixes, and enhancements. We can discuss su
 
 ---
 
-<div style="text-align: center; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 8px;">
+<div class="contact-cta">
   <h3>Ready to discuss your project?</h3>
   <p>I'm excited to learn about your challenges and explore how I can help you achieve your goals.</p>
-  <p style="margin-top: 1rem;">
-    <a href="mailto:{{ site.email }}" class="btn" style="background: #0366d6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Send Me an Email</a>
-  </p>
+  <p><a href="mailto:{{ site.email }}" class="cta-button">Send Me an Email</a></p>
 </div>
