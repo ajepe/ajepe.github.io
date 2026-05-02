@@ -48,7 +48,22 @@ I help businesses transform their operations through custom Odoo implementations
 <div class="featured-posts">
 
 {% for post in site.posts limit:3 %}
-<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+<article class="featured-post">
+  <div class="featured-post-meta">
+    <time>{{ post.date | date: "%B %d, %Y" }}</time>
+    {% if post.categories %}
+    <span class="separator">•</span>
+    <span class="category">{{ post.categories | first }}</span>
+    {% endif %}
+  </div>
+  <h3 class="featured-post-title">
+    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+  </h3>
+  <p class="featured-post-excerpt">
+    {{ post.excerpt | strip_html | truncatewords: 20 }}
+  </p>
+  <a href="{{ post.url | relative_url }}" class="featured-post-read">Read article →</a>
+</article>
 {% endfor %}
 
 </div>
