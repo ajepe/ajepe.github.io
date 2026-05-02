@@ -8,8 +8,6 @@ reading_time: 10
 excerpt: "After years of debugging slow Odoo installations, here are the PostgreSQL lessons that actually made a difference. Fix your slow Odoo system with these practical tips from an Odoo specialist."
 ---
 
-# PostgreSQL for Odoo: Things I Wish I Knew Earlier
-
 I learned PostgreSQL the hard way - through emergencies at 2 AM, clients asking why their system is "just slow," and lots of head-scratching. Here's what actually helped.
 
 ## The Day PostgreSQL Stopped Working

@@ -8,8 +8,6 @@ reading_time: 10
 excerpt: "After building APIs for dozens of Odoo projects, here's what actually works. Learn how to build secure, scalable REST APIs for Odoo from an experienced Odoo developer."
 ---
 
-# My Journey Building REST APIs in Odoo
-
 I've built a lot of custom APIs in Odoo. Some were elegant, some were... let's say "learning experiences." Here's everything I wish I knew before that first API project.
 
 ## The API That Nearly Got Me Fired

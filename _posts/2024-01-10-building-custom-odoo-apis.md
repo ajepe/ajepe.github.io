@@ -8,8 +8,6 @@ reading_time: 8
 excerpt: "After building dozens of custom Odoo APIs, here are the mistakes I made, lessons I learned, and patterns that actually work in production. Essential reading for any Odoo developer."
 ---
 
-# Building Custom Odoo APIs: What I Learned the Hard Way
-
 I've built a lot of custom APIs in Odoo. Some worked great, some were nightmares. Here's what I wish I knew when I started.
 
 ## The First API I Built Was a Disaster

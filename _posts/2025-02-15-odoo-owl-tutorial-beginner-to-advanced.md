@@ -8,8 +8,6 @@ reading_time: 25
 excerpt: "The definitive guide to Odoo Web Library (OWL). Learn how to build modern, reactive frontends in Odoo 17+. Essential reading for Odoo developers looking to level up their frontend skills."
 ---
 
-# Odoo OWL Complete Guide: Building Modern Odoo Frontends
-
 If you're developing for Odoo 17 or later, you need to know OWL. Period.
 
 Odoo Web Library (OWL) is the new JavaScript framework that powers Odoo's web client starting from version 17. It's not just "another React clone" - it's specifically designed for business applications, with patterns that map naturally to Odoo's data model.
