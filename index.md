@@ -15,34 +15,6 @@ I help businesses transform their operations through custom Odoo implementations
 
 ---
 
-## What I Do
-
-<div class="services-grid">
-
-<div class="service-card">
-<h3>Custom Odoo Development</h3>
-<p>Designing and building tailored Odoo solutions aligned with your unique business processes. From advanced workflow automation to complex, scalable business logic.</p>
-</div>
-
-<div class="service-card">
-<h3>API Integrations</h3>
-<p>Seamlessly connecting Odoo with external systems—payment gateways, logistics providers, CRMs, and more. Secure, scalable, and built for reliability using modern RESTful architectures.</p>
-</div>
-
-<div class="service-card">
-<h3>Performance Optimization</h3>
-<p>Enhancing your Odoo system for maximum speed and efficiency. Deep optimization across PostgreSQL, caching layers (Redis), and query performance.</p>
-</div>
-
-<div class="service-card">
-<h3>Enterprise Migrations</h3>
-<p>Executing smooth, risk-free upgrades across Odoo versions (14 → 19). Ensuring data integrity, minimal downtime, and business continuity.</p>
-</div>
-
-</div>
-
----
-
 ## Featured Articles
 
 <div class="featured-posts">
