@@ -4,17 +4,27 @@ layout: default
 
 <section class="blog-list">
   <header class="blog-header">
-    <h1>Blog</h1>
+    <div class="term-bar">
+      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+      <span class="term-title">~/blog — ls -la</span>
+    </div>
+    <div class="blog-header-inner">
+    <h1>ls ~/blog</h1>
     <p>Technical articles about Odoo development, API integrations, and best practices.</p>
+    </div>
   </header>
   
   <div class="blog-grid">
     {% for post in site.posts %}
     <article class="blog-card">
+      <div class="term-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="term-title">{{ post.date | date: "%Y-%m-%d" }}.md</span>
+      </div>
       <a href="{{ post.url | relative_url }}" class="card-link">
         <div class="card-meta">
-          <time>{{ post.date | date: "%B %d, %Y" }}</time>
-          <span class="separator">•</span>
+          <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+          <span class="separator">|</span>
           {% if post.categories %}
           <span class="category">{{ post.categories | first }}</span>
           {% endif %}
@@ -24,7 +34,7 @@ layout: default
         <p class="card-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
         {% endif %}
         <div class="card-footer">
-          <span class="read-more">Read more →</span>
+          <span class="read-more">cat ./post.md</span>
         </div>
       </a>
     </article>
@@ -32,6 +42,6 @@ layout: default
   </div>
   
   <footer class="blog-footer">
-    <a href="{{ "/feed.xml" | relative_url }}">Subscribe via RSS</a>
+    <a href="{{ "/feed.xml" | relative_url }}">~/rss — Subscribe via RSS</a>
   </footer>
 </section>

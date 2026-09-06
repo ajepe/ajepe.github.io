@@ -74,9 +74,10 @@
   
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | relative_url }}">
+  <meta name="theme-color" content="#1a1b26">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -84,7 +85,9 @@
   <header class="site-header">
     <div class="header-container">
       <a href="{{ "/" | relative_url }}" class="site-brand">
-        <span class="brand-text">{{ site.author }}</span>
+        <span class="brand-prompt">➜</span>
+        <span class="brand-text">~{{ site.author | slugify }}</span>
+        <span class="brand-blink"></span>
       </a>
       
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
@@ -95,13 +98,19 @@
       
       <nav class="main-nav" id="mainNav" aria-label="Main navigation">
         <ul class="nav-menu">
-          <li><a href="{{ "/" | relative_url }}" {% if page.url == "/" %}class="active" aria-current="page"{% endif %}>Home</a></li>
-          <li><a href="{{ "/about/" | relative_url }}" {% if page.url == "/about/" %}class="active" aria-current="page"{% endif %}>About</a></li>
-          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" %}class="active" aria-current="page"{% endif %}>Blog</a></li>
-          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}>Projects</a></li>
-          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active" aria-current="page"{% endif %}>Contact</a></li>
+          <li><a href="{{ "/" | relative_url }}" {% if page.url == "/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">1:</span>home</a></li>
+          <li><a href="{{ "/about/" | relative_url }}" {% if page.url == "/about/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">2:</span>about</a></li>
+          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">3:</span>blog</a></li>
+          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">4:</span>projects</a></li>
+          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">5:</span>contact</a></li>
         </ul>
       </nav>
+
+      <div class="waybar-status">
+        <span class="status-dot"></span>
+        <span>omarchy</span>
+        <span class="status-clock" id="waybarClock">--:--</span>
+      </div>
     </div>
   </header>
   
@@ -116,14 +125,15 @@
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-left">
-        <p>&copy; {{ "now" | date: "%Y" }} {{ site.author }}. All rights reserved.</p>
+        <p><span class="prompt">➜ ~</span> © {{ "now" | date: "%Y" }} {{ site.author }} — hyprland inside</p>
       </div>
       <div class="footer-right">
-        <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer" class="social-link">GitHub</a>
-        <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer" class="social-link">LinkedIn</a>
-        <a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer" class="social-link">Upwork</a>
+        <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer" class="social-link">~/github</a>
+        <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer" class="social-link">~/linkedin</a>
+        <a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer" class="social-link">~/upwork</a>
       </div>
     </div>
   </footer>
+  <script src="{{ "/assets/js/main.js" | relative_url }}"></script>
 </body>
 </html>

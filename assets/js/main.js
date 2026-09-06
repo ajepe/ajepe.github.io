@@ -81,4 +81,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const readingTime = Math.ceil(words / wordsPerMinute);
     readingTimeElement.textContent = `${readingTime} min read`;
   }
+
+  // Waybar clock - Omarchy style HH:MM
+  const clock = document.getElementById('waybarClock');
+  function tick() {
+    if (!clock) return;
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    clock.textContent = `${hh}:${mm}`;
+  }
+  tick();
+  setInterval(tick, 15000);
 });

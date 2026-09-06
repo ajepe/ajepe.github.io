@@ -1,26 +1,36 @@
-// Laravel-inspired Design System - Light Theme
+// Omarchy-inspired Design System - Tokyo Night / Hyprland
+// Dark-first, terminal-centric, tiling gaps, mono-heavy
 
-// Colors - Clean white with purple accents (like Laravel docs)
-$bg-primary: #ffffff;
-$bg-secondary: #f8fafc;
-$bg-tertiary: #f1f5f9;
-$bg-card: #ffffff;
+// Backgrounds - near-black with blue tint (Tokyo Night Storm)
+$bg-primary: #1a1b26;
+$bg-dark: #16161e;
+$bg-secondary: #24283b;
+$bg-tertiary: #1f2335;
+$bg-card: #24283b;
+$bg-float: rgba(36, 40, 59, 0.85);
 
-$text-primary: #1e293b;
-$text-secondary: #64748b;
-$text-muted: #94a3b8;
+$text-primary: #c0caf5;
+$text-secondary: #a9b1d6;
+$text-muted: #565f89;
+$text-bright: #ffffff;
 
-$accent-primary: #9333ea;
-$accent-secondary: #7c3aed;
-$accent-glow: rgba(147, 51, 234, 0.15);
+$accent-primary: #7dcfff; // cyan - main Omarchy accent
+$accent-secondary: #bb9af7; // purple
+$accent-green: #9ece6a; // success / terminal green
+$accent-yellow: #e0af68;
+$accent-red: #f7768e;
+$accent-orange: #ff9e64;
+$accent-blue: #7aa2f7;
+$accent-glow: rgba(125, 207, 255, 0.15);
 
-$border-color: #e2e8f0;
-$border-light: #f1f5f9;
+$border-color: #292e42;
+$border-light: #3b4261;
+$border-bright: #545c7e;
 
-// Typography
+// Typography - mono first, like Omarchy terminal
 $font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-$font-heading: 'Inter', sans-serif;
-$font-mono: 'Fira Code', 'Consolas', monospace;
+$font-heading: 'JetBrains Mono', 'Fira Code', monospace;
+$font-mono: 'JetBrains Mono', 'Fira Code', 'CaskaydiaCove Nerd Font', monospace;
 
 // Spacing
 $spacing-xs: 0.25rem;
