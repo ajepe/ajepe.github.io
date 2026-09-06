@@ -271,14 +271,54 @@
 }
 
 // Home Page - terminal hero
+.landing {
+  max-width: 1100px;
+  margin: 0 auto;
+}
 .hero-term {
   @include term-window;
-  margin-bottom: $spacing-xl;
+  margin-bottom: $spacing-lg;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: $radius-lg;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(125,207,255,0.35), transparent 40%, transparent 60%, rgba(187,154,247,0.3));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .term-live {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: $accent-green;
+    border: 1px solid $border-color;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: rgba(158,206,106,0.08);
+    .pulse {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: $accent-green;
+      box-shadow: 0 0 8px $accent-green;
+      animation: pulse 2s infinite;
+    }
+  }
   .hero-body {
     padding: $spacing-xl;
+    display: grid;
+    grid-template-columns: 1.6fr 0.9fr;
+    gap: $spacing-xl;
+    align-items: start;
     .hero-line {
       font-family: $font-mono;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       line-height: 2;
       .p-user { color: $accent-green; font-weight: 700; }
       .p-path { color: $accent-blue; }
@@ -287,36 +327,135 @@
     }
     .hero-title {
       font-family: $font-heading;
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
       font-weight: 800;
       color: $text-bright;
-      margin: $spacing-md 0;
+      margin: $spacing-sm 0 $spacing-sm;
       letter-spacing: -0.04em;
-      line-height: 1.05;
-      .hl { color: $accent-primary; text-shadow: 0 0 32px $accent-glow; }
+      line-height: 1.02;
+      .hl { color: $accent-primary; text-shadow: 0 0 32px $accent-glow; animation: blink 1.1s step-end infinite; }
+    }
+    .hero-sub {
+      font-family: $font-mono;
+      color: $accent-secondary;
+      font-size: 0.95rem;
+      margin-bottom: $spacing-md;
+      min-height: 1.5em;
+      &::after { content: '▊'; color: $accent-primary; margin-left: 4px; animation: blink 1.1s step-end infinite; }
     }
     .hero-desc {
-      font-size: 1.05rem;
-      max-width: 640px;
+      font-size: 1.02rem;
+      max-width: 600px;
       color: $text-secondary;
+      margin-bottom: 0;
     }
     .hero-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: $spacing-lg;
+      margin-top: $spacing-md;
       .hbadge {
         font-family: $font-mono;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         border: 1px solid $border-color;
         background: $bg-dark;
         color: $text-secondary;
         padding: 4px 10px;
         border-radius: 20px;
+        transition: border-color $transition-fast, color $transition-fast;
+        &:hover { border-color: $accent-primary; color: $text-bright; }
         b { color: $accent-green; font-weight: 700; }
       }
     }
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: $spacing-md;
+      .cta-button { margin-top: 0; }
+    }
   }
+}
+
+// neofetch side card
+.hero-side {
+  .neofetch {
+    background: $bg-dark;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    font-family: $font-mono;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    position: sticky;
+    top: 90px;
+    .neo-head { color: $text-muted; margin-bottom: 8px; &::before { content: '$ '; color: $accent-green; } }
+    .neo-grid { display: flex; gap: 14px; }
+    .neo-logo { color: $accent-primary; font-weight: 800; line-height: 1.3; text-shadow: 0 0 16px $accent-glow; }
+    .neo-lines {
+      b { color: $text-bright; }
+      span { color: $text-muted; display: inline-block; min-width: 52px; }
+      i { color: $accent-green; font-style: normal; }
+    }
+    .neo-foot {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid $border-color;
+      a { color: $accent-primary; font-weight: 600; &:hover { color: $text-bright; } }
+    }
+  }
+}
+
+// stats strip
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+  .stat {
+    @include term-window;
+    padding: $spacing-md $spacing-lg;
+    text-align: left;
+    b { display: block; font-family: $font-heading; font-size: 1.6rem; color: $text-bright; line-height: 1.1; }
+    span { font-family: $font-mono; font-size: 0.76rem; color: $text-muted; }
+    &:nth-child(1) b { color: $accent-primary; }
+    &:nth-child(2) b { color: $accent-green; }
+    &:nth-child(3) b { color: $accent-yellow; }
+    &:nth-child(4) b { color: $accent-secondary; }
+  }
+}
+
+// hire terminal CTA
+.hire-term {
+  @include term-window;
+  margin-top: $spacing-xl;
+  .hire-body {
+    padding: $spacing-xl;
+    .hero-line { font-family: $font-mono; font-size: 0.85rem; .p-user { color: $accent-green; font-weight: 700; } .p-cmd { color: $text-bright; } }
+    p { max-width: 640px; margin: $spacing-md 0 0; }
+    .hire-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: $spacing-md; .cta-button { margin-top: 0; } }
+  }
+}
+
+// reveal on scroll
+.reveal { opacity: 0; transform: translateY(14px); }
+.reveal.in { opacity: 1; transform: none; transition: opacity 0.5s ease, transform 0.5s ease; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (max-width: 900px) {
+  .hero-term .hero-body { grid-template-columns: 1fr; }
+  .hero-side .neofetch { position: static; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .featured-3 { grid-template-columns: 1fr !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+  * { animation: none !important; transition: none !important; }
 }
 
 .hero-section {
@@ -334,19 +473,28 @@
 .section-head {
   font-family: $font-mono;
   color: $text-bright;
-  font-size: 1.1rem;
-  margin: $spacing-2xl 0 $spacing-lg;
+  font-size: 1rem;
+  margin: $spacing-xl 0 $spacing-md;
   display: flex;
   align-items: center;
   gap: 12px;
   &::before { content: '▓▓'; color: $accent-primary; letter-spacing: -3px; }
   &::after { content: ''; flex: 1; height: 1px; background: $border-color; }
+  .section-more { margin-left: auto; font-size: 0.8rem; color: $text-muted; white-space: nowrap; &:hover { color: $accent-primary; } }
 }
 
 .featured-posts {
   margin-top: 0;
   display: grid;
   gap: $spacing-lg;
+}
+.featured-3 { grid-template-columns: repeat(3, 1fr); }
+
+// a11y focus
+a:focus-visible, button:focus-visible {
+  outline: 2px solid $accent-primary;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .featured-post {
