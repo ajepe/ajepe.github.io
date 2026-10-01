@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     readingTimeElement.textContent = `${readingTime} min read`;
   }
 
-  // Waybar clock - Omarchy style HH:MM
+  // Waybar clock - HH:MM
   const clock = document.getElementById('waybarClock');
   function tick() {
     if (!clock) return;

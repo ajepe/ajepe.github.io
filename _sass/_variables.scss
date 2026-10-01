@@ -1,4 +1,4 @@
-// Omarchy-inspired Design System - Tokyo Night / Hyprland
+// Design System - Tokyo Night / Hyprland
 // Dark-first, terminal-centric, tiling gaps, mono-heavy
 
 // Backgrounds - near-black with blue tint (Tokyo Night Storm)
@@ -14,7 +14,7 @@ $text-secondary: #a9b1d6;
 $text-muted: #565f89;
 $text-bright: #ffffff;
 
-$accent-primary: #7dcfff; // cyan - main Omarchy accent
+$accent-primary: #7dcfff; // cyan - main accent
 $accent-secondary: #bb9af7; // purple
 $accent-green: #9ece6a; // success / terminal green
 $accent-yellow: #e0af68;
@@ -27,7 +27,7 @@ $border-color: #292e42;
 $border-light: #3b4261;
 $border-bright: #545c7e;
 
-// Typography - mono first, like Omarchy terminal
+// Typography - mono first, terminal style
 $font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 $font-heading: 'JetBrains Mono', 'Fira Code', monospace;
 $font-mono: 'JetBrains Mono', 'Fira Code', 'CaskaydiaCove Nerd Font', monospace;

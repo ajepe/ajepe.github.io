@@ -9,7 +9,7 @@ description: Senior Odoo Specialist and Python Developer. Building scalable ERP 
 <div class="hero-term reveal">
 <div class="term-bar">
 <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-<span class="term-title">babatope@omarchy: ~ — zsh</span>
+<span class="term-title">babatope@workstation: ~ — zsh</span>
 <span class="term-live"><span class="pulse"></span> available</span>
 </div>
 <div class="hero-body">
@@ -19,8 +19,8 @@ description: Senior Odoo Specialist and Python Developer. Building scalable ERP 
 <div class="hero-sub" id="typingLine">Senior Odoo Specialist & Python Developer</div>
 <div class="hero-line"><span class="p-user">➜ ~</span> <span class="p-cmd">cat ./manifesto.txt</span></div>
 <p class="hero-desc">
-6+ years shipping enterprise-grade ERP. Custom modules, API integrations,
-PostgreSQL tuning — opinionated, fast, no bloat. Like Omarchy, but for ERP.
+I've spent the last 6+ years building and fixing Odoo systems: custom modules,
+integrations with whatever the client already runs, and Postgres tuning when it all gets slow.
 </p>
 <div class="hero-badges">
 <span class="hbadge"><b>●</b> odoo</span>
@@ -41,7 +41,7 @@ PostgreSQL tuning — opinionated, fast, no bloat. Like Omarchy, but for ERP.
 <div class="neo-grid">
 <div class="neo-logo" aria-hidden="true">▲<br>▲▲<br>▲▲▲</div>
 <div class="neo-lines">
-<div><b>babatope@omarchy</b></div>
+<div><b>babatope@workstation</b></div>
 <div><span>role</span> senior odoo / python</div>
 <div><span>exp</span> 6+ yrs, 50+ projects</div>
 <div><span>stack</span> odoo, pg, redis, vue</div>

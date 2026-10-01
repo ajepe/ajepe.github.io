@@ -1,6 +1,6 @@
 # Babatope Ajepe — Personal Website & Technical Blog
 
-A dark, terminal-first Jekyll site for Babatope Ajepe, Senior Odoo Specialist & Python Developer. Inspired by [Omarchy](https://omarchy.org) — Hyprland tiling, Waybar, Tokyo Night. Live at [babatopeajepe.com](https://babatopeajepe.com).
+A dark, terminal-style Jekyll site for Babatope Ajepe, Senior Odoo Specialist & Python Developer. The look borrows from a Hyprland desktop: tiling windows, a Waybar-style header and the Tokyo Night palette. Live at [babatopeajepe.com](https://babatopeajepe.com).
 
 ## 🎯 Overview
 
@@ -12,7 +12,7 @@ A dark, terminal-first Jekyll site for Babatope Ajepe, Senior Odoo Specialist & 
 ## ✨ Features
 
 ### Design & UX
-- **Omarchy / Tokyo Night theme**: near-black `#1a1b26`, cyan `#7dcfff` primary, purple/green/yellow accents
+- **Tokyo Night theme**: near-black `#1a1b26`, cyan `#7dcfff` primary, purple/green/yellow accents
 - **Waybar header**: floating blurred bar, workspace nav (`1:home … 5:contact`), live clock, availability pulse
 - **Terminal windows**: traffic-light dots + `~/path — app` title bars on hero, posts, pages, cards
 - **Landing interactions**: rotating typing subtitle, copy-email button, scroll reveal, hover glow

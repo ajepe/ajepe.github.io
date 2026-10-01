@@ -1,4 +1,4 @@
-// Base Styles - Omarchy / Tokyo Night
+// Base Styles - Tokyo Night
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -145,7 +145,7 @@ hr {
   }
 }
 
-// Selection - Omarchy cyan
+// Selection - cyan
 ::selection {
   background: $accent-primary;
   color: #15161e;

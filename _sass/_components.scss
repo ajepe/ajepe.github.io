@@ -1,4 +1,4 @@
-// Component Styles - Omarchy Terminal / Tiling
+// Component Styles - Terminal / Tiling
 
 // Shared terminal window chrome
 @mixin term-window {
@@ -751,7 +751,7 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-// key hints like Omarchy SUPER key cheatsheet
+// key hints, SUPER-key cheatsheet style
 .key-hints {
   display: flex;
   flex-wrap: wrap;
