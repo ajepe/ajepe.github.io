@@ -2,21 +2,19 @@
 layout: simple-page
 title: Contact
 permalink: /contact/
-description: Get in touch to discuss your Odoo development needs, API integration projects, or custom ERP solutions. Available for freelance and contract opportunities.
+description: Get in touch about Odoo development, integrations, upgrades or performance work. Available for freelance and contract projects.
 ---
 
-## Let's Start a Conversation
+## Get in touch
 
-I'm always interested in discussing challenging Odoo projects, custom ERP solutions, and opportunities to help businesses optimize their operations through technology.
+If you've got an Odoo problem, or a business problem you think Odoo could solve, I'd like to hear about it. New implementations, custom modules, integrations, upgrades, a system that's gotten slow: all fair game.
 
-Whether you need a complete Odoo implementation, custom module development, API integrations, or performance optimization, I'm here to help you achieve your goals.
-
-### Direct Contact
+### Email
 
 **Email:** {{ site.email }}  
-I typically respond within 24 hours for project inquiries.
+I usually reply to project enquiries within 24 hours.
 
-### Professional Profiles
+### Elsewhere
 
 - **Upwork:** {{ site.upwork }}
 - **LinkedIn:** {{ site.linkedin }}
@@ -24,65 +22,65 @@ I typically respond within 24 hours for project inquiries.
 
 ---
 
-## What I Offer
+## What I can help with
 
-### Odoo Implementation
-Complete Odoo deployments from requirements gathering to go-live, including configuration, customization, and user training.
+### Odoo implementation
+Taking you from requirements to go-live: configuration, the customisations you actually need, and training your team.
 
-### Custom Development
-Bespoke Odoo modules, workflow automation, and specialized functionality tailored to your unique business requirements.
+### Custom development
+Modules and automations for the parts of your business the standard apps don't cover.
 
-### API Integration
-Seamless connections with third-party systems, custom API development, and data synchronization solutions.
+### Integrations
+Connecting Odoo to your shop, carriers, accounting tools or in-house systems, and keeping the data in sync.
 
-### Performance Optimization
-Database tuning, query optimization, caching strategies, and system performance enhancements for large-scale deployments.
+### Performance
+Finding out why things are slow (queries, config, code, crons) and fixing it, especially on larger databases.
 
-### Migration Services
-Odoo version upgrades, data migration from legacy systems, and seamless transitions with minimal business disruption.
+### Upgrades and migrations
+Moving to a newer Odoo version, or off a legacy system, without stopping the business while it happens.
 
-### Consulting & Support
-Technical consulting, code reviews, architecture design, and ongoing support for Odoo environments.
-
----
-
-## What to Expect
-
-### Initial Consultation
-We'll schedule a call to discuss your project requirements, technical challenges, and business objectives. This helps me understand your needs and provide accurate recommendations.
-
-### Detailed Proposal
-After our consultation, I'll provide a comprehensive proposal including project scope, timeline, deliverables, and transparent pricing.
-
-### Project Kickoff
-Once we agree on terms, we'll establish communication channels, set up project management tools, and begin development process.
-
-### Regular Updates
-You'll receive regular progress reports, demo sessions, and opportunities for feedback throughout the project lifecycle.
+### Consulting and support
+Code reviews, architecture advice, and ongoing support once the project is live.
 
 ---
 
-## Frequently Asked Questions
+## How it usually goes
 
-### How quickly can you start a new project?
-My availability varies, but I can typically start new projects within 2-4 weeks depending on current commitments and project complexity.
+### A first call
+We talk through what you need, what's in the way and what a good outcome looks like. This is where I figure out whether I'm the right fit.
 
-### Do you work with clients outside of my time zone?
-Yes! I work with clients globally and can accommodate different time zones for meetings and communication.
+### A written proposal
+You get scope, timeline, deliverables and price in writing, so there are no surprises later.
 
-### What is your typical project structure?
-I follow an agile approach with regular sprints, demo sessions, and feedback loops. Projects typically include discovery, development, testing, and deployment phases.
+### Kickoff
+Once we've agreed, we set up how we'll communicate and track work, and I get started.
 
-### Can you provide references from past clients?
-Absolutely. I can share references and case studies from similar projects once we've had an initial consultation.
+### Regular check-ins
+You'll see progress as it happens: short updates, demos of working features, and room to change course while it's still cheap to.
 
-### What kind of support do you provide after project completion?
-I offer ongoing support packages, bug fixes, and enhancements. We can discuss support options based on your specific needs.
+---
+
+## Questions people often ask
+
+### How soon can you start?
+It depends on what I'm working on, but usually within 2 to 4 weeks.
+
+### Do you work with clients in other time zones?
+Yes. I work with clients all over the world. We find meeting times that suit both of us and handle the rest in writing.
+
+### How do you structure a project?
+Short iterations with a demo at the end of each one. Roughly: discovery, build, test, deploy. On small jobs that can all happen in a week.
+
+### Can I talk to past clients?
+Yes. After our first conversation I can share references and examples from similar projects.
+
+### What happens after the project is finished?
+I offer ongoing support for bug fixes and small improvements. We can work out what makes sense for you.
 
 ---
 
 <div class="contact-cta">
-  <h3>Ready to discuss your project?</h3>
-  <p>I'm excited to learn about your challenges and explore how I can help you achieve your goals.</p>
+  <h3>Got a project in mind?</h3>
+  <p>Send me a few lines about what you're working on. Rough is fine.</p>
   <p><a href="mailto:{{ site.email }}" class="cta-button">Send Me an Email</a></p>
 </div>

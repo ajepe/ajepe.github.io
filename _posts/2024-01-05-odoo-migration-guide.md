@@ -1,641 +1,495 @@
 ---
 layout: post
-title: "Odoo Migration Guide: From v14 to v16 Best Practices"
+title: "Upgrading Odoo 14 to 16: How I Actually Do It"
 date: 2024-01-05 09:00:00 +0000
 categories: [Odoo Dev, Migration, Best Practices]
 tags: [odoo, migration, upgrade, best-practices, database, odoo upgrade, odoo migration service, odoo consultant, odoo specialist]
-reading_time: 10
-excerpt: "Complete guide for migrating Odoo from v14 to v16. Learn the safest way to upgrade your Odoo system with minimal downtime. Expert tips from an experienced Odoo developer."
+reading_time: 17
+excerpt: "The process I follow to take an Odoo 14 database to 16: a staging copy that can't email anyone, the upgrade service or OpenUpgrade for standard modules, porting custom code, migration scripts, and a cutover I can roll back."
 ---
 
-Migrating Odoo from v14 to v16 is a significant undertaking that requires careful planning, execution, and validation. Having successfully completed multiple enterprise migrations, I'll share a comprehensive guide covering the entire migration process.
+I've taken several client databases from Odoo 14 to 16 now, and by this point I follow the same process every time. This post walks through it, with the commands and code I actually use.
 
-## Understanding the Migration Scope
+First, a ground rule. You don't upgrade an Odoo database by editing its tables. The standard modules get migrated by tooling: Odoo's upgrade service if you're on Enterprise, OCA's OpenUpgrade if you're on Community. Your custom modules get migrated by you, with ported code and migration scripts that Odoo runs while it updates the module. If a guide tells you to run `UPDATE` statements against `ir_module_module` or search-and-replace inside `ir_ui_view`, ignore it.
 
-Odoo v16 introduces substantial changes compared to v14:
+## Set up a 16 environment
 
-- **Python 3.10+ requirement**
-- **New ORM features and syntax**
-- **UI framework changes**
-- **API modifications**
-- **Database schema updates**
-
-## 1. Pre-Migration Preparation
-
-### Environment Setup
+Odoo 16 itself runs on Python 3.7 and later. I still build the 16 environment on Python 3.10, because 17 needs it, so the next upgrade starts with the interpreter already sorted. On Ubuntu 22.04 it's the system Python anyway.
 
 ```bash
-# Create migration environment
-python3.10 -m venv odoo16_migration
-source odoo16_migration/bin/activate
+python3.10 -m venv ~/venvs/odoo16
+source ~/venvs/odoo16/bin/activate
 
-# Install required packages
-pip install -r https://raw.githubusercontent.com/odoo/odoo/master/requirements.txt
-pip install psycopg2-binary
+git clone --depth 1 -b 16.0 https://github.com/odoo/odoo.git /opt/odoo16/odoo
+# Enterprise only (needs access to the private repo)
+git clone --depth 1 -b 16.0 git@github.com:odoo/enterprise.git /opt/odoo16/enterprise
 
-# Clone Odoo 16
-git clone -b 16.0 https://github.com/odoo/odoo.git
+pip install --upgrade pip wheel
+pip install -r /opt/odoo16/odoo/requirements.txt
 ```
 
-### Inventory Analysis
+Install the requirements from the 16.0 checkout, not from a URL. The `requirements.txt` on `master` pins versions for whatever Odoo is currently developing, which isn't 16. `psycopg2` and `python-ldap` are compiled from source, so on Debian or Ubuntu install `gcc`, `python3.10-dev`, `libpq-dev`, `libldap2-dev` and `libsasl2-dev` first.
+
+Then point `addons_path` in `odoo16.conf` at the 16.0 core addons, Enterprise if you have it, the 16.0 branches of any OCA repos you depend on, and the folder your ported modules will live in. `odoo-bin` is in the root of the 16.0 checkout; every command below assumes that config.
+
+## Find out how much work it is
+
+Before I give anyone an estimate, I grep the custom addons for the patterns I know will need work going from 14 to 16. It's crude, but it turns "how big is this upgrade?" into a list of files.
+
+```bash
+cd /opt/odoo14/custom
+
+# Assets declared through XML templates (moved to the manifest's 'assets' key in 15)
+grep -rnE --include='*.xml' 'inherit_id="[a-z_]+\.[a-z_]*assets' .
+grep -rnE --include='__manifest__.py' "[\"']qweb[\"']" .
+
+# Legacy JS that will probably need rewriting as OWL
+grep -rnE --include='*.js' "odoo\.define\(|web\.(AbstractField|Widget|field_registry|basic_fields)" .
+
+# View manipulation in Python (deprecated in 16, and silently ignored by the web client)
+grep -rn --include='*.py' 'fields_view_get' .
+
+# Accounting code that the 16 refactor removed
+grep -rnE --include='*.py' --include='*.xml' \
+    'exclude_from_invoice_tab|_recompute_dynamic_lines|_recompute_tax_lines|_recompute_payment_terms_lines' .
+
+# Deprecated QWeb directive (use t-out)
+grep -rn --include='*.xml' 't-raw' .
+```
+
+In a 14 codebase the `odoo.define` pattern matches nearly every JS file. Every hit is a file someone has to look at.
+
+The other half of the audit is dependencies. Every module in every `depends` list has to exist in 16. Some standard modules were renamed or merged between 14 and 16 (`sale_coupon` is gone, for example; 16 replaced it with `sale_loyalty`), and an OCA module only exists in 16 once somebody has ported it. This script lists the dependencies it can't find:
 
 ```python
-# migration_analysis.py
-import os
+#!/usr/bin/env python3
+"""Print manifest dependencies that don't exist in the given Odoo 16 addons paths.
+
+Usage: check_deps.py CUSTOM_DIR ADDONS_PATH [ADDONS_PATH ...]
+"""
 import ast
-import re
+import sys
+from pathlib import Path
 
-class MigrationAnalyzer:
-    def __init__(self, odoo14_path, odoo16_path):
-        self.odoo14_path = odoo14_path
-        self.odoo16_path = odoo16_path
-        self.issues = []
-    
-    def analyze_custom_modules(self):
-        """Analyze custom modules for migration issues"""
-        custom_modules = []
-        
-        for root, dirs, files in os.walk(self.odoo14_path):
-            if '__manifest__.py' in files:
-                module_path = os.path.relpath(root, self.odoo14_path)
-                if not any(module_path.startswith(standard) for standard in ['odoo/addons', 'addons']):
-                    custom_modules.append(module_path)
-        
-        for module in custom_modules:
-            self.analyze_module(module)
-        
-        return self.issues
-    
-    def analyze_module(self, module_path):
-        """Analyze individual module for migration issues"""
-        full_path = os.path.join(self.odoo14_path, module_path)
-        
-        # Check manifest
-        manifest_path = os.path.join(full_path, '__manifest__.py')
-        if os.path.exists(manifest_path):
-            self.check_manifest(manifest_path)
-        
-        # Analyze Python files
-        for root, dirs, files in os.walk(full_path):
-            for file in files:
-                if file.endswith('.py'):
-                    self.analyze_python_file(os.path.join(root, file))
-                elif file.endswith('.xml'):
-                    self.analyze_xml_file(os.path.join(root, file))
-    
-    def check_manifest(self, manifest_path):
-        """Check manifest file for compatibility issues"""
-        with open(manifest_path, 'r') as f:
-            manifest = ast.literal_eval(f.read())
-        
-        # Check dependencies
-        if 'depends' in manifest:
-            for dep in manifest['depends']:
-                if self.is_removed_module(dep):
-                    self.issues.append({
-                        'type': 'dependency',
-                        'file': manifest_path,
-                        'issue': f'Removed dependency: {dep}',
-                        'severity': 'high'
-                    })
-        
-        # Check external dependencies
-        if 'external_dependencies' in manifest:
-            self.check_external_dependencies(manifest['external_dependencies'])
-    
-    def analyze_python_file(self, file_path):
-        """Analyze Python file for syntax changes"""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Check for deprecated methods
-        deprecated_patterns = [
-            (r'\.browse\s*\(\s*.*\s*,\s*.*\s*\)', 'browse() with context parameter is deprecated'),
-            (r'\.search\s*\(\s*.*\s*,\s*.*\s*,\s*.*\s*\)', 'search() with offset/limit syntax changed'),
-            (r'cr\.execute\s*\(\s*.*%s.*\)', 'String formatting in SQL queries - use params instead'),
-            (r'_defaults\s*=', '_defaults is deprecated, use default_get instead'),
-            (r'columns\s*=', 'columns definition is deprecated, use _rec_name/_order fields'),
-        ]
-        
-        for pattern, message in deprecated_patterns:
-            if re.search(pattern, content):
-                self.issues.append({
-                    'type': 'deprecated',
-                    'file': file_path,
-                    'issue': message,
-                    'severity': 'medium'
-                })
-    
-    def is_removed_module(self, module):
-        """Check if module was removed in v16"""
-        removed_modules = [
-            'website_theme_install',
-            'account_bank_statement_import_camt',
-            # Add more removed modules as needed
-        ]
-        return module in removed_modules
+custom_dir = Path(sys.argv[1])
+search_paths = [custom_dir] + [Path(p) for p in sys.argv[2:]]
 
-# Usage
-analyzer = MigrationAnalyzer('/path/to/odoo14', '/path/to/odoo16')
-issues = analyzer.analyze_custom_modules()
-for issue in issues:
-    print(f"[{issue['severity'].upper()}] {issue['file']}: {issue['issue']}")
+available = {
+    manifest.parent.name
+    for path in search_paths
+    for manifest in path.glob('*/__manifest__.py')
+}
+
+for manifest in sorted(custom_dir.glob('*/__manifest__.py')):
+    depends = ast.literal_eval(manifest.read_text()).get('depends', [])
+    missing = sorted(set(depends) - available)
+    if missing:
+        print(f"{manifest.parent.name}: {', '.join(missing)}")
 ```
 
-## 2. Database Migration Strategy
-
-### Step-by-Step Migration Process
-
-```python
-# migration_script.py
-import psycopg2
-import logging
-from contextlib import contextmanager
-
-class DatabaseMigrator:
-    def __init__(self, db_config):
-        self.db_config = db_config
-        self.logger = logging.getLogger(__name__)
-    
-    @contextmanager
-    def db_connection(self):
-        """Database connection context manager"""
-        conn = psycopg2.connect(**self.db_config)
-        conn.autocommit = False
-        try:
-            yield conn
-        except Exception:
-            conn.rollback()
-            raise
-        finally:
-            conn.close()
-    
-    def create_backup(self, db_name):
-        """Create database backup before migration"""
-        import subprocess
-        import datetime
-        
-        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        backup_file = f"{db_name}_pre_migration_{timestamp}.sql"
-        
-        cmd = [
-            'pg_dump',
-            '-h', self.db_config['host'],
-            '-p', str(self.db_config['port']),
-            '-U', self.db_config['user'],
-            '-d', db_name,
-            '-f', backup_file
-        ]
-        
-        try:
-            subprocess.run(cmd, check=True)
-            self.logger.info(f"Backup created: {backup_file}")
-            return backup_file
-        except subprocess.CalledProcessError as e:
-            self.logger.error(f"Backup failed: {e}")
-            raise
-    
-    def migrate_database(self, source_db, target_db):
-        """Execute database migration"""
-        with self.db_connection() as conn:
-            cursor = conn.cursor()
-            
-            try:
-                # 1. Update ir_module_module version
-                self.update_module_versions(cursor)
-                
-                # 2. Handle model changes
-                self.migrate_models(cursor)
-                
-                # 3. Update field definitions
-                self.migrate_fields(cursor)
-                
-                # 4. Handle data migrations
-                self.migrate_data(cursor)
-                
-                # 5. Update views and menus
-                self.migrate_views(cursor)
-                
-                conn.commit()
-                self.logger.info("Database migration completed successfully")
-                
-            except Exception as e:
-                conn.rollback()
-                self.logger.error(f"Migration failed: {e}")
-                raise
-    
-    def update_module_versions(self, cursor):
-        """Update module versions for v16"""
-        updates = [
-            ("base", "16.0.1.0"),
-            ("web", "16.0.1.0"),
-            # Add other standard modules
-        ]
-        
-        for module, version in updates:
-            cursor.execute("""
-                UPDATE ir_module_module 
-                SET latest_version = %s, installed_version = %s
-                WHERE name = %s
-            """, (version, version, module))
-    
-    def migrate_models(self, cursor):
-        """Handle model migrations"""
-        # Example: Handle removed models
-        removed_models = [
-            'mail.bot',
-            # Add other removed models
-        ]
-        
-        for model in removed_models:
-            cursor.execute("""
-                DELETE FROM ir_model 
-                WHERE model = %s
-            """, (model,))
-            
-            cursor.execute("""
-                DELETE FROM ir_model_fields 
-                WHERE model = %s
-            """, (model,))
-    
-    def migrate_fields(self, cursor):
-        """Handle field migrations"""
-        # Example: Handle field type changes
-        field_changes = [
-            ('res.partner', 'ref', 'char', 'New reference field format'),
-            # Add other field changes
-        ]
-        
-        for model, field_name, field_type, description in field_changes:
-            cursor.execute("""
-                UPDATE ir_model_fields 
-                SET ttype = %s, field_description = %s
-                WHERE model = %s AND name = %s
-            """, (field_type, description, model, field_name))
-    
-    def migrate_data(self, cursor):
-        """Handle data migrations"""
-        # Example: Update user preferences format
-        cursor.execute("""
-            UPDATE res_users 
-            SET barcode = NULL 
-            WHERE barcode IS NOT NULL AND barcode = ''
-        """)
-        
-        # Example: Migrate configuration settings
-        cursor.execute("""
-            UPDATE ir_config_parameter 
-            SET value = 'web' 
-            WHERE key = 'web.base.url' AND value LIKE 'http%'
-        """)
-    
-    def migrate_views(self, cursor):
-        """Handle view migrations"""
-        # Update deprecated view attributes
-        cursor.execute("""
-            UPDATE ir_ui_view 
-            SET arch_db = REPLACE(arch_db, 'colors="', 'decoration-')
-            WHERE arch_db LIKE '%colors="%'
-        """)
-        
-        # Update button attributes
-        cursor.execute("""
-            UPDATE ir_ui_view 
-            SET arch_db = REPLACE(arch_db, 'string="', 'name="')
-            WHERE arch_db LIKE '%button%' AND arch_db LIKE '%string="%'
-        """)
+```bash
+python3 check_deps.py /opt/odoo14/custom \
+    /opt/odoo16/odoo/odoo/addons /opt/odoo16/odoo/addons \
+    /opt/odoo16/enterprise /opt/odoo16/oca/*
 ```
 
-## 3. Code Migration
+Note the two core paths: `base` lives in `odoo/odoo/addons`, everything else in `odoo/addons`. For OCA, clone each repo you use at its 16.0 branch. If a module isn't there, search that repo's pull requests for `[16.0][MIG] module_name`. Quite often someone has a port in progress that you can test or help finish.
 
-### Python Code Updates
+## Port the code
 
-```python
-# Code migration examples
+This is where most of the hours go. These are the changes I end up making on nearly every 14 to 16 port.
 
-# 1. ORM method changes
-# Old (v14):
-records = self.env['model'].browse(ids, context={'lang': 'en_US'})
+### Assets move into the manifest
 
-# New (v16):
-records = self.env['model'].with_context(lang='en_US').browse(ids)
-
-# 2. Search method changes
-# Old (v14):
-records = self.env['model'].search(domain, offset=10, limit=20)
-
-# New (v16):
-records = self.env['model'].search(domain, offset=10, limit=20)
-# Note: Syntax remains same but performance improved
-
-# 3. Field definition changes
-# Old (v14):
-class MyModel(models.Model):
-    _name = 'my.model'
-    
-    name = fields.Char('Name')
-    description = fields.Text('Description')
-    
-    _defaults = {
-        'name': 'Default Name',
-    }
-
-# New (v16):
-class MyModel(models.Model):
-    _name = 'my.model'
-    
-    name = fields.Char('Name', default='Default Name')
-    description = fields.Text('Description')
-
-# 4. API method changes
-# Old (v14):
-@api.model
-def create(self, vals):
-    if self._context.get('default_name'):
-        vals['name'] = self._context['default_name']
-    return super(MyModel, self).create(vals)
-
-# New (v16):
-@api.model
-def create(self, vals):
-    if self.env.context.get('default_name'):
-        vals['name'] = self.env.context['default_name']
-    return super().create(vals)
-```
-
-### XML View Updates
+In 14, you added JS and SCSS to the backend by inheriting the asset template:
 
 ```xml
-<!-- Old (v14) button syntax -->
-<button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
-
-<!-- New (v16) button syntax -->
-<button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
-
-<!-- Tree view attribute changes -->
-<!-- Old: -->
-<tree colors="red:state=='cancelled';blue:state=='confirmed'">
-
-<!-- New: -->
-<tree decoration-danger="state=='cancelled'" decoration-info="state=='confirmed'">
-
-<!-- Form view improvements -->
-<form>
-    <sheet>
-        <group>
-            <field name="name" placeholder="Enter name..."/>
-            <!-- New placeholder attribute support -->
-        </group>
-    </sheet>
-</form>
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/my_module/static/src/js/my_widget.js"/>
+            <link rel="stylesheet" type="text/scss" href="/my_module/static/src/scss/my_module.scss"/>
+        </xpath>
+    </template>
+</odoo>
 ```
 
-## 4. Testing Strategy
-
-### Comprehensive Test Suite
+In 16, that file goes away (remove it from `data` too) and the bundle is declared in `__manifest__.py`:
 
 ```python
-# tests/test_migration.py
-from odoo.tests.common import TransactionCase
-from odoo.exceptions import ValidationError
-
-class MigrationTest(TransactionCase):
-    
-    def setUp(self):
-        super().setUp()
-        # Setup test data
-        self.partner = self.env['res.partner'].create({
-            'name': 'Test Partner',
-            'email': 'test@example.com',
-        })
-    
-    def test_model_functionality(self):
-        """Test that models work correctly after migration"""
-        # Test basic CRUD operations
-        partner_count = self.env['res.partner'].search_count([])
-        self.assertGreater(partner_count, 0)
-        
-        # Test field access
-        self.assertEqual(self.partner.name, 'Test Partner')
-        self.assertEqual(self.partner.email, 'test@example.com')
-    
-    def test_workflow_functionality(self):
-        """Test that workflows still work"""
-        # Test sale order workflow
-        sale_order = self.env['sale.order'].create({
-            'partner_id': self.partner.id,
-            'order_line': [(0, 0, {
-                'product_id': self.env.ref('product.product_product_1').id,
-                'product_uom_qty': 1,
-                'price_unit': 100.0,
-            })]
-        })
-        
-        # Test state changes
-        sale_order.action_confirm()
-        self.assertEqual(sale_order.state, 'sale')
-    
-    def test_api_compatibility(self):
-        """Test API endpoints work correctly"""
-        # Test JSON-RPC calls
-        result = self.env['res.partner'].search_read([
-            ('id', '=', self.partner.id)
-        ], ['name', 'email'])
-        
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]['name'], 'Test Partner')
-    
-    def test_permissions(self):
-        """Test that permissions are preserved"""
-        # Test access rights
-        user = self.env['res.users'].create({
-            'name': 'Test User',
-            'login': 'testuser',
-            'password': 'testpass',
-        })
-        
-        # Test with different user contexts
-        as_user = self.env(user=user)
-        with self.assertRaises(AccessError):
-            as_user.env['res.users'].search([])
+{
+    'name': 'My Module',
+    'version': '16.0.1.0.0',
+    'license': 'LGPL-3',
+    'depends': ['web'],
+    'assets': {
+        'web.assets_backend': [
+            'my_module/static/src/**/*',
+        ],
+    },
+}
 ```
 
-## 5. Performance Optimization
+Paths start with the module name, not a slash. The old `qweb` manifest key is gone as well. In 16, XML templates go in the same bundle as the JS that uses them.
 
-### Post-Migration Performance Tuning
+### `fields_view_get` becomes `_get_view`
 
-```sql
--- Database optimization after migration
+This one is sneaky because nothing errors. `fields_view_get` still exists in 16 as a deprecated method, but the web client loads views through `get_views`, which never calls it. Your override just stops having any effect.
 
--- 1. Update table statistics
-ANALYZE;
-
--- 2. Rebuild indexes
-REINDEX DATABASE your_database;
-
--- 3. Optimize common queries
-EXPLAIN ANALYZE SELECT * FROM res_partner WHERE active = true;
-
--- 4. Clean up orphaned records
-DELETE FROM ir_attachment WHERE res_model IS NULL OR res_id = 0;
-
--- 5. Update sequence values
-SELECT setval('res_partner_id_seq', (SELECT MAX(id) FROM res_partner));
-```
-
-### Application Performance Monitoring
+A typical 14 override, including the `modifiers` JSON dance you needed to make `readonly` actually stick:
 
 ```python
-# performance_monitor.py
-import time
-import logging
-from functools import wraps
+import json
 
-class PerformanceMonitor:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-    
-    def monitor_method(self, method_name):
-        """Decorator to monitor method performance"""
-        def decorator(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                start_time = time.time()
-                try:
-                    result = func(*args, **kwargs)
-                    return result
-                finally:
-                    end_time = time.time()
-                    duration = end_time - start_time
-                    
-                    if duration > 1.0:  # Log slow methods
-                        self.logger.warning(
-                            f"Slow method detected: {method_name} took {duration:.2f}s"
-                        )
-                    
-                    # Store performance metrics
-                    self.store_metrics(method_name, duration)
-            return wrapper
-        return decorator
-    
-    def store_metrics(self, method_name, duration):
-        """Store performance metrics for analysis"""
-        # Implement metrics storage (Redis, database, etc.)
-        pass
+from lxml import etree
 
-# Usage in models
-monitor = PerformanceMonitor()
+from odoo import api, models
+
 
 class ResPartner(models.Model):
-    _name = 'res.partner'
-    
-    @monitor.monitor_method('partner_search')
+    _inherit = 'res.partner'
+
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        return super().search(args, offset, limit, order, count)
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super().fields_view_get(
+            view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
+        )
+        if view_type == 'form':
+            doc = etree.XML(res['arch'])
+            for node in doc.xpath("//field[@name='ref']"):
+                node.set('readonly', '1')
+                modifiers = json.loads(node.get('modifiers') or '{}')
+                modifiers['readonly'] = True
+                node.set('modifiers', json.dumps(modifiers))
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+        return res
 ```
 
-## 6. Rollback Strategy
-
-### Emergency Rollback Plan
+The 16 version is shorter. `_get_view` hands you the arch as an lxml element before Odoo post-processes it, so a plain attribute is enough:
 
 ```python
-# rollback_plan.py
-class RollbackManager:
-    def __init__(self, backup_config):
-        self.backup_config = backup_config
-    
-    def create_rollback_point(self, db_name):
-        """Create a rollback point before major changes"""
-        import subprocess
-        
-        timestamp = time.strftime('%Y%m%d_%H%M%S')
-        rollback_file = f"{db_name}_rollback_{timestamp}.sql"
-        
-        # Create incremental backup
-        cmd = [
-            'pg_dump',
-            '--format=custom',
-            '--verbose',
-            '--file', rollback_file,
-            '--host', self.backup_config['host'],
-            '--port', str(self.backup_config['port']),
-            '--username', self.backup_config['user'],
-            db_name
-        ]
-        
-        subprocess.run(cmd, check=True)
-        return rollback_file
-    
-    def execute_rollback(self, rollback_file, target_db):
-        """Execute rollback from backup file"""
-        import subprocess
-        
-        cmd = [
-            'pg_restore',
-            '--clean',
-            '--if-exists',
-            '--verbose',
-            '--host', self.backup_config['host'],
-            '--port', str(self.backup_config['port']),
-            '--username', self.backup_config['user'],
-            '--dbname', target_db,
-            rollback_file
-        ]
-        
-        subprocess.run(cmd, check=True)
+from odoo import api, models
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    @api.model
+    def _get_view(self, view_id=None, view_type='form', **options):
+        arch, view = super()._get_view(view_id, view_type, **options)
+        if view_type == 'form':
+            for node in arch.xpath("//field[@name='ref']"):
+                node.set('readonly', '1')
+        return arch, view
 ```
 
-## 7. Post-Migration Checklist
+One catch: 16 caches the result of `_get_view` per view, language and a few context keys. If your old override looked at the current user or a context value, that result now gets cached and served to everyone. For user-dependent changes, set a `groups` attribute on the node and let Odoo strip it per user. For context-dependent ones, extend `_get_view_cache_key`.
 
-### Validation Tasks
+### Invoice lines: `exclude_from_invoice_tab` is gone
 
-```markdown
-## Post-Migration Checklist
+16 reworked `account.move.line`. Every journal item now has a `display_type`: `product`, `tax`, `payment_term`, `rounding`, `line_section`, `line_note`, plus `cogs` and `epd` for cost of goods sold and early payment discounts. Code that picked out the product lines in 14:
 
-### Functionality Testing
-- [ ] All custom modules load without errors
-- [ ] Basic CRUD operations work for all models
-- [ ] Workflows function correctly
-- [ ] Reports generate properly
-- [ ] Email templates work
-- [ ] Scheduled jobs run successfully
-
-### Performance Validation
-- [ ] Page load times are acceptable
-- [ ] Database queries are optimized
-- [ ] Memory usage is within limits
-- [ ] Background jobs complete in reasonable time
-
-### Security Verification
-- [ ] User permissions are preserved
-- [ ] Access rules work correctly
-- [ ] API authentication functions
-- [ ] Data encryption is maintained
-
-### Data Integrity
-- [ ] All records are present
-- [ ] Data relationships are intact
-- [ ] Calculated fields are correct
-- [ ] Historical data is preserved
-
-### User Acceptance
-- [ ] Key users have tested functionality
-- [ ] Training materials are updated
-- [ ] Support documentation is current
-- [ ] Go-live approval received
+```python
+product_lines = move.line_ids.filtered(
+    lambda l: not l.exclude_from_invoice_tab and not l.display_type
+)
 ```
 
-## Conclusion
+becomes this in 16:
 
-Migrating from Odoo v14 to v16 is a complex process that requires careful planning, execution, and validation. Key success factors include:
+```python
+product_lines = move.line_ids.filtered(lambda l: l.display_type == 'product')
+```
 
-1. **Thorough preparation** - Analyze code and identify issues early
-2. **Comprehensive testing** - Test all functionality before go-live
-3. **Performance monitoring** - Optimize for the new version
-4. **Rollback planning** - Be prepared for unexpected issues
-5. **User involvement** - Ensure stakeholder buy-in and testing
+Domains in views and `search()` calls need the same change. If you want exactly what the Invoice Lines tab shows (products plus sections and notes), use `('display_type', 'in', ('product', 'line_section', 'line_note'))`.
 
-By following this structured approach, you can minimize risks and ensure a successful migration to Odoo v16.
+The real work is any override of `_recompute_dynamic_lines`, `_recompute_tax_lines` or the invoice onchanges that added or adjusted lines. That mechanism no longer exists. In 16, tax and payment term lines come from computed fields and `_sync_dynamic_lines`, so those overrides need rewriting against the new compute methods; you can't translate them line by line. Test them with real documents from the copy: credit notes, foreign currency invoices, cash rounding.
 
-Have you completed an Odoo migration recently? Share your experiences and additional tips in the comments!
+### Legacy JS field widgets need rewriting in OWL
+
+On every 14 to 16 upgrade I've done, this was the biggest chunk of work. In 16 the form, list and kanban views are OWL components, and they look up field widgets in the new `fields` registry. A widget that extends `AbstractField` and registers in `web.field_registry` simply isn't found there, so it has to be rewritten as an OWL component. Legacy client actions still run in 16 through a compatibility layer, but I usually port them in the same pass rather than maintain two frameworks.
+
+I've since written a [separate post on OWL]({% post_url 2025-02-15-odoo-owl-tutorial-beginner-to-advanced %}). It targets 17, where the field API changed again, but the component basics carry over to 16.
+
+### QWeb: `t-raw` becomes `t-out`
+
+```xml
+<!-- 14 -->
+<div t-raw="doc.note"/>
+
+<!-- 16 -->
+<div t-out="doc.note"/>
+```
+
+`t-raw` still renders in 16, but every template that uses it logs a deprecation warning. `t-out` escapes its value unless it's `Markup`. Html fields (like `sale.order.note` in 16) already return `Markup`, so they render as before. If you build an HTML string in Python and pass it to a report, wrap it in `markupsafe.Markup`, or it'll show up as escaped tags in the PDF.
+
+What you can leave alone: `attrs` and `states` in views still work in 16. They're removed in 17, so don't rewrite them now unless you're going straight to 17.
+
+Before going anywhere near a copy of production, I install each ported module on an empty 16 database:
+
+```bash
+odoo-bin -c odoo16.conf -d empty16 -i my_module --stop-after-init
+```
+
+That catches broken xpaths against changed standard views, references to fields that no longer exist and bad manifests, without waiting on a full update of a production-sized database every time.
+
+## Get a safe copy of production
+
+Never upgrade production in place. Every run happens on a copy, and production stays on 14 until cutover.
+
+A backup is two things: the PostgreSQL database and the filestore. Attachments are stored on disk, not in the database, so a dump without the filestore restores into a system where every PDF, image and attached document is missing.
+
+```bash
+pg_dump -Fc -d prod_db -f prod_db_$(date +%Y%m%d).dump
+tar -czf filestore_$(date +%Y%m%d).tar.gz -C ~/.local/share/Odoo/filestore prod_db
+```
+
+`~/.local/share/Odoo/filestore/<dbname>` is the default, for the system user Odoo runs as. If `data_dir` is set in your config, the filestore is under that instead.
+
+Restore both on the staging server. The filestore folder has to be named after the database, hence the `mv`:
+
+```bash
+createdb staging_db
+pg_restore --no-owner -d staging_db prod_db_20240105.dump
+
+mkdir -p ~/.local/share/Odoo/filestore
+tar -xzf filestore_20240105.tar.gz -C ~/.local/share/Odoo/filestore
+mv ~/.local/share/Odoo/filestore/prod_db ~/.local/share/Odoo/filestore/staging_db
+```
+
+Now make it harmless before anything else touches it. Odoo 16 has `odoo-bin neutralize`, which archives the mail servers (and adds a fake one, so Odoo can't fall back to the SMTP server from your config), disables crons, disables payment providers, switches shipping connectors to test mode, and so on. It works by running a `neutralize.sql` from each installed module, though, and those files expect 16 tables. So on the restored 14 copy I do the minimum by hand:
+
+```sql
+-- staging_db only
+UPDATE ir_mail_server SET active = false;
+UPDATE ir_cron SET active = false;
+```
+
+Add `UPDATE fetchmail_server SET active = false;` if the fetchmail module is installed. Also keep in mind that with every mail server archived, Odoo falls back to `smtp_server` in the config file, which defaults to localhost. I point `smtp_server` and `smtp_port` in the staging config at a Mailpit instance, so nothing leaves the box and I can still see what would have been sent.
+
+After the database is on 16 and your modules are updated, run the real thing. A module update can switch records from data files back on, so it's worth doing even if you neutralized before:
+
+```bash
+odoo-bin neutralize -c odoo16.conf -d staging_db
+```
+
+`--stdout` prints the SQL instead of running it, if you want to see what it touches. What it doesn't know about is your own stuff: API keys and endpoints that custom modules keep in `ir.config_parameter` or their own models, automated actions that call external services on create or write (those fire when users click, not on a cron), and OCA's `queue_job` if it's in `server_wide_modules`, because its job runner ignores crons entirely. I go through those by hand and point integrations at the partner's sandbox where there is one.
+
+## Upgrade the standard modules
+
+### Enterprise: Odoo's upgrade service
+
+With an Enterprise subscription, Odoo migrates the standard modules for you. From the staging server:
+
+```bash
+python <(curl -s https://upgrade.odoo.com/upgrade) test -d staging_db -t 16.0
+```
+
+The script dumps the database, uploads it and restores the upgraded result as a new local database (`--restore-name` sets the name; below I'll keep calling it `staging_db`). Your attachments are never uploaded. The service only sends back files the upgrade itself created, and the script merges those into a copy of your filestore if it finds the original in the default location; otherwise that merge is manual. Test databases come back neutralized.
+
+Custom modules come through installed but not upgraded, with their tables and columns waiting for your 16 code.
+
+### Community: OpenUpgrade
+
+On Community, OCA's OpenUpgrade does the same job, one major version at a time: 14 to 15, then 15 to 16. You can't skip 15. Each step runs that version of Odoo with the matching OpenUpgrade branch, with `openupgrade_framework` and `openupgrade_scripts` in the addons path and `openupgradelib` installed in the venv:
+
+```bash
+pip install git+https://github.com/OCA/openupgradelib.git@master
+
+# Step 1: Odoo 15 code, OpenUpgrade 15.0
+odoo-bin -c odoo15.conf -d staging_db \
+    --upgrade-path=/opt/OpenUpgrade-15.0/openupgrade_scripts/scripts \
+    --load=base,web,openupgrade_framework \
+    -u all --stop-after-init
+
+# Step 2: Odoo 16 code, OpenUpgrade 16.0
+odoo-bin -c odoo16.conf -d staging_db \
+    --upgrade-path=/opt/OpenUpgrade-16.0/openupgrade_scripts/scripts \
+    --load=base,web,openupgrade_framework \
+    -u all --stop-after-init
+```
+
+Check OpenUpgrade's coverage list for both 15.0 and 16.0 before you promise anyone a date. A standard module without migration scripts still gets updated, but nothing migrates its data if its models changed. That part becomes your job.
+
+## Upgrade your own modules
+
+With the standard modules on 16, add your ported modules to the addons path and update everything:
+
+```bash
+odoo-bin -c odoo16.conf -d staging_db -u all --stop-after-init --logfile=upgrade.log
+grep -E ' (ERROR|CRITICAL|WARNING) ' upgrade.log
+```
+
+Read the warnings as well as the errors. Deprecated calls, leftover `t-raw`, and fields that share a label all show up as warnings, and they're much cheaper to fix now than after go-live.
+
+### Migration scripts
+
+Ported code makes the module work on 16. Migration scripts take care of its data. Odoo runs them during the update when the version in `__manifest__.py` is higher than the version recorded as installed, and it looks for them in a `migrations` folder:
+
+```text
+my_module/
+├── __manifest__.py        # 'version': '16.0.1.1.0'
+└── migrations/
+    └── 16.0.1.1.0/
+        ├── pre-migrate.py
+        └── post-migrate.py
+```
+
+A folder runs when its version is above the installed one (14.0.something here) and no higher than the manifest version. `pre-` scripts run before the module's Python code and data files are loaded, so the ORM hasn't touched its tables yet. `post-` scripts run after the models are set up and the data files are loaded. Each file defines `migrate(cr, version)`, where `version` is the version that was installed before the update. I start every script with `if not version: return` so it does nothing if there's no previous install to migrate from.
+
+Say the 16 version of a module renames `delivery_note` on `sale.order` to `delivery_instructions`. Without a pre script, the ORM creates an empty `delivery_instructions` column and the old data sits unused in `delivery_note`. Renaming the column first keeps it:
+
+```python
+# my_module/migrations/16.0.1.1.0/pre-migrate.py
+from odoo.tools.sql import column_exists, rename_column
+
+
+def migrate(cr, version):
+    if not version:
+        return
+    if column_exists(cr, 'sale_order', 'delivery_note') and not column_exists(
+        cr, 'sale_order', 'delivery_instructions'
+    ):
+        rename_column(cr, 'sale_order', 'delivery_note', 'delivery_instructions')
+```
+
+A raw column rename moves the data, but the old field's `ir.model.fields` record is left behind. Odoo deletes it at the end of the update, and the chatter's tracking history for that field gets deleted with it. If that history matters, or you'd just rather not write SQL, OCA's `openupgradelib` has `rename_fields`, which renames the column and updates the field record and the references to it. It also has `rename_columns`, `rename_models` and `rename_xmlids`. It's a plain library, so you can use it in your own scripts without running OpenUpgrade.
+
+Post scripts are where you use the ORM. Brand-new stored computed fields get computed when Odoo creates the column, so they don't need anything. What does need a script is an existing stored field whose formula changed during the port, because Odoo has no idea the stored values are stale:
+
+```python
+# my_module/migrations/16.0.1.1.0/post-migrate.py
+from odoo import SUPERUSER_ID, api
+
+
+def migrate(cr, version):
+    if not version:
+        return
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    orders = env['sale.order'].search([('state', 'in', ('sale', 'done'))])
+    env.add_to_compute(env['sale.order']._fields['commission_amount'], orders)
+    orders.flush_recordset(['commission_amount'])
+```
+
+On a table with hundreds of thousands of rows, do it in batches or in SQL. Loading everything into one recordset is a good way to run the upgrade out of memory.
+
+## Tests, then real people
+
+A migrated copy of production has no demo data, so tests that lean on `env.ref('product.product_product_1')` and friends fail for the wrong reason. Create what the test needs:
+
+```python
+from odoo import Command
+from odoo.tests import TransactionCase, tagged
+
+
+@tagged('post_install', '-at_install')
+class TestAfterUpgrade(TransactionCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.partner = cls.env['res.partner'].create({'name': 'Upgrade Test Customer'})
+        cls.product = cls.env['product.product'].create({
+            'name': 'Upgrade Test Product',
+            'list_price': 100.0,
+        })
+
+    def test_sale_order_confirms(self):
+        order = self.env['sale.order'].create({
+            'partner_id': self.partner.id,
+            'order_line': [Command.create({
+                'product_id': self.product.id,
+                'product_uom_qty': 1,
+            })],
+        })
+        order.action_confirm()
+        self.assertEqual(order.state, 'sale')
+```
+
+This lives in `my_module/tests/` (imported from `tests/__init__.py`), and `my_module` has to depend on `sale`. Run it against the staging copy:
+
+```bash
+odoo-bin -c odoo16.conf -d staging_db --test-enable --test-tags /my_module \
+    -u my_module --stop-after-init
+```
+
+`TransactionCase` rolls back after each test, so nothing is left behind in the database.
+
+Automated tests catch crashes. They don't catch the report whose layout shifted, or the button someone uses all day that's now tucked away somewhere else. UAT is the part that actually finds problems. I ask each key user to run their real day on staging, with real customers and products from the copy. A test script I wrote myself never finds as much as someone doing their actual job.
+
+## Database housekeeping and speed
+
+The upgrade rewrites a lot of rows, and a database restored from a dump starts with no planner statistics at all. Stale statistics mean bad query plans. Once the upgrade is done:
+
+```sql
+VACUUM (ANALYZE);
+```
+
+Plain `VACUUM` doesn't take exclusive locks, so it's fine to run with Odoo up. You don't need `REINDEX DATABASE`, which locks tables and buys you nothing here. You don't need to reset sequences either, because `pg_dump` and `pg_restore` carry them over. And don't delete "orphaned" `ir_attachment` rows with no `res_model` or a `res_id` of 0. Plenty of legitimate files look like that, including the compiled web assets.
+
+For speed, I time the screens and reports people use most during UAT and compare them with the 14 server, which is still running. Anything noticeably slower gets looked at before go-live. PostgreSQL's slow query log is the quickest way to find the cause:
+
+```sql
+ALTER DATABASE staging_db SET log_min_duration_statement = 500;
+```
+
+That logs every statement over 500 ms on new connections, so restart Odoo afterwards. It needs a superuser. Run `ALTER DATABASE staging_db RESET log_min_duration_statement;` when UAT is over.
+
+## Dry runs and cutover
+
+The first dry run always fails. That's what it's for. The loop:
+
+1. Restore a fresh production dump to staging.
+2. Run the standard upgrade, then `-u all` with the current state of the ported modules.
+3. Fix whatever broke, in the code or in a migration script. Never by hand in the staging database.
+4. Throw the staging database away and go back to step 1.
+
+Step 4 is the one people skip. A fix made by hand in staging isn't a fix for production, and you find that out on cutover night. I keep going until a run from a fresh dump goes through clean with nothing done manually, and then UAT happens on that database.
+
+Once UAT is signed off, I rehearse the whole cutover on staging and time it from final backup to first login. That's the downtime window, and it's the number the client really cares about.
+
+On the night:
+
+1. Put up a maintenance page or stop the 14 service, so nobody can write.
+2. Take the final backup, database and filestore.
+3. Run the upgrade on that copy. With the upgrade service that means `production` instead of `test`; with OpenUpgrade it's the same steps as the dry runs. Then `-u all` with your modules.
+4. Check crons, mail servers and integrations on the upgraded database. They should match what was live on 14, and nothing from staging (sandbox endpoints, the Mailpit settings) should have leaked into the production config.
+5. Run `VACUUM (ANALYZE)`, have a key user smoke-test, then switch the proxy to the 16 server.
+
+## Rollback
+
+My rollback plan is deliberately boring. The 14 server and its database stay exactly as they were at cutover, untouched and runnable, until 16 has been live for a while. I like to see at least one month-end close go through first. If something goes badly wrong, rolling back means pointing the reverse proxy (or DNS) back at the 14 server.
+
+The catch is that anything entered in 16 after go-live doesn't flow back to 14. There's no reverse migration. That's why writes are frozen during cutover and the go-live window is kept short: the earlier you decide to roll back, the less there is to re-enter. Agree with the client beforehand on how long rollback stays a realistic option.
+
+If the 14 database itself is lost or damaged, the cutover backup is the last resort:
+
+```bash
+createdb prod_db
+pg_restore --no-owner -d prod_db prod_db_20240105.dump
+mkdir -p ~/.local/share/Odoo/filestore
+tar -xzf filestore_20240105.tar.gz -C ~/.local/share/Odoo/filestore
+```
+
+I restore it once on a scratch server before cutover, so I know it works.
+
+## Go-live checklist
+
+- All custom modules install on an empty 16 database and upgrade on the staging copy with no errors in the log
+- Warnings in the upgrade log are fixed or understood
+- The last dry run went from a fresh production dump to a working database with no manual fixes
+- Automated tests pass on staging
+- Key users have run their daily work on staging and signed off
+- Reports and PDFs render, especially customised invoices and delivery slips, with a patched-Qt wkhtmltopdf build on the 16 server
+- Outgoing mail tested from production after cutover
+- Incoming mail (aliases, fetchmail) arrives on production
+- Crons active on production as they were on 14, and still off on staging
+- Integrations, webhooks and payment providers point at live endpoints on production and sandboxes on staging
+- `VACUUM (ANALYZE)` run on the upgraded production database
+- The 14 server, database and filestore kept untouched, and the cutover backup has been test-restored
+
+## Wrapping up
+
+Most of the effort in a 14 to 16 upgrade goes into custom code, not Odoo itself, so the sooner you've grepped your modules and checked your dependencies, the more honest your estimate will be. After that it's repetition: dry runs from fresh dumps until one goes through clean, and a 14 server you can fall back to.
+
+If you're planning one and want a second pair of eyes on it, email me at contact@babatopeajepe.com.

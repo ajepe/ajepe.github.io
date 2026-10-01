@@ -1,66 +1,37 @@
-# Quick Start Guide
+# Quick Start
 
-Since the system is missing Ruby development headers, here are several ways to get your website running:
+Three ways to run the site locally. Pick whichever matches your machine.
 
-## Option 1: Install Ruby Development Headers (Recommended)
+## 1. Ruby + Bundler
 
-If you have sudo access, install the required development packages:
+Jekyll needs Ruby with its development headers, because some gems compile native extensions. On Ubuntu/Debian:
 
 ```bash
-# Ubuntu/Debian
 sudo apt update
-sudo apt install ruby-dev build-essential
-
-# Then run:
-cd blog
-bundle install
-bundle exec jekyll serve
+sudo apt install ruby-full ruby-dev build-essential zlib1g-dev
 ```
 
-## Option 2: Use Docker (Easiest)
-
-Create a `Dockerfile` in your project:
-
-```dockerfile
-FROM jekyll/jekyll:4.2.0
-WORKDIR /srv/jekyll
-COPY . .
-EXPOSE 4000
-CMD ["jekyll", "serve", "--host", "0.0.0.0"]
-```
-
-Then run:
+Then, from the repo root:
 
 ```bash
-docker build -t my-jekyll-site .
-docker run -p 4000:4000 my-jekyll-site
+bundle install
+bundle exec jekyll serve --livereload
+# → http://localhost:4000
 ```
 
-## Option 3: Use GitHub Pages Directly
+If `bundle install` fails while building a native extension, the Ruby dev headers are usually what's missing.
 
-Since this is designed for GitHub Pages, you can:
+## 2. Docker (no local Ruby)
 
-1. Push the code to GitHub
-2. Enable GitHub Pages in repository settings
-3. GitHub will build and serve the site automatically
+The repo already includes a `Dockerfile` and `docker-compose.yml`:
 
-## Option 4: Static HTML Version
+```bash
+docker compose up --build
+# → http://localhost:4000
+```
 
-I can create a static HTML version that doesn't require Jekyll at all.
+The compose file mounts the repo into the container, so edits show up on reload without rebuilding.
 
-## Current Status
+## 3. GitHub Pages
 
-✅ **Complete website structure created**
-✅ **All content written and optimized**
-✅ **Responsive design implemented**
-✅ **SEO features added**
-⚠️ **Ruby environment needs development headers**
-
-The website is 100% ready for deployment. The only issue is the local development environment due to missing system packages.
-
-Would you like me to:
-1. Create a Docker setup for easy local development?
-2. Create a static HTML version that works anywhere?
-3. Help you set up the proper Ruby environment?
-
-The website itself is complete and production-ready!
+Push to `main` and GitHub Pages builds and deploys the site. The custom domain is set by the `CNAME` file. This is the slowest feedback loop, so it's best for final checks rather than day-to-day editing.

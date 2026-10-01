@@ -3,83 +3,71 @@ layout: simple-page
 title: About Me
 permalink: /about/
 subtitle: Senior Odoo Specialist & Python Developer
-description: Learn more about my background, expertise, and professional journey as a Top-Rated Odoo Specialist with a passion for building scalable ERP solutions.
+description: Odoo developer and Python engineer. Custom modules, integrations, upgrades and performance work for companies running Odoo in production.
 ---
 
-## Professional Summary
+## What I do
 
-I'm a **Senior Odoo Specialist and Python Developer** with over 5 years of experience delivering enterprise-grade ERP solutions. As a **Top-Rated freelancer on Upwork with 100% Job Success**, I've built a reputation for excellence in custom Odoo development, API integrations, and performance optimization.
+I'm a Python developer who ended up specialising in Odoo, and I've been doing it full-time for over 5 years. Most of my work comes through Upwork, where I'm Top-Rated with a 100% Job Success score.
 
-My expertise spans the full Odoo ecosystem, from custom module development to complex system integrations. I specialize in helping businesses leverage Odoo's power to streamline operations, automate workflows, and achieve scalable growth.
+In practice that means three kinds of jobs. Building custom modules when the standard apps don't fit how a company actually works. Connecting Odoo to the other systems they already run. And fixing installations that have become slow, fragile or stuck on an old version.
 
-## Technical Expertise
+## Tools I use every day
 
-### Core Technologies
-- **Python** - Advanced proficiency in Odoo framework, custom modules, and API development
-- **PostgreSQL** - Database design, optimization, query tuning, and performance analysis
-- **Redis** - Caching strategies, session management, and performance optimization
-- **JavaScript/Vue.js** - Frontend development, custom Odoo interfaces, and SPA applications
-- **RESTful APIs** - Custom API development, third-party integrations, and data workflows
+- **Python and the Odoo framework**: models, the ORM, controllers, wizards, reports, migration scripts
+- **PostgreSQL**: schema design, indexing, reading query plans, tuning config for real workloads
+- **Redis**: caching and sessions when Odoo needs the help
+- **JavaScript, OWL and Vue.js**: custom Odoo views and widgets, plus the odd standalone frontend
+- **REST APIs**: building them on top of Odoo and consuming everyone else's
 
-### Odoo Specialization
-- **Custom Module Development** - Tailored solutions for unique business requirements
-- **API Integration** - Seamless connectivity with external systems and services
-- **Performance Optimization** - Database tuning, caching strategies, and code optimization
-- **Version Migrations** - Smooth upgrades (Odoo 14→15→16) with data integrity
-- **Workflow Automation** - Business process optimization and automation
+### Odoo work in particular
 
-## Professional Journey
+- **Custom modules** for processes the standard apps don't cover
+- **Integrations** with e-commerce platforms, carriers, accounting tools and in-house systems
+- **Performance work**: slow screens, slow reports, slow crons
+- **Version upgrades**, including 14 → 15 → 16, custom code and data included
+- **Automation** of the manual steps people have been putting up with for years
 
-### From Developer to Odoo Specialist
-My journey began with Python development, quickly evolving into ERP systems when I discovered Odoo's powerful framework. What started as curiosity became a specialization as I helped numerous businesses transform their operations through custom Odoo solutions.
+## How I got here
 
-Working with clients across various industries - from manufacturing to e-commerce - I've developed deep insights into business process optimization and the technical challenges of scaling ERP systems. This experience has made me adept at translating complex business requirements into robust, scalable technical solutions.
+I started out writing general Python. Odoo came along on a client project, and I liked that it gave me a real framework to build business software on instead of starting from scratch every time. One Odoo project led to the next, and at some point it stopped being a side skill and became the job.
 
-## Achievements & Recognition
+Since then I've worked with manufacturers, online shops, logistics companies, service businesses and a few others. The industries are different, but the problems keep rhyming. Data lives in three places. A process that made sense at 10 users falls apart at 200. An upgrade got put off for so long that it now feels dangerous. Most of my job is turning "this is how we actually work" into something Odoo can run reliably.
 
-### Top-Rated Plus
-Elite status on Upwork recognizing top performers with consistent excellence and client satisfaction.
+## A few numbers
 
-### 100% Job Success
-Perfect track record delivering successful projects with measurable business impact.
+- **Top-Rated Plus** on Upwork
+- **100% Job Success** score
+- **50+ projects** delivered: custom modules, integrations, migrations and performance fixes
 
-### 50+ Projects
-Extensive portfolio spanning custom modules, integrations, migrations, and performance optimizations.
+## How I work
 
-## Work Philosophy
+- **I ask a lot of questions first.** Most bad Odoo projects come from building the wrong thing well.
+- **I build for the next upgrade.** Clean inheritance, no core hacks, and tests where they matter, so the next version isn't a rewrite.
+- **You'll always know where things stand.** Regular updates, early warnings when something is harder than expected, and no disappearing for two weeks.
+- **I leave things documented.** Your team (or the next developer) should be able to understand what I built without calling me.
 
-### Client-Centric Approach
-I believe in building long-term partnerships based on trust, transparency, and mutual success. My approach focuses on:
+## Industries I've worked in
 
-- **Understanding Business Needs** - Deep dive into your processes to identify real pain points and opportunities
-- **Sustainable Solutions** - Building scalable systems that grow with your business
-- **Clear Communication** - Regular updates, transparent progress reporting, and responsive support
-- **Quality Assurance** - Thorough testing, code reviews, and performance optimization
-- **Knowledge Transfer** - Documentation and training to empower your team
+- Manufacturing and production
+- E-commerce and retail
+- Professional services
+- Logistics and supply chain
+- Healthcare
+- Education and training
 
-## Industry Experience
+## Typical projects
 
-### Served Industries
-- Manufacturing & Production
-- E-commerce & Retail
-- Professional Services
-- Logistics & Supply Chain
-- Healthcare & Medical Services
-- Education & Training
+- Full Odoo implementations
+- Custom module development
+- Integrations with third-party systems
+- Performance audits
+- Data migrations and version upgrades
+- API development
 
-### Project Types
-- Full Odoo Implementations
-- Custom Module Development
-- System Integrations
-- Performance Audits & Optimization
-- Data Migration Projects
-- API Development & Integration
+## Working together
 
-## Let's Work Together
-
-Whether you're looking to implement Odoo for the first time, optimize an existing installation, or need custom development for specific business requirements, I'm here to help you achieve your goals.
-
-My commitment is to deliver solutions that not only meet your technical requirements but also drive real business value and growth.
+If you're about to start with Odoo, already running it and fighting it, or need something built that doesn't exist yet, send me a message. Tell me what you're trying to do and what's in the way, and I'll tell you honestly whether I can help.
 
 ---
 

@@ -2,140 +2,140 @@
 layout: simple-page
 title: Projects & Case Studies
 permalink: /projects/
-description: Real-world Odoo implementations and custom solutions delivered for enterprise clients across various industries.
+description: A selection of Odoo projects I've delivered, covering custom modules, integrations, upgrades and manufacturing systems.
 ---
 
-## 🚢 Advanced Shipping Management System
+## Shipping management for a global logistics company
 
-Custom Odoo shipping module for a global logistics company handling complex multi-carrier integrations and real-time tracking.
+A custom Odoo shipping module that handles multiple carriers and real-time tracking.
 
-### Challenge
-Client needed to replace legacy shipping system with integrated Odoo solution supporting 20+ carriers, automated rate calculations, and real-time tracking across international borders.
+### The problem
+The client wanted to replace an old standalone shipping system with something built into Odoo. It had to support more than 20 carriers, work out rates automatically and track parcels across borders.
 
-### Solution
-Developed comprehensive shipping management module with carrier API integrations, automated routing algorithms, customs documentation generation, and predictive delivery analytics.
+### What I built
+A shipping module with carrier API integrations, automatic carrier selection, generated customs paperwork, and delivery-time estimates based on past shipments.
 
-### Impact
-- Reduced shipping costs by 23% through carrier optimization
-- Improved delivery accuracy by 95%
-- Automated 80% of manual shipping processes
-- Real-time tracking for 10,000+ monthly shipments
-
----
-
-## 📈 Enterprise Resource Planning Migration
-
-Complete Odoo migration from v14 to v16 for a manufacturing company with 500+ users and complex production workflows.
-
-### Challenge
-Client required migration of heavily customized Odoo v14 instance with 50+ custom modules, 10 years of historical data, and mission-critical production schedules.
-
-### Solution
-Executed phased migration approach with comprehensive code refactoring, database optimization, performance tuning, and extensive testing including parallel run validation.
-
-### Impact
-- Zero downtime during migration
-- 40% performance improvement in key operations
-- Successfully migrated 5TB of data
-- Updated all custom modules for v16 compatibility
+### Results
+- Shipping costs down 23% through better carrier selection
+- Delivery accuracy improved by 95%
+- 80% of the manual shipping work automated
+- Real-time tracking on more than 10,000 shipments a month
 
 ---
 
-## 🔗 Multi-Platform API Integration Hub
+## Odoo 14 to 16 upgrade for a manufacturer
 
-Centralized API integration platform connecting Odoo with Salesforce, Shopify, QuickBooks, and custom enterprise systems.
+Upgrading a heavily customised Odoo 14 system with 500+ users and complex production workflows.
 
-### Challenge
-Retail client needed seamless data synchronization between Odoo ERP and 6 external platforms, handling 100,000+ daily transactions with real-time conflict resolution.
+### The problem
+The database had 50+ custom modules and 10 years of history, and production planning ran on it every day. The upgrade couldn't interrupt the factory.
 
-### Solution
-Built robust integration middleware with message queuing, conflict resolution algorithms, data transformation pipelines, and comprehensive monitoring/alerting system.
+### What I did
+Ported and cleaned up the custom code in phases, tuned the database, and ran the old and new systems in parallel to compare results before switching over.
 
-### Impact
-- 99.9% data synchronization accuracy
-- Reduced manual data entry by 90%
-- Real-time inventory across all channels
-- Automated financial reconciliation
-
----
-
-## 🏭 Manufacturing Execution System
-
-Custom MES module for industrial manufacturing company with real-time production monitoring, quality control, and IoT device integration.
-
-### Challenge
-Client needed to replace disparate manufacturing systems with unified Odoo solution supporting real-time production tracking, quality management, and equipment integration.
-
-### Solution
-Developed comprehensive manufacturing module with IoT sensor integration, real-time dashboards, quality control workflows, and predictive maintenance algorithms.
-
-### Impact
-- Increased production efficiency by 35%
-- Reduced quality issues by 60%
-- Real-time visibility across 50+ production lines
-- Predictive maintenance reduced downtime by 40%
+### Results
+- No downtime during the switch
+- Key operations about 40% faster
+- 5TB of data migrated
+- Every custom module working on 16
 
 ---
 
-## 💰 Financial Management & Reporting Suite
+## Integration hub for a multi-channel retailer
 
-Advanced financial management system with multi-currency support, automated reconciliation, and AI-powered financial analytics.
+One integration layer connecting Odoo with Salesforce, Shopify, QuickBooks and the client's own systems.
 
-### Challenge
-Financial services client required sophisticated Odoo financial module handling complex multi-entity accounting, regulatory compliance, and advanced reporting capabilities.
+### The problem
+The client needed Odoo and 6 other platforms to stay in sync across more than 100,000 transactions a day, including when two systems changed the same record at once.
 
-### Solution
-Built comprehensive financial suite with automated bank reconciliation, multi-currency management, regulatory reporting templates, and ML-powered anomaly detection.
+### What I built
+Integration middleware with a message queue, rules for resolving conflicting updates, data transformation for each platform, and monitoring that alerts someone when a sync fails.
 
-### Impact
-- Automated 95% of bank reconciliations
-- Reduced month-end close by 70%
-- Improved financial accuracy by 99.5%
-- Real-time financial analytics and forecasting
-
----
-
-## 🛒 E-commerce Integration Platform
-
-Comprehensive e-commerce solution connecting Odoo with multiple online marketplaces, inventory management, and order fulfillment automation.
-
-### Challenge
-Retail client needed unified platform managing 5 e-commerce stores, marketplace integrations, dropshipping workflows, and automated order processing.
-
-### Solution
-Developed end-to-end e-commerce integration with marketplace APIs, automated inventory synchronization, order routing algorithms, and shipping automation.
-
-### Impact
-- Increased sales by 45% through marketplace expansion
-- Reduced order processing time by 80%
-- Eliminated stockouts through predictive inventory
-- Automated shipping for 95% of orders
+### Results
+- 99.9% sync accuracy
+- 90% less manual data entry
+- Stock levels up to date across every channel
+- Financial reconciliation automated
 
 ---
 
-## Technical Expertise Areas
+## Manufacturing execution system
 
-### 🔧 Custom Development
-Bespoke Odoo modules, workflow automation, and specialized business solutions tailored to unique requirements.
+A custom MES module for an industrial manufacturer, covering live production monitoring, quality control and connections to shop-floor equipment.
 
-### ⚡ Performance Optimization
-Database tuning, query optimization, caching strategies, and system performance enhancements for large-scale deployments.
+### The problem
+Production tracking, quality checks and machine data were spread across separate systems. The client wanted all of it in Odoo, live.
 
-### 🔗 System Integration
-API development, third-party system connections, data synchronization, and enterprise integration patterns.
+### What I built
+A manufacturing module that reads IoT sensors, shows live production dashboards, runs quality-control workflows, and flags equipment that's likely to need maintenance.
 
-### 📊 Data Migration
-Seamless data transfers, system upgrades, legacy system modernization, and data integrity validation.
-
-### 🛡️ Security & Compliance
-Security audits, compliance implementations, access control, and data protection for regulated industries.
-
-### 📱 Mobile & Frontend
-Custom interfaces, mobile applications, Vue.js development, and user experience optimization.
+### Results
+- Production efficiency up 35%
+- Quality issues down 60%
+- Live view across 50+ production lines
+- Unplanned downtime down 40% thanks to predictive maintenance
 
 ---
 
-## Client Success Stories
+## Finance and reporting suite
+
+Financial management in Odoo for a financial services client: multiple currencies, automated reconciliation and analytics.
+
+### The problem
+The client needed accounting across multiple entities, regulatory reporting and better visibility than standard Odoo reports provided.
+
+### What I built
+Automated bank reconciliation, multi-currency handling, regulatory report templates, and machine-learning checks that flag unusual transactions.
+
+### Results
+- 95% of bank reconciliation automated
+- Month-end close 70% shorter
+- Financial accuracy improved by 99.5%
+- Live financial reporting and forecasting
+
+---
+
+## E-commerce integration platform
+
+Connecting Odoo to several online stores and marketplaces, plus inventory and fulfilment automation.
+
+### The problem
+A retailer was running 5 online stores plus marketplace and dropshipping channels, and processing orders by hand.
+
+### What I built
+Marketplace API integrations, automatic stock sync, order routing rules and shipping automation, all driven from Odoo.
+
+### Results
+- Sales up 45% after expanding to new marketplaces
+- Order processing time down 80%
+- Stockouts eliminated through stock forecasting
+- 95% of orders shipped without manual steps
+
+---
+
+## Areas I work in
+
+### Custom development
+Odoo modules and automations for the parts of a business the standard apps don't cover.
+
+### Performance
+Database tuning, query fixes, caching and config changes for large or busy installations.
+
+### Integrations
+APIs, connections to third-party systems, and keeping data consistent between them.
+
+### Data migration
+Version upgrades, moving off legacy systems, and checking afterwards that nothing went missing.
+
+### Security and compliance
+Access rights, record rules, audits, and the data-protection requirements of regulated industries.
+
+### Frontend
+Custom Odoo views and widgets, Vue.js apps, and making screens people use all day less painful.
+
+---
+
+## What clients have said
 
 > "Babatope's expertise in Odoo development transformed our manufacturing operations. The custom MES module he built increased our efficiency by 35% and reduced quality issues significantly. His technical knowledge and professional approach made this complex project a complete success."
 > 
