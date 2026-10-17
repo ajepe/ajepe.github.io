@@ -1,36 +1,39 @@
-// Design System - Tokyo Night / Hyprland
-// Dark-first, terminal-centric, tiling gaps, mono-heavy
+// Design System — Babatope Ajepe / Odoo Database Migration
+// Light, clean, professional. Odoo plum accent, teal highlights.
 
-// Backgrounds - near-black with blue tint (Tokyo Night Storm)
-$bg-primary: #1a1b26;
-$bg-dark: #16161e;
-$bg-secondary: #24283b;
-$bg-tertiary: #1f2335;
-$bg-card: #24283b;
-$bg-float: rgba(36, 40, 59, 0.85);
+// Backgrounds
+$bg-primary: #ffffff;
+$bg-soft: #f8f7f9;
+$bg-muted: #f2f0f3;
+$bg-code: #f8f8fa;
+$bg-dark: #1c1520;
+$bg-dark-soft: #251c2a;
 
-$text-primary: #c0caf5;
-$text-secondary: #a9b1d6;
-$text-muted: #565f89;
-$text-bright: #ffffff;
+$text-on-dark: #f4eff4;
+$text-on-dark-muted: #b6a8b5;
 
-$accent-primary: #7dcfff; // cyan - main accent
-$accent-secondary: #bb9af7; // purple
-$accent-green: #9ece6a; // success / terminal green
-$accent-yellow: #e0af68;
-$accent-red: #f7768e;
-$accent-orange: #ff9e64;
-$accent-blue: #7aa2f7;
-$accent-glow: rgba(125, 207, 255, 0.15);
+// Text
+$text-primary: #1d1a20;
+$text-secondary: #4d4953;
+$text-muted: #767079;
 
-$border-color: #292e42;
-$border-light: #3b4261;
-$border-bright: #545c7e;
+// Borders
+$border-color: #e7e4e9;
+$border-strong: #d6d0d9;
 
-// Typography - mono first, terminal style
-$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-$font-heading: 'JetBrains Mono', 'Fira Code', monospace;
-$font-mono: 'JetBrains Mono', 'Fira Code', 'CaskaydiaCove Nerd Font', monospace;
+// Accent — Odoo plum
+$accent: #714b67;
+$accent-dark: #593a51;
+$accent-soft: #f6eef4;
+$accent-border: #e4d3de;
+
+// Secondary accent — teal
+$teal: #0d8f86;
+$teal-soft: #eaf6f4;
+
+// Typography
+$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 
 // Spacing
 $spacing-xs: 0.25rem;
@@ -39,20 +42,23 @@ $spacing-md: 1rem;
 $spacing-lg: 1.5rem;
 $spacing-xl: 2rem;
 $spacing-2xl: 3rem;
-$spacing-3xl: 4rem;
-
-// Shadows
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-$shadow-glow: 0 0 20px $accent-glow;
+$spacing-3xl: 4.5rem;
 
 // Border radius
-$radius-sm: 4px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 14px;
+$radius-xl: 18px;
+
+// Shadows — subtle, light-theme
+$shadow-sm: 0 1px 2px rgba(29, 26, 32, 0.05);
+$shadow-md: 0 10px 30px -14px rgba(29, 26, 32, 0.22);
+$shadow-lg: 0 28px 56px -28px rgba(29, 26, 32, 0.28);
 
 // Transitions
 $transition-fast: 150ms ease;
-$transition-base: 250ms ease;
+$transition-base: 220ms ease;
+
+// Layout
+$container: 1120px;
+$container-narrow: 760px;

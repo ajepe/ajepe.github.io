@@ -2,5 +2,5 @@
 layout: blog
 title: Blog
 permalink: /blog/
-description: Technical articles about Odoo development, API integrations, and best practices.
+description: Notes from real Odoo migrations and upgrades — custom module porting, PostgreSQL performance and Odoo internals, written from client projects.
 ---

@@ -1,8 +1,9 @@
 # Site settings
-title: "Babatope Ajepe - Senior Odoo Specialist & Python Developer"
-description: "Senior Odoo Specialist and Python Developer specializing in ERP, API integrations, PostgreSQL, Redis, Vue.js, and custom Odoo solutions for enterprise environments."
+title: "Babatope Ajepe — Odoo Database Migration Specialist"
+description: "Odoo database migration: version upgrades, custom module porting, data migration and PostgreSQL tuning. Rehearsed, zero-downtime cutovers for Odoo systems from 13 to 18 — Community and Enterprise."
 url: "https://babatopeajepe.com"
 baseurl: ""
+lang: en
 
 # Author info
 author: "Babatope Ajepe"
@@ -56,7 +57,7 @@ exclude:
 # SEO
 twitter:
   username: babatopeajepe
-  card: summary
+  card: summary_large_image
 
 social:
   name: Babatope Ajepe

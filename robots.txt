@@ -22,6 +22,5 @@ Disallow: /_includes/
 Disallow: /_sass/
 Disallow: /_site/
 
-# Block access to development files
-Disallow: /assets/css/main.scss
-Disallow: /assets/js/main.js
+# Source files are not part of the built site; assets stay crawlable
+# so search engines can render pages correctly.

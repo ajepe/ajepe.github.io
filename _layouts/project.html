@@ -2,8 +2,8 @@
 layout: default
 ---
 
-<article class="page project-page">
-  <header class="project-header">
+<article class="page">
+  <header class="page-header container-narrow">
     <h1>{{ page.title }}</h1>
     {% if page.subtitle %}
     <p class="subtitle">{{ page.subtitle }}</p>
@@ -17,11 +17,11 @@ layout: default
     {% endif %}
   </header>
 
-  <div class="project-content">
+  <div class="page-content prose container-narrow">
     {{ content }}
   </div>
 
-  <footer class="project-footer">
-    <a href="{{ "/projects/" | relative_url }}">← Back to Projects</a>
+  <footer class="post-footer container-narrow">
+    <a class="link-arrow" href="{{ "/projects/" | relative_url }}">← All projects</a>
   </footer>
 </article>

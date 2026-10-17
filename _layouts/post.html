@@ -3,26 +3,27 @@ layout: default
 ---
 
 <article class="post">
-  <div class="term-bar">
-    <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-    <span class="term-title">~/blog/{{ page.title | slugify }}.md — nvim</span>
-  </div>
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
+  <header class="post-header container-narrow">
     <p class="post-meta">
-      <time>{{ page.date | date: "%B %d, %Y" }}</time>
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
       {% if page.categories %}
-      <span class="separator">•</span>
-      <span class="category">{{ page.categories | first }}</span>
+      <span class="pill pill-accent">{{ page.categories | first }}</span>
+      {% endif %}
+      {% if page.reading_time %}
+      <span>{{ page.reading_time }} min read</span>
+      {% else %}
+      <span class="post-reading-time"></span>
       {% endif %}
     </p>
+    <h1 class="post-title">{{ page.title }}</h1>
   </header>
 
-  <div class="post-content">
+  <div class="post-content prose container-narrow">
     {{ content }}
   </div>
 
-  <footer class="post-footer">
-    <a href="{{ "/blog/" | relative_url }}">← Back to Blog</a>
+  <footer class="post-footer container-narrow">
+    <a class="link-arrow" href="{{ "/blog/" | relative_url }}">← All articles</a>
+    <span>Working on a migration? <a href="{{ "/contact/" | relative_url }}">Get an assessment</a></span>
   </footer>
 </article>

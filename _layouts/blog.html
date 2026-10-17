@@ -2,46 +2,32 @@
 layout: default
 ---
 
-<section class="blog-list">
-  <header class="blog-header">
-    <div class="term-bar">
-      <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-      <span class="term-title">~/blog — ls -la</span>
-    </div>
-    <div class="blog-header-inner">
-    <h1>ls ~/blog</h1>
-    <p>Technical articles about Odoo development, API integrations, and best practices.</p>
-    </div>
+<section class="blog">
+  <header class="blog-header container">
+    <p class="eyebrow">Blog</p>
+    <h1>Notes from real Odoo work</h1>
+    <p>Migrations, upgrades and the internals behind them — written from client projects, not from the docs.</p>
   </header>
-  
-  <div class="blog-grid">
-    {% for post in site.posts %}
-    <article class="blog-card">
-      <div class="term-bar">
-        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-        <span class="term-title">{{ post.date | date: "%Y-%m-%d" }}.md</span>
-      </div>
-      <a href="{{ post.url | relative_url }}" class="card-link">
-        <div class="card-meta">
-          <time>{{ post.date | date: "%Y-%m-%d" }}</time>
-          <span class="separator">|</span>
-          {% if post.categories %}
-          <span class="category">{{ post.categories | first }}</span>
-          {% endif %}
-        </div>
-        <h2 class="card-title">{{ post.title }}</h2>
-        {% if post.excerpt %}
-        <p class="card-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
-        {% endif %}
-        <div class="card-footer">
-          <span class="read-more">cat ./post.md</span>
-        </div>
-      </a>
-    </article>
-    {% endfor %}
+
+  <div class="container">
+    <div class="post-grid post-grid--wide">
+      {% for post in site.posts %}
+      <article class="post-card">
+        <a href="{{ post.url | relative_url }}" class="post-card-link">
+          <div class="post-card-meta">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+            {% if post.categories %}
+            <span class="pill">{{ post.categories | first }}</span>
+            {% endif %}
+          </div>
+          <h2 class="post-card-title">{{ post.title }}</h2>
+          <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 28 }}</p>
+          <span class="read-more">Read article <span aria-hidden="true">→</span></span>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+
+    <p class="blog-rss">Subscribe via <a href="{{ "/feed.xml" | relative_url }}">RSS</a></p>
   </div>
-  
-  <footer class="blog-footer">
-    <a href="{{ "/feed.xml" | relative_url }}">~/rss — Subscribe via RSS</a>
-  </footer>
 </section>

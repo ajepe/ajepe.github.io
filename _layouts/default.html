@@ -3,37 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page.title | default: site.title }}</title>
+  <title>{% if page.url == "/" %}{{ site.title }}{% else %}{{ page.title }} · {{ site.author }}{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description }}">
-  
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
-  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:title" content="{% if page.url == "/" %}{{ site.title }}{% else %}{{ page.title }}{% endif %}">
   <meta property="og:description" content="{{ page.description | default: site.description }}">
   <meta property="og:image" content="{{ "/assets/images/og-image.png" | absolute_url }}">
-  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:site_name" content="{{ site.author }}">
   {% if page.date %}
   <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
   {% endif %}
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="{{ page.url | absolute_url }}">
-  <meta property="twitter:title" content="{{ page.title | default: site.title }}">
+  <meta property="twitter:title" content="{% if page.url == "/" %}{{ site.title }}{% else %}{{ page.title }}{% endif %}">
   <meta property="twitter:description" content="{{ page.description | default: site.description }}">
   <meta property="twitter:image" content="{{ "/assets/images/og-image.png" | absolute_url }}">
   <meta name="twitter:site" content="@{{ site.twitter.username }}">
   <meta name="twitter:creator" content="@{{ site.twitter.username }}">
-  
-  <!-- Structured Data: Person -->
+
+  <!-- Structured Data: Person + Service -->
   {% if page.url == "/" %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "{{ site.author }}",
-    "jobTitle": "Senior Odoo Specialist & Python Developer",
+    "jobTitle": "Odoo Database Migration Specialist",
     "url": "{{ site.url }}",
     "sameAs": [
       "{{ site.linkedin }}",
@@ -41,11 +42,28 @@
       "{{ site.upwork }}"
     ],
     "email": "mailto:{{ site.email }}",
-    "description": "{{ site.description }}"
+    "description": "{{ site.description }}",
+    "knowsAbout": ["Odoo", "Odoo database migration", "PostgreSQL", "Python", "ERP systems"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Odoo Database Migration",
+    "serviceType": "Odoo database migration and version upgrades",
+    "description": "Version upgrades, custom module porting, data migration and verification for Odoo databases — Odoo 13 to 18, Community and Enterprise.",
+    "provider": {
+      "@type": "Person",
+      "name": "{{ site.author }}",
+      "url": "{{ site.url }}"
+    },
+    "areaServed": "Worldwide",
+    "url": "{{ site.url }}"
   }
   </script>
   {% endif %}
-  
+
   <!-- Structured Data: BlogPosting -->
   {% if page.layout == 'post' %}
   <script type="application/ld+json">
@@ -61,79 +79,109 @@
     "datePublished": "{{ page.date | date_to_xmlschema }}",
     "url": "{{ page.url | absolute_url }}",
     "publisher": {
-      "@type": "Organization",
-      "name": "{{ site.title }}",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "{{ "/assets/images/og-image.png" | absolute_url }}"
-      }
+      "@type": "Person",
+      "name": "{{ site.author }}",
+      "url": "{{ site.url }}"
     }
   }
   </script>
   {% endif %}
-  
+
+  <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/favicon.svg" | relative_url }}">
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | relative_url }}">
-  <meta name="theme-color" content="#1a1b26">
+  <meta name="theme-color" content="#ffffff">
+  <script>document.documentElement.classList.add('js');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
-  
-  <header class="site-header">
-    <div class="header-container">
-      <a href="{{ "/" | relative_url }}" class="site-brand">
-        <span class="brand-prompt">➜</span>
-        <span class="brand-text">~{{ site.author | slugify }}</span>
-        <span class="brand-blink"></span>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner container">
+      <a href="{{ "/" | relative_url }}" class="brand">
+        <span class="brand-mark" aria-hidden="true">BA</span>
+        <span class="brand-text">
+          <span class="brand-name">{{ site.author }}</span>
+          <span class="brand-tag">Odoo Database Migration</span>
+        </span>
       </a>
-      
+
+      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+        <ul class="nav-menu">
+          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}>Projects</a></li>
+          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" or page.layout == "post" %}class="active" aria-current="page"{% endif %}>Blog</a></li>
+          <li><a href="{{ "/about/" | relative_url }}" {% if page.url == "/about/" %}class="active" aria-current="page"{% endif %}>About</a></li>
+          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active" aria-current="page"{% endif %}>Contact</a></li>
+        </ul>
+        <a href="{{ "/contact/" | relative_url }}" class="btn btn-primary btn-sm nav-cta">Get an assessment</a>
+      </nav>
+
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
       </button>
-      
-      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
-        <ul class="nav-menu">
-          <li><a href="{{ "/" | relative_url }}" {% if page.url == "/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">1:</span>home</a></li>
-          <li><a href="{{ "/about/" | relative_url }}" {% if page.url == "/about/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">2:</span>about</a></li>
-          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">3:</span>blog</a></li>
-          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">4:</span>projects</a></li>
-          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active" aria-current="page"{% endif %}><span class="ws-num">5:</span>contact</a></li>
-        </ul>
-      </nav>
-
-      <div class="waybar-status">
-        <span class="status-dot"></span>
-        <span>online</span>
-        <span class="status-clock" id="waybarClock">--:--</span>
-      </div>
     </div>
   </header>
-  
+
   <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
 
   <main class="main-content" id="main-content">
-    <div class="content-wrapper">
-      {{ content }}
-    </div>
+    {{ content }}
   </main>
 
   <footer class="site-footer">
-    <div class="footer-content">
-      <div class="footer-left">
-        <p><span class="prompt">➜ ~</span> © {{ "now" | date: "%Y" }} {{ site.author }} — hyprland inside</p>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="{{ "/" | relative_url }}" class="brand">
+            <span class="brand-mark" aria-hidden="true">BA</span>
+            <span class="brand-text">
+              <span class="brand-name">{{ site.author }}</span>
+              <span class="brand-tag">Odoo Database Migration</span>
+            </span>
+          </a>
+          <p class="footer-blurb">
+            Odoo database migrations: version upgrades, custom module porting, data migration
+            and PostgreSQL performance — Odoo 13 to 18, Community and Enterprise.
+          </p>
+          <ul class="footer-social">
+            <li><a href="{{ site.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer">Upwork</a></li>
+          </ul>
+        </div>
+
+        <nav class="footer-col" aria-label="Site">
+          <h3>Site</h3>
+          <ul>
+            <li><a href="{{ "/projects/" | relative_url }}">Projects</a></li>
+            <li><a href="{{ "/blog/" | relative_url }}">Blog</a></li>
+            <li><a href="{{ "/about/" | relative_url }}">About</a></li>
+            <li><a href="{{ "/contact/" | relative_url }}">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+            <li><a href="{{ "/contact/" | relative_url }}">Request an assessment</a></li>
+            <li><span>Replies within 24 hours</span></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-right">
-        <a href="{{ site.github }}" target="_blank" rel="noopener noreferrer" class="social-link">~/github</a>
-        <a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer" class="social-link">~/linkedin</a>
-        <a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer" class="social-link">~/upwork</a>
+
+      <div class="footer-bottom">
+        <p>© {{ "now" | date: "%Y" }} {{ site.author }} · Odoo database migration specialist</p>
+        <p class="footer-note">Odoo 13 → 18 · Community &amp; Enterprise</p>
       </div>
     </div>
   </footer>
+
   <script src="{{ "/assets/js/main.js" | relative_url }}"></script>
 </body>
 </html>
