@@ -42,10 +42,11 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   border-bottom: 1px solid $border-color;
+  transition: box-shadow $transition-base;
 
   &.scrolled {
     box-shadow: $shadow-sm;
@@ -76,12 +77,13 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: $accent;
+  background-image: $gradient-accent;
   color: #fff;
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 12px -6px rgba(113, 75, 103, 0.6);
 }
 
 .brand-text {
@@ -127,10 +129,11 @@
   a {
     display: inline-block;
     padding: 8px 13px;
-    border-radius: $radius-sm;
+    border-radius: 8px;
     font-size: 0.92rem;
     font-weight: 500;
     color: $text-secondary;
+    transition: color $transition-fast, background $transition-fast;
 
     &:hover {
       color: $text-primary;
@@ -141,6 +144,7 @@
     &.active {
       color: $accent-dark;
       font-weight: 600;
+      background: $accent-soft;
     }
   }
 }
@@ -196,14 +200,27 @@
 
 // Footer
 .site-footer {
+  position: relative;
   background: $bg-dark;
   color: $text-on-dark-muted;
   padding: $spacing-3xl 0 $spacing-xl;
   margin-top: $spacing-3xl;
   font-size: 0.92rem;
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(113, 75, 103, 0.9) 30%, rgba(13, 143, 134, 0.7) 70%, transparent);
+    pointer-events: none;
+  }
+
   a {
     color: $text-on-dark-muted;
+    transition: color $transition-fast;
 
     &:hover {
       color: #fff;
@@ -308,13 +325,14 @@
     height: 100vh;
     background: $bg-primary;
     border-left: 1px solid $border-color;
+    border-radius: 20px 0 0 20px;
     box-shadow: $shadow-lg;
     z-index: 95;
     padding: $spacing-3xl $spacing-xl $spacing-xl;
     flex-direction: column;
     align-items: stretch;
     gap: $spacing-lg;
-    transition: right $transition-base;
+    transition: right 280ms $ease-out;
     overflow-y: auto;
 
     &.nav-open { right: 0; }

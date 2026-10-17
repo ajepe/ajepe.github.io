@@ -7,7 +7,7 @@ description: "Odoo database migration by Babatope Ajepe: version upgrades, custo
 <div class="hero">
   <div class="container hero-grid">
     <div class="hero-content reveal">
-      <p class="eyebrow">Odoo database migration specialist</p>
+      <span class="hero-badge"><span class="dot" aria-hidden="true"></span>Odoo database migration specialist</span>
       <h1 class="hero-title">Upgrade your Odoo database <span class="hl">without breaking production</span>.</h1>
       <p class="hero-lead">
         Version upgrades, custom module porting and data verification for Odoo — from 13 to 18,
@@ -38,7 +38,7 @@ description: "Odoo database migration by Babatope Ajepe: version upgrades, custo
       <div class="mig-card">
         <div class="mig-card-head">
           <span class="mig-label">Migration plan</span>
-          <span class="pill pill-teal">Ready for cutover</span>
+          <span class="pill pill-teal pill-live">Ready for cutover</span>
         </div>
         <div class="mig-versions">
           <span class="version-chip">Odoo 14</span>

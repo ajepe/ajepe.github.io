@@ -1,5 +1,5 @@
 // Design System — Babatope Ajepe / Odoo Database Migration
-// Light, clean, professional. Odoo plum accent, teal highlights.
+// Light, professional. Odoo plum accent, teal highlights, refined motion.
 
 // Backgrounds
 $bg-primary: #ffffff;
@@ -24,6 +24,8 @@ $border-strong: #d6d0d9;
 // Accent — Odoo plum
 $accent: #714b67;
 $accent-dark: #593a51;
+$accent-mid: #7d5573;
+$accent-light: #a06e95;
 $accent-soft: #f6eef4;
 $accent-border: #e4d3de;
 
@@ -31,8 +33,16 @@ $accent-border: #e4d3de;
 $teal: #0d8f86;
 $teal-soft: #eaf6f4;
 
+// Gradients
+$gradient-accent: linear-gradient(135deg, $accent-mid, $accent-dark);
+$gradient-line: linear-gradient(90deg, $accent, $teal);
+$gradient-text: linear-gradient(115deg, $accent 25%, $accent-light 90%);
+$gradient-panel: linear-gradient(160deg, #241722 0%, #432b3e 55%, $accent-dark 100%);
+$gradient-band: linear-gradient(135deg, #241722 0%, #4a3045 55%, $accent 100%);
+
 // Typography
 $font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-display: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 $font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 
 // Spacing
@@ -50,14 +60,22 @@ $radius-md: 10px;
 $radius-lg: 14px;
 $radius-xl: 18px;
 
-// Shadows — subtle, light-theme
-$shadow-sm: 0 1px 2px rgba(29, 26, 32, 0.05);
-$shadow-md: 0 10px 30px -14px rgba(29, 26, 32, 0.22);
-$shadow-lg: 0 28px 56px -28px rgba(29, 26, 32, 0.28);
+// Shadows — layered, light-theme
+$shadow-xs: 0 1px 2px rgba(29, 26, 32, 0.06);
+$shadow-sm: 0 1px 3px rgba(29, 26, 32, 0.06), 0 1px 2px rgba(29, 26, 32, 0.04);
+$shadow-md: 0 2px 4px rgba(29, 26, 32, 0.04), 0 16px 32px -16px rgba(29, 26, 32, 0.18);
+$shadow-lg: 0 24px 48px -24px rgba(29, 26, 32, 0.28);
+$shadow-accent: 0 2px 4px rgba(29, 26, 32, 0.04), 0 24px 48px -20px rgba(113, 75, 103, 0.32);
+$shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(29, 26, 32, 0.14), 0 10px 24px -12px rgba(113, 75, 103, 0.6);
+$shadow-btn-hover: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 4px rgba(29, 26, 32, 0.14), 0 18px 36px -14px rgba(113, 75, 103, 0.7);
+
+// Easing
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
 
 // Transitions
 $transition-fast: 150ms ease;
-$transition-base: 220ms ease;
+$transition-base: 220ms $ease-out;
 
 // Layout
 $container: 1120px;
