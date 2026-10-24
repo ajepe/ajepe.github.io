@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mainNav.classList.remove('nav-open');
       navOverlay.classList.remove('overlay-open');
       navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.setAttribute('aria-label', 'Open navigation');
       document.body.style.overflow = '';
     }
 
@@ -19,10 +20,23 @@ document.addEventListener('DOMContentLoaded', function () {
       const isOpen = mainNav.classList.toggle('nav-open');
       navOverlay.classList.toggle('overlay-open');
       navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
     navOverlay.addEventListener('click', closeNav);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mainNav.classList.contains('nav-open')) {
+        closeNav();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900 && mainNav.classList.contains('nav-open')) {
+        closeNav();
+      }
+    });
 
     mainNav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', closeNav);
@@ -52,23 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
-
-  // Reveal on scroll
-  const revealTargets = document.querySelectorAll('.reveal');
-  if (revealTargets.length && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    revealTargets.forEach(function (el) { observer.observe(el); });
-  } else {
-    revealTargets.forEach(function (el) { el.classList.add('in'); });
-  }
 
   // Reading time fallback when front matter doesn't set it
   const postContent = document.querySelector('.post-content');

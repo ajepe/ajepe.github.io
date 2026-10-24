@@ -4,25 +4,25 @@ A light, professional Jekyll site positioning Babatope Ajepe as an Odoo database
 
 ## 🎯 Overview
 
-- **Landing**: migration-focused hero with a "migration plan" status card, trust stats, "why migrations go wrong", six services, a six-step process, the featured 14 → 16 case study, testimonials, FAQ (with FAQPage JSON-LD) and a closing CTA
-- **Blog**: clean card grid, light-theme syntax highlighting, reading time
+- **Landing**: editorial migration-focused landing page with a "migration record" hero, industry strip, migration risks, proof stats, five services, a six-step process, the featured 14 → 16 case study, FAQ (with FAQPage JSON-LD) and a closing CTA
+- **Blog**: editorial index + long-form article layout with warm dark code blocks and reading time
 - **Pages**: About, Projects (case studies), Contact, 404
 - **SEO**: Open Graph/Twitter cards + generated OG image, JSON-LD Person + Service + BlogPosting + FAQPage, sitemap, RSS, robots
 
 ## ✨ Features
 
 ### Design
-- **Light, professional palette**: white surfaces, Odoo plum accent `#714b67`, teal highlight `#0d8f86`, soft neutral bands
-- **Typography-first**: Inter for everything, JetBrains Mono reserved for code and version chips
-- **Clean components**: bordered cards, subtle shadows on hover, numbered process steps, `details`-based FAQ, pill tags
-- **Dark bookends**: plum CTA band + deep plum-black footer
-- **Responsive + accessible**: single-column collapse under 640px, mobile nav drawer, `prefers-reduced-motion`, focus-visible rings, skip link, scroll reveal only when JS is present
+- **Warm editorial palette**: ivory paper `#f6f2e9`, ink `#1b1611`, Odoo plum `#6d485e`, quiet sage `#5b6a52`
+- **Typography-first**: Instrument Serif for display, Geist for body, JetBrains Mono for labels and code
+- **Composition over cards**: hairline rules, numbered rows, generous whitespace, a paper "migration record" hero visual with a verified stamp
+- **Dark bookends**: ink process section + plum CTA band + ink footer
+- **Responsive + accessible**: full-screen mobile menu under 900px, `prefers-reduced-motion`, focus-visible rings, skip link, no content hidden behind JavaScript
 
 ### Technical
 - **Jekyll 4.2** (per `Gemfile`), GitHub Pages compatible
-- **SCSS modules**: `_variables` (tokens), `_base`, `_layout` (header/footer), `_components` (landing + UI), `_syntax` (light Rouge theme)
-- **Vanilla JS** (`assets/js/main.js`): mobile nav, header shadow on scroll, smooth anchors, reveal observer, reading time, copy-email button
-- **Fonts**: Inter + JetBrains Mono via Google Fonts
+- **SCSS modules**: `_variables` (tokens), `_base`, `_layout` (header/footer), `_components` (landing + UI), `_syntax` (warm dark Rouge theme)
+- **Vanilla JS** (`assets/js/main.js`): mobile nav, header shadow on scroll, smooth anchors, reading time, copy-email button
+- **Fonts**: Instrument Serif + Geist + JetBrains Mono via Google Fonts
 
 ## 🛠️ Stack
 
@@ -36,17 +36,17 @@ A light, professional Jekyll site positioning Babatope Ajepe as an Odoo database
 ├── _config.yml            # site, author, collections (projects declared, unused), SEO
 ├── _layouts/
 │   ├── default.html       # header, footer, meta, fonts, JSON-LD
-│   ├── simple-page.html   # About / Contact / Projects (title + subtitle + prose)
-│   ├── page.html          # generic title + prose page
-│   ├── post.html          # article layout with meta, prose, footer CTA
-│   ├── blog.html          # blog index (card grid)
+│   ├── simple-page.html   # About / Contact / Projects (page hero + prose + aside)
+│   ├── page.html          # generic page shell
+│   ├── post.html          # article layout with meta, prose, author footer
+│   ├── blog.html          # blog index (editorial list)
 │   └── project.html       # reserved for future project collection items
 ├── _sass/
 │   ├── _variables.scss    # design tokens (colors, type, spacing)
-│   ├── _base.scss         # light base styles, typography, code
-│   ├── _layout.scss       # header, nav drawer, footer, containers
-│   ├── _components.scss   # hero, cards, process, case study, FAQ, CTA
-│   └── _syntax.scss       # light Rouge highlighting
+│   ├── _base.scss         # base styles, typography, code
+│   ├── _layout.scss       # header, mobile menu, footer, containers
+│   ├── _components.scss   # hero, dossier, services, process, case study, FAQ, CTA
+│   └── _syntax.scss       # warm dark Rouge highlighting
 ├── _posts/                # 5 technical posts (YYYY-MM-DD-title.md)
 ├── assets/
 │   ├── css/main.scss      # SCSS entry point
@@ -65,14 +65,15 @@ A light, professional Jekyll site positioning Babatope Ajepe as an Odoo database
 
 | Token | Value |
 |---|---|
-| `bg-primary / bg-soft / bg-dark` | `#ffffff` / `#f8f7f9` / `#1c1520` |
-| `text-primary / secondary / muted` | `#1d1a20` / `#4d4953` / `#767079` |
-| `accent (Odoo plum)` | `#714b67` |
-| `accent-dark / accent-soft` | `#593a51` / `#f6eef4` |
-| `teal` | `#0d8f86` |
-| `border-color / border-strong` | `#e7e4e9` / `#d6d0d9` |
-| `font-sans` | Inter |
-| `font-mono` | JetBrains Mono (code only) |
+| `paper / paper-2 / paper-3` | `#f6f2e9` / `#fbf8f2` / `#efe9dc` |
+| `ink / ink-2` | `#1b1611` / `#231d17` |
+| `text / muted` | `#2c2620` / `#6b6257` |
+| `plum / plum-deep` | `#6d485e` / `#4d3243` |
+| `sage / sage-soft` | `#5b6a52` / `#e6eadf` |
+| `line / line-strong` | `#ddd4c5` / `#c9beac` |
+| `font-display` | Instrument Serif |
+| `font-sans` | Geist |
+| `font-mono` | JetBrains Mono |
 
 ## 🚀 Run locally
 
@@ -124,8 +125,8 @@ excerpt: "One-line preview"
 
 - Colors/fonts: `_sass/_variables.scss`
 - Header/nav items and CTA: `_layouts/default.html` (`.nav-menu`, `.nav-cta`)
-- Landing sections: `index.md` (`.hero`, `.stats-strip`, `.services-grid`, `.process-grid`, `.case-card`, `.faq`, `.cta-band`)
-- Footer: `_layouts/default.html` (`.footer-grid`)
+- Landing sections: `index.md` (`.hero`, `.industries`, `.split`, `.proof`, `.services`, `.process`, `.work`, `.faq-layout`, `.journal`, `.cta-band`)
+- Footer: `_layouts/default.html` (`.footer-top`, `.footer-cols`)
 - OG image: regenerate `assets/images/og-image.png` (1200×630) if branding changes
 
 ## 📊 SEO & performance

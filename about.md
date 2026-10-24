@@ -1,6 +1,7 @@
 ---
 layout: simple-page
 title: About
+eyebrow: About
 permalink: /about/
 subtitle: Odoo database migration specialist
 description: Babatope Ajepe — Odoo database migration specialist. Version upgrades, custom module porting, data migration and PostgreSQL performance for Odoo systems.

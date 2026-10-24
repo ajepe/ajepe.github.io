@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site.lang | default: "en" }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if page.url == "/" %}{{ site.title }}{% else %}{{ page.title }} · {{ site.author }}{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description }}">
+  <meta name="author" content="{{ site.author }}">
   <link rel="canonical" href="{{ page.url | absolute_url }}">
 
   <!-- Open Graph / Facebook -->
@@ -90,36 +91,37 @@
   <link rel="icon" type="image/svg+xml" href="{{ "/assets/images/favicon.svg" | relative_url }}">
   <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | relative_url }}">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f6f2e9">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
-<body>
+<body id="top">
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header" id="siteHeader">
     <div class="header-inner container">
-      <a href="{{ "/" | relative_url }}" class="brand">
+      <a href="{{ "/" | relative_url }}" class="brand" aria-label="{{ site.author }} — home">
         <span class="brand-mark" aria-hidden="true">BA</span>
         <span class="brand-text">
           <span class="brand-name">{{ site.author }}</span>
-          <span class="brand-tag">Odoo Database Migration</span>
+          <span class="brand-tag">Odoo migration specialist</span>
         </span>
       </a>
 
       <nav class="main-nav" id="mainNav" aria-label="Main navigation">
         <ul class="nav-menu">
-          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}>Projects</a></li>
-          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" or page.layout == "post" %}class="active" aria-current="page"{% endif %}>Blog</a></li>
+          <li><a href="{{ "/#services" | relative_url }}">Services</a></li>
+          <li><a href="{{ "/#process" | relative_url }}">Process</a></li>
+          <li><a href="{{ "/projects/" | relative_url }}" {% if page.url == "/projects/" %}class="active" aria-current="page"{% endif %}>Work</a></li>
+          <li><a href="{{ "/blog/" | relative_url }}" {% if page.url contains "/blog/" or page.layout == "post" %}class="active" aria-current="page"{% endif %}>Writing</a></li>
           <li><a href="{{ "/about/" | relative_url }}" {% if page.url == "/about/" %}class="active" aria-current="page"{% endif %}>About</a></li>
-          <li><a href="{{ "/contact/" | relative_url }}" {% if page.url == "/contact/" %}class="active" aria-current="page"{% endif %}>Contact</a></li>
         </ul>
-        <a href="{{ "/contact/" | relative_url }}" class="btn btn-primary btn-sm nav-cta">Get an assessment</a>
+        <a href="{{ "/contact/" | relative_url }}" class="btn btn-primary btn-sm nav-cta">Book an assessment</a>
       </nav>
 
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+      <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNav">
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
@@ -135,49 +137,60 @@
 
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
+      <div class="footer-top">
         <div class="footer-brand">
-          <a href="{{ "/" | relative_url }}" class="brand">
+          <a href="{{ "/" | relative_url }}" class="brand" aria-label="{{ site.author }} — home">
             <span class="brand-mark" aria-hidden="true">BA</span>
             <span class="brand-text">
               <span class="brand-name">{{ site.author }}</span>
-              <span class="brand-tag">Odoo Database Migration</span>
+              <span class="brand-tag">Odoo migration specialist</span>
             </span>
           </a>
           <p class="footer-blurb">
-            Odoo database migrations: version upgrades, custom module porting, data migration
-            and PostgreSQL performance — Odoo 13 to 18, Community and Enterprise.
+            Version upgrades, custom module porting, data migration and PostgreSQL
+            performance for Odoo systems — 13 through 18, Community and Enterprise.
           </p>
-          <ul class="footer-social">
-            <li><a href="{{ site.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            <li><a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-            <li><a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer">Upwork</a></li>
-          </ul>
+          <p class="footer-avail"><span class="dot" aria-hidden="true"></span>Available for migration work</p>
         </div>
 
-        <nav class="footer-col" aria-label="Site">
-          <h3>Site</h3>
-          <ul>
-            <li><a href="{{ "/projects/" | relative_url }}">Projects</a></li>
-            <li><a href="{{ "/blog/" | relative_url }}">Blog</a></li>
-            <li><a href="{{ "/about/" | relative_url }}">About</a></li>
-            <li><a href="{{ "/contact/" | relative_url }}">Contact</a></li>
-          </ul>
-        </nav>
+        <div class="footer-cols">
+          <nav class="footer-col" aria-label="Explore">
+            <h3>Explore</h3>
+            <ul>
+              <li><a href="{{ "/#services" | relative_url }}">Services</a></li>
+              <li><a href="{{ "/#process" | relative_url }}">Process</a></li>
+              <li><a href="{{ "/projects/" | relative_url }}">Work</a></li>
+              <li><a href="{{ "/blog/" | relative_url }}">Writing</a></li>
+              <li><a href="{{ "/about/" | relative_url }}">About</a></li>
+            </ul>
+          </nav>
 
-        <div class="footer-col">
-          <h3>Contact</h3>
-          <ul>
-            <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-            <li><a href="{{ "/contact/" | relative_url }}">Request an assessment</a></li>
-            <li><span>Replies within 24 hours</span></li>
-          </ul>
+          <div class="footer-col">
+            <h3>Migration</h3>
+            <ul>
+              <li><a href="{{ "/#services" | relative_url }}">Version upgrades</a></li>
+              <li><a href="{{ "/#services" | relative_url }}">Module porting</a></li>
+              <li><a href="{{ "/#services" | relative_url }}">Data verification</a></li>
+              <li><a href="{{ "/#services" | relative_url }}">PostgreSQL tuning</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+              <li><a href="{{ site.upwork }}" target="_blank" rel="noopener noreferrer">Upwork</a></li>
+              <li><a href="{{ site.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a href="{{ site.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            </ul>
+          </div>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <p>© {{ "now" | date: "%Y" }} {{ site.author }} · Odoo database migration specialist</p>
-        <p class="footer-note">Odoo 13 → 18 · Community &amp; Enterprise</p>
+        <p>© {{ "now" | date: "%Y" }} {{ site.author }}</p>
+        <p>Odoo 13 → 18 · Community &amp; Enterprise</p>
+        <a href="#top">Back to top ↑</a>
       </div>
     </div>
   </footer>

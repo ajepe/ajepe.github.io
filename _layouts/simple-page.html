@@ -3,14 +3,30 @@ layout: default
 ---
 
 <article class="page">
-  <header class="page-header container-narrow">
-    <h1>{{ page.title }}</h1>
-    {% if page.subtitle %}
-    <p class="subtitle">{{ page.subtitle }}</p>
-    {% endif %}
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{{ page.eyebrow | default: "Babatope Ajepe" }}</p>
+      <h1 class="page-title">{{ page.title }}</h1>
+      {% if page.subtitle %}
+      <p class="page-subtitle">{{ page.subtitle }}</p>
+      {% endif %}
+    </div>
   </header>
 
-  <div class="page-content prose container-narrow">
-    {{ content }}
+  <div class="container page-layout{% if page.hide_aside %} page-layout--narrow{% endif %}">
+    <div class="page-content prose">
+      {{ content }}
+    </div>
+
+    {% unless page.hide_aside %}
+    <aside class="page-aside">
+      <span class="mono-label">Currently</span>
+      <p class="aside-title">Booking Odoo migrations</p>
+      <p>Version upgrades, module porting and data verification — remote, worldwide.</p>
+      <a class="text-link" href="{{ "/contact/" | relative_url }}">Request an assessment <span class="arrow" aria-hidden="true">→</span></a>
+      <div class="aside-rule"></div>
+      <span class="mono-label">Replies within 24 hours</span>
+    </aside>
+    {% endunless %}
   </div>
 </article>

@@ -1,36 +1,46 @@
-// Syntax highlighting — light theme (GitHub-style palette)
+// Syntax highlighting — warm dark palette to match code blocks
+
+// Rouge emits <pre class="highlight"> inside a .highlight wrapper.
+// Keep the block itself dark even though the wrapper is transparent.
+pre.highlight {
+  background: $ink;
+}
 
 .highlight {
-  background: $bg-code;
+  background: transparent;
   font-family: $font-mono;
+  border-radius: $radius-sm;
 
-  .c, .cm, .c1, .cs { color: #6e7781; font-style: italic } // Comment
-  .cp { color: #cf222e } // Comment.Preproc
-  .err { color: #b62324; background-color: transparent } // Error
-  .k, .kd, .kn, .kr, .kt { color: #cf222e } // Keyword
-  .o, .ow { color: #0550ae } // Operator
-  .kc { color: #0550ae } // Keyword.Constant
-  .gd { color: #b62324 } // Generic.Deleted
+  .c, .cm, .c1, .cs { color: #8e8577; font-style: italic } // Comment
+  .cp { color: #d9a6a0 } // Comment.Preproc
+  .err { color: #f0a6a6; background-color: transparent } // Error
+  .k, .kd, .kn, .kr, .kt { color: #d8a7c0 } // Keyword
+  .o, .ow { color: #cbbfae } // Operator
+  .kc { color: #d9b28a } // Keyword.Constant
+  .gd { color: #f0a6a6 } // Generic.Deleted
   .ge { font-style: italic } // Generic.Emph
-  .gr { color: #b62324 } // Generic.Error
-  .gh { color: #0550ae; font-weight: 700 } // Generic.Heading
-  .gi { color: #116329 } // Generic.Inserted
-  .go { color: #6e7781 } // Generic.Output
-  .gp { color: #6e7781; font-weight: 700 } // Generic.Prompt
+  .gr { color: #f0a6a6 } // Generic.Error
+  .gh { color: #d8a7c0; font-weight: 700 } // Generic.Heading
+  .gi { color: #b9cbaa } // Generic.Inserted
+  .go { color: #9c9285 } // Generic.Output
+  .gp { color: #9c9285; font-weight: 700 } // Generic.Prompt
   .gs { font-weight: 700 } // Generic.Strong
-  .gu { color: #0550ae; font-weight: 700 } // Generic.Subheading
-  .gt { color: #b62324 } // Generic.Traceback
-  .m, .mf, .mh, .mi, .mo, .il { color: #0550ae } // Numbers
-  .s, .sb, .sc, .sd, .s2, .se, .sh, .sr, .s1 { color: #0a3069 } // Strings
-  .si, .ss { color: #0a3069 } // String interpolation / symbol
-  .sx { color: #0a3069 }
-  .na { color: #0550ae } // Name.Attribute
-  .nb, .bp { color: #953800 } // Name.Builtin
-  .nc, .nn { color: #953800 } // Name.Class
-  .no, .ni, .ne { color: #0550ae } // Constants
-  .nf { color: #8250df } // Name.Function
-  .nt { color: #116329 } // Name.Tag
-  .nv, .vc, .vg, .vi { color: #24292f } // Variables
-  .w { color: #d0d7de }
-  .lineno, .gl { color: #b6bec9 }
+  .gu { color: #d8a7c0; font-weight: 700 } // Generic.Subheading
+  .gt { color: #f0a6a6 } // Generic.Traceback
+  .m, .mf, .mh, .mi, .mo, .il { color: #d9b28a } // Numbers
+  .s, .sb, .sc, .sd, .s2, .se, .sh, .sr, .s1 { color: #b9cbaa } // Strings
+  .si, .ss { color: #b9cbaa } // String interpolation / symbol
+  .sx { color: #b9cbaa }
+  .na { color: #d9b28a } // Name.Attribute
+  .nb, .bp { color: #c4a6bd } // Name.Builtin
+  .nc, .nn { color: #d9c3a4 } // Name.Class
+  .no, .ni, .ne { color: #d9b28a } // Constants
+  .nf { color: #c9b6dc } // Name.Function
+  .nt { color: #b9cbaa } // Name.Tag
+  .nv, .vc, .vg, .vi { color: #e8e0d2 } // Variables
+  .w { color: #6f675c }
+  .lineno, .gl { color: #6f675c }
 }
+
+// Inline code inside a dark block should inherit the block palette
+pre .highlight { background: transparent; }

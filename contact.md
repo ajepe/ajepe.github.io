@@ -1,6 +1,8 @@
 ---
 layout: simple-page
 title: Contact
+eyebrow: Contact
+hide_aside: true
 permalink: /contact/
 subtitle: Tell me what you're running
 description: Start an Odoo database migration — send your version, database size and what worries you, and get an honest read on what the migration takes.
@@ -33,7 +35,6 @@ I read every message myself and reply to project enquiries within 24 hours.
 - **LinkedIn:** {{ site.linkedin }}
 - **GitHub:** {{ site.github }}
 
----
 
 ## How it usually goes
 
@@ -49,7 +50,6 @@ For migration work, this is the real starting point: I audit the custom modules,
 
 The upgrade happens on a staging copy first, with you testing as long as you need. The cutover itself is rehearsed, scheduled around your business, and reversible.
 
----
 
 ## Questions people often ask
 
@@ -73,7 +73,6 @@ Yes. After our first conversation I can share references and examples from simil
 
 I offer ongoing support for bug fixes, checks and small improvements. Migrations also tend to surface performance work, which I'm happy to quote for separately.
 
----
 
 ## Other work
 

@@ -1,82 +1,74 @@
-// Design System — Babatope Ajepe / Odoo Database Migration
-// Light, professional. Odoo plum accent, teal highlights, refined motion.
+// =========================================================
+// Design tokens — Babatope Ajepe / Odoo database migration
+// Warm paper, ink, Odoo plum, quiet sage. Editorial first.
+// =========================================================
 
-// Backgrounds
-$bg-primary: #ffffff;
-$bg-soft: #f8f7f9;
-$bg-muted: #f2f0f3;
-$bg-code: #f8f8fa;
-$bg-dark: #1c1520;
-$bg-dark-soft: #251c2a;
-
-$text-on-dark: #f4eff4;
-$text-on-dark-muted: #b6a8b5;
+// Surfaces
+$paper:        #f6f2e9;
+$paper-2:      #fbf8f2;
+$paper-3:      #efe9dc;
+$ink:          #1b1611;
+$ink-2:        #231d17;
+$ink-3:        #2d261f;
 
 // Text
-$text-primary: #1d1a20;
-$text-secondary: #4d4953;
-$text-muted: #767079;
+$text:         #2c2620;
+$text-soft:    #4c443b;
+$muted:        #6b6257;
+$muted-light:  #8a8073;
+$cream:        #f6f1e6;
+$cream-soft:   #d8d0c2;
 
-// Borders
-$border-color: #e7e4e9;
-$border-strong: #d6d0d9;
+// Lines
+$line:         #ddd4c5;
+$line-strong:  #c9beac;
+$line-dark:    rgba(246, 241, 230, 0.16);
 
-// Accent — Odoo plum
-$accent: #714b67;
-$accent-dark: #593a51;
-$accent-mid: #7d5573;
-$accent-light: #a06e95;
-$accent-soft: #f6eef4;
-$accent-border: #e4d3de;
+// Accents
+$plum:         #6d485e;
+$plum-deep:    #4d3243;
+$plum-mid:     #865c76;
+$plum-soft:    #ece2e8;
+$plum-border:  #dccbd6;
 
-// Secondary accent — teal
-$teal: #0d8f86;
-$teal-soft: #eaf6f4;
+$sage:         #5b6a52;
+$sage-deep:    #46523f;
+$sage-soft:    #e6eadf;
+$sage-border:  #ced5c3;
+$sage-light:   #b9c6ae;
 
-// Gradients
-$gradient-accent: linear-gradient(135deg, $accent-mid, $accent-dark);
-$gradient-line: linear-gradient(90deg, $accent, $teal);
-$gradient-text: linear-gradient(115deg, $accent 25%, $accent-light 90%);
-$gradient-panel: linear-gradient(160deg, #241722 0%, #432b3e 55%, $accent-dark 100%);
-$gradient-band: linear-gradient(135deg, #241722 0%, #4a3045 55%, $accent 100%);
-
-// Typography
-$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-$font-display: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-$font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+// Type
+$font-display: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+$font-sans:    'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
 // Spacing
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
-$spacing-2xl: 3rem;
-$spacing-3xl: 4.5rem;
+$spacing-xs:   0.25rem;
+$spacing-sm:   0.5rem;
+$spacing-md:   1rem;
+$spacing-lg:   1.5rem;
+$spacing-xl:   2rem;
+$spacing-2xl:  3rem;
+$spacing-3xl:  4.5rem;
+$spacing-4xl:  7rem;
 
-// Border radius
-$radius-sm: 6px;
-$radius-md: 10px;
-$radius-lg: 14px;
-$radius-xl: 18px;
+// Radius — kept small and architectural
+$radius-xs:    2px;
+$radius-sm:    4px;
+$radius-md:    6px;
+$radius-lg:    10px;
 
-// Shadows — layered, light-theme
-$shadow-xs: 0 1px 2px rgba(29, 26, 32, 0.06);
-$shadow-sm: 0 1px 3px rgba(29, 26, 32, 0.06), 0 1px 2px rgba(29, 26, 32, 0.04);
-$shadow-md: 0 2px 4px rgba(29, 26, 32, 0.04), 0 16px 32px -16px rgba(29, 26, 32, 0.18);
-$shadow-lg: 0 24px 48px -24px rgba(29, 26, 32, 0.28);
-$shadow-accent: 0 2px 4px rgba(29, 26, 32, 0.04), 0 24px 48px -20px rgba(113, 75, 103, 0.32);
-$shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 1px 2px rgba(29, 26, 32, 0.14), 0 10px 24px -12px rgba(113, 75, 103, 0.6);
-$shadow-btn-hover: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 4px rgba(29, 26, 32, 0.14), 0 18px 36px -14px rgba(113, 75, 103, 0.7);
+// Shadows — used sparingly
+$shadow-xs:    0 1px 2px rgba(27, 22, 17, 0.05);
+$shadow-sm:    0 10px 30px -22px rgba(27, 22, 17, 0.35);
+$shadow-paper: 14px 14px 0 rgba(109, 72, 94, 0.045), 0 24px 60px -46px rgba(27, 22, 17, 0.45);
 
-// Easing
-$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-$ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
-
-// Transitions
+// Motion
+$ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
 $transition-fast: 150ms ease;
-$transition-base: 220ms $ease-out;
+$transition-base: 260ms $ease-out;
 
 // Layout
-$container: 1120px;
-$container-narrow: 760px;
+$container:        1180px;
+$container-narrow: 720px;
+$header-height:    76px;

@@ -3,27 +3,43 @@ layout: default
 ---
 
 <article class="post">
-  <header class="post-header container-narrow">
-    <p class="post-meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
-      {% if page.categories %}
-      <span class="pill pill-accent">{{ page.categories | first }}</span>
-      {% endif %}
-      {% if page.reading_time %}
-      <span>{{ page.reading_time }} min read</span>
-      {% else %}
-      <span class="post-reading-time"></span>
-      {% endif %}
-    </p>
-    <h1 class="post-title">{{ page.title }}</h1>
+  <header class="post-header">
+    <div class="container">
+      <p class="post-kicker">
+        <a href="{{ "/blog/" | relative_url }}">Writing</a>
+        <span class="sep" aria-hidden="true">/</span>
+        {% assign category = page.categories[1] | default: page.categories[0] %}
+        {% if category %}{{ category }}{% else %}Notes{% endif %}
+      </p>
+      <h1 class="post-title">{{ page.title }}</h1>
+      <p class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        {% if page.reading_time %}
+        <span>{{ page.reading_time }} min read</span>
+        {% else %}
+        <span class="post-reading-time"></span>
+        {% endif %}
+      </p>
+    </div>
   </header>
 
-  <div class="post-content prose container-narrow">
-    {{ content }}
+  <div class="post-body">
+    <div class="post-content prose">
+      {{ content }}
+    </div>
   </div>
 
-  <footer class="post-footer container-narrow">
-    <a class="link-arrow" href="{{ "/blog/" | relative_url }}">← All articles</a>
-    <span>Working on a migration? <a href="{{ "/contact/" | relative_url }}">Get an assessment</a></span>
+  <footer class="post-footer">
+    <div class="author-line">
+      <span class="brand-mark" aria-hidden="true">BA</span>
+      <div>
+        <strong>{{ site.author }}</strong>
+        <span>Odoo migration specialist</span>
+      </div>
+    </div>
+    <div class="post-footer-actions">
+      <a class="text-link" href="{{ "/blog/" | relative_url }}">← All articles</a>
+      <a class="text-link" href="{{ "/contact/" | relative_url }}">Get an assessment <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
   </footer>
 </article>

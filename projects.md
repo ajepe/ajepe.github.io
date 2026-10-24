@@ -1,6 +1,7 @@
 ---
 layout: simple-page
 title: Projects & Case Studies
+eyebrow: Work
 permalink: /projects/
 subtitle: Migrations first, then the work around them
 description: Odoo database migrations and case studies — a 5 TB version upgrade with zero downtime, integrations, custom modules and performance work for companies running Odoo in production.
@@ -25,7 +26,6 @@ Ported and cleaned up the custom code in phases, tuned the database, and ran the
 - All 50+ custom modules working on 16
 - Key operations about 40% faster
 
----
 
 ## Shipping management for a global logistics company
 
@@ -46,7 +46,6 @@ A shipping module with carrier API integrations, automatic carrier selection, ge
 - 80% of the manual shipping work automated
 - Real-time tracking on more than 10,000 shipments a month
 
----
 
 ## Integration hub for a multi-channel retailer
 
@@ -67,7 +66,6 @@ Integration middleware with a message queue, rules for resolving conflicting upd
 - Stock levels up to date across every channel
 - Financial reconciliation automated
 
----
 
 ## Manufacturing execution system
 
@@ -88,7 +86,6 @@ A manufacturing module that reads IoT sensors, shows live production dashboards,
 - Live view across 50+ production lines
 - Unplanned downtime down 40% thanks to predictive maintenance
 
----
 
 ## Finance and reporting suite
 
@@ -109,7 +106,6 @@ Automated bank reconciliation, multi-currency handling, regulatory report templa
 - Financial accuracy improved by 99.5%
 - Live financial reporting and forecasting
 
----
 
 ## E-commerce integration platform
 
@@ -130,7 +126,6 @@ Marketplace API integrations, automatic stock sync, order routing rules and ship
 - Stockouts eliminated through stock forecasting
 - 95% of orders shipped without manual steps
 
----
 
 ## Areas I work in
 
@@ -158,7 +153,6 @@ Access rights, record rules, audits, and the data-protection requirements of reg
 
 Custom Odoo views and widgets, Vue.js apps, and making screens people use all day less painful.
 
----
 
 ## What clients have said
 

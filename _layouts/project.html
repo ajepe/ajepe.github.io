@@ -3,25 +3,31 @@ layout: default
 ---
 
 <article class="page">
-  <header class="page-header container-narrow">
-    <h1>{{ page.title }}</h1>
-    {% if page.subtitle %}
-    <p class="subtitle">{{ page.subtitle }}</p>
-    {% endif %}
-    {% if page.tech_stack %}
-    <div class="tech-stack">
-      {% for tech in page.tech_stack %}
-      <span class="tech-tag">{{ tech }}</span>
-      {% endfor %}
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Field note</p>
+      <h1 class="page-title">{{ page.title }}</h1>
+      {% if page.subtitle %}
+      <p class="page-subtitle">{{ page.subtitle }}</p>
+      {% endif %}
+      {% if page.tech_stack %}
+      <div class="tech-stack">
+        {% for tech in page.tech_stack %}
+        <span class="tech-tag">{{ tech }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
   </header>
 
-  <div class="page-content prose container-narrow">
-    {{ content }}
+  <div class="container page-layout page-layout--narrow">
+    <div class="page-content prose">
+      {{ content }}
+    </div>
   </div>
 
-  <footer class="post-footer container-narrow">
-    <a class="link-arrow" href="{{ "/projects/" | relative_url }}">← All projects</a>
+  <footer class="post-footer">
+    <a class="text-link" href="{{ "/projects/" | relative_url }}">← All projects</a>
+    <a class="text-link" href="{{ "/contact/" | relative_url }}">Discuss a migration <span class="arrow" aria-hidden="true">→</span></a>
   </footer>
 </article>

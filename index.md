@@ -1,293 +1,332 @@
 ---
 layout: default
 title: Odoo Database Migration Specialist
-description: "Odoo database migration by Babatope Ajepe: version upgrades, custom module porting, data migration and PostgreSQL performance — with rehearsed, zero-downtime cutovers."
+description: "Odoo database migration by Babatope Ajepe: version upgrades, custom module porting, data migration and PostgreSQL performance — rehearsed, zero-downtime cutovers for Odoo 13 through 18."
 ---
 
 <div class="hero">
   <div class="container hero-grid">
-    <div class="hero-content reveal">
-      <span class="hero-badge"><span class="dot" aria-hidden="true"></span>Odoo database migration specialist</span>
-      <h1 class="hero-title">Upgrade your Odoo database <span class="hl">without breaking production</span>.</h1>
+    <div class="hero-content">
+      <p class="eyebrow">Independent Odoo migration practice</p>
+      <h1 class="hero-title">Move your Odoo forward. <em>Bring everything with you.</em></h1>
       <p class="hero-lead">
-        Version upgrades, custom module porting and data verification for Odoo — from 13 to 18,
-        Community and Enterprise. Rehearsed cutovers, verified data, and a rollback plan
-        you'll hopefully never need.
+        Database migration for Odoo 13 through 18 — version upgrades, custom module
+        porting and data verification. Rehearsed on a copy of your database, cut over
+        on your schedule, checked down to the last record.
       </p>
-      <div class="hero-cta">
-        <a href="/contact/" class="btn btn-primary btn-lg">Get a migration assessment</a>
-        <a href="#process" class="btn btn-secondary btn-lg">See the process</a>
+      <div class="hero-actions">
+        <a href="{{ "/contact/" | relative_url }}" class="btn btn-primary">
+          Request a migration assessment <span class="btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="#process" class="text-link">See the migration path <span class="arrow" aria-hidden="true">↓</span></a>
       </div>
       <ul class="hero-trust">
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Top-Rated Plus on Upwork
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          100% job success across 50+ projects
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          6+ years on Odoo
-        </li>
+        <li>Top-Rated Plus on Upwork</li>
+        <li>100% job success · 50+ projects</li>
+        <li>6+ years on Odoo</li>
       </ul>
     </div>
 
-    <aside class="hero-panel reveal" aria-label="Example migration status">
-      <div class="mig-card">
-        <div class="mig-card-head">
-          <span class="mig-label">Migration plan</span>
-          <span class="pill pill-teal pill-live">Ready for cutover</span>
-        </div>
-        <div class="mig-versions">
-          <span class="version-chip">Odoo 14</span>
-          <span class="mig-arrow" aria-hidden="true">→</span>
-          <span class="version-chip is-target">Odoo 17</span>
-        </div>
-        <ul class="mig-list">
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Staging clone upgraded &amp; tested
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Custom modules ported
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Record counts verified
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Rollback plan rehearsed
-          </li>
-        </ul>
-        <p class="mig-foot">Cutover window: Saturday night — back to work on Monday.</p>
+    <aside class="hero-art" aria-label="Example migration record">
+      <div class="dossier-wrap">
+        <figure class="dossier">
+          <div class="dossier-head">
+            <span class="mono-label">Migration record</span>
+            <span class="dossier-no">№ 052</span>
+          </div>
+          <div class="dossier-status"><span class="status-dot" aria-hidden="true"></span>Ready for cutover</div>
+
+          <div class="dossier-versions">
+            <div class="version-node">
+              <span>From</span>
+              <strong>14</strong>
+              <small>Community</small>
+            </div>
+            <div class="version-route" aria-hidden="true">
+              <svg viewBox="0 0 70 10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 5h64M60 1l6 4-6 4"/>
+              </svg>
+            </div>
+            <div class="version-node version-node--target">
+              <span>To</span>
+              <strong>18</strong>
+              <small>Enterprise</small>
+            </div>
+          </div>
+
+          <div class="dossier-specs">
+            <div class="spec"><strong>5 TB</strong><span>data carried across</span></div>
+            <div class="spec"><strong>50+</strong><span>modules ported</span></div>
+            <div class="spec"><strong>0 min</strong><span>production downtime</span></div>
+            <div class="spec"><strong>100%</strong><span>records reconciled</span></div>
+          </div>
+
+          <div class="dossier-foot">
+            <span>Cutover</span>
+            <span><strong>Sat 22:00 → Sun 02:10</strong></span>
+          </div>
+        </figure>
+        <span class="stamp" aria-hidden="true">
+          <strong>Verified</strong>
+          <small>counts · fields<br>reports</small>
+        </span>
       </div>
     </aside>
   </div>
 </div>
 
-<div class="stats-strip">
-  <div class="container stats-grid">
-    <div class="stat">
-      <span class="stat-value">6+</span>
-      <span class="stat-label">years working on Odoo</span>
-    </div>
-    <div class="stat">
-      <span class="stat-value">50+</span>
-      <span class="stat-label">projects delivered</span>
-    </div>
-    <div class="stat">
-      <span class="stat-value">5 TB</span>
-      <span class="stat-label">largest database migrated</span>
-    </div>
-    <div class="stat">
-      <span class="stat-value">100%</span>
-      <span class="stat-label">job success on Upwork</span>
-    </div>
+<div class="industries">
+  <div class="container industries-inner">
+    <span class="industries-label">Odoo in production</span>
+    <ul class="industries-list">
+      <li>Manufacturing</li>
+      <li>E-commerce</li>
+      <li>Logistics</li>
+      <li>Professional services</li>
+      <li>Healthcare</li>
+    </ul>
   </div>
 </div>
 
-<section class="section section-soft" id="why">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">Why migrations go wrong</p>
-      <h2 class="section-title">It's never Odoo itself. It's everything around it.</h2>
-      <p class="section-lead">Every database is unique in the same way — which is exactly what a generic upgrade path doesn't cover.</p>
+<section class="section statement" id="why">
+  <div class="container split">
+    <div class="split-head">
+      <p class="eyebrow">The reality</p>
+      <h2 class="display">Most migrations don't fail in Odoo. <em>They fail around it.</em></h2>
+      <p class="split-note">
+        Every database is custom in the same way: a module written in 2017, a report
+        nobody wants to lose, a model that moved three versions ago. A generic upgrade
+        path can't account for any of it.
+      </p>
     </div>
-    <div class="pain-grid">
-      <div class="pain-card reveal">
-        <span class="pain-num">01</span>
-        <h3>Custom modules break quietly</h3>
-        <p>Community apps and one-off customisations reach into internals that change between versions. Each module gets ported properly and tested on staging — not patched on production and hoped for.</p>
-      </div>
-      <div class="pain-card reveal">
-        <span class="pain-num">02</span>
-        <h3>Data goes missing</h3>
-        <p>A migration that "mostly worked" corrupts records you'll only find months later. Every run is verified: record counts, field-level checks and reports compared before and after.</p>
-      </div>
-      <div class="pain-card reveal">
-        <span class="pain-num">03</span>
-        <h3>The business can't stop</h3>
-        <p>Your team still has to work on Monday. Cutovers are rehearsed, timed and scheduled around your calendar — with a rollback you can trigger in minutes.</p>
-      </div>
+
+    <div class="stake-list">
+      <article class="stake">
+        <span class="stake-num" aria-hidden="true">01</span>
+        <div>
+          <h3>Custom code breaks quietly</h3>
+          <p>Community apps and one-off customisations reach into internals that change between versions. Each module gets ported and tested on staging — not patched on production and hoped for.</p>
+        </div>
+      </article>
+      <article class="stake">
+        <span class="stake-num" aria-hidden="true">02</span>
+        <div>
+          <h3>Data goes missing</h3>
+          <p>A migration that "mostly worked" corrupts records you only find months later. Record counts, field-level checks and reports are compared before and after.</p>
+        </div>
+      </article>
+      <article class="stake">
+        <span class="stake-num" aria-hidden="true">03</span>
+        <div>
+          <h3>The business can't stop</h3>
+          <p>Your team still has to work on Monday. Cutovers are rehearsed, timed and scheduled around your calendar, with a rollback you can trigger in minutes.</p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
 
-<section class="section" id="services">
+<section class="proof" aria-label="Experience in numbers">
+  <div class="container proof-grid">
+    <div class="proof-item">
+      <span class="proof-value">6+</span>
+      <span class="proof-label">years working on Odoo</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-value">50+</span>
+      <span class="proof-label">projects delivered</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-value">5 TB</span>
+      <span class="proof-label">largest database migrated</span>
+    </div>
+    <div class="proof-item">
+      <span class="proof-value">100%</span>
+      <span class="proof-label">job success on Upwork</span>
+    </div>
+  </div>
+</section>
+
+<section class="section services" id="services">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow">Services</p>
-      <h2 class="section-title">One job: getting your database to the other side</h2>
-      <p class="section-lead">Whether it's the next Odoo version or off a legacy system, the work is the same — move the data, keep the custom code alive, and prove nothing went missing.</p>
+      <h2 class="display">One specialty. <em>The whole move.</em></h2>
+      <p class="section-lead">
+        Whether it's the next Odoo version or off a legacy system, the work is the
+        same: move the data, keep the custom code alive, and prove nothing went missing.
+      </p>
     </div>
-    <div class="services-grid">
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        </div>
+
+    <div class="service-list">
+      <a class="service-row" href="{{ "/contact/" | relative_url }}" aria-label="Discuss a version upgrade">
+        <span class="service-num" aria-hidden="true">01</span>
         <h3>Version upgrades</h3>
-        <p>Odoo 13 → 18, Community and Enterprise. Standard modules go through the official upgrade service or OpenUpgrade, the rest through careful work.</p>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <div>
+          <p>Odoo 13 → 18, Community and Enterprise. Standard modules go through the official upgrade service or OpenUpgrade; everything else through careful, tested work.</p>
+          <span class="service-tags">Official upgrade service · OpenUpgrade · 13–18</span>
         </div>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="service-row" href="{{ "/contact/" | relative_url }}" aria-label="Discuss custom module porting">
+        <span class="service-num" aria-hidden="true">02</span>
         <h3>Custom module porting</h3>
-        <p>Deprecated APIs replaced, views and reports rebuilt, migration scripts written where the data model moved. Clean inheritance, so the next upgrade is easier.</p>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <div>
+          <p>Deprecated APIs replaced, views and reports rebuilt, migration scripts written where the data model moved. Clean inheritance, so the next upgrade is easier.</p>
+          <span class="service-tags">Python · OWL · Migration scripts</span>
         </div>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="service-row" href="{{ "/contact/" | relative_url }}" aria-label="Discuss data migration and verification">
+        <span class="service-num" aria-hidden="true">03</span>
         <h3>Data migration &amp; verification</h3>
-        <p>Legacy ERP or an older Odoo, transformed and loaded — then checked: counts, spot checks and reports compared before anything goes live.</p>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="m9 14 2 2 4-4"/></svg>
+        <div>
+          <p>Legacy ERP or an older Odoo, transformed and loaded — then checked: counts, spot checks and reports compared before anything goes live.</p>
+          <span class="service-tags">ETL · SQL · Reconciliation</span>
         </div>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="service-row" href="{{ "/contact/" | relative_url }}" aria-label="Request a migration assessment">
+        <span class="service-num" aria-hidden="true">04</span>
         <h3>Migration assessment</h3>
-        <p>Before any code moves: an audit of custom modules, database size, integrations and risks — with a written plan and a fixed quote.</p>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <div>
+          <p>Before any code moves: an audit of custom modules, database size, integrations and risks, with a written plan and a fixed quote.</p>
+          <span class="service-tags">Audit · Fixed quote · Runbook</span>
         </div>
-        <h3>Performance after migration</h3>
-        <p>Migrations surface slow queries. PostgreSQL tuning, indexing and config work, so the new version ends up faster than the old one.</p>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="service-row" href="{{ "/contact/" | relative_url }}" aria-label="Discuss performance and post-migration support">
+        <span class="service-num" aria-hidden="true">05</span>
+        <h3>Performance &amp; support</h3>
+        <div>
+          <p>Migrations surface slow queries and new bugs. PostgreSQL tuning, indexing and hands-on support through the first weeks after go-live.</p>
+          <span class="service-tags">PostgreSQL · Indexing · Handover</span>
         </div>
-        <h3>Post-migration support</h3>
-        <p>The first weeks after go-live matter. Bug fixes, checks and handover documentation your team can actually use.</p>
-      </div>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </a>
     </div>
   </div>
 </section>
 
-<section class="section section-soft" id="process">
+<section class="process" id="process">
   <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">The process</p>
-      <h2 class="section-title">How a migration actually runs</h2>
-      <p class="section-lead">Staging first, production last. Nothing touches your live database until it has been through all of this.</p>
+    <div class="process-head">
+      <div>
+        <p class="eyebrow eyebrow--light">The process</p>
+        <h2 class="display display--light">Staging first.<br><em>Production last.</em></h2>
+      </div>
+      <div class="process-intro">
+        <p>Nothing touches your live database until it has been through all of this. That's not a sales line — it's the order of operations.</p>
+        <div class="process-meta">
+          <span>Typical migration<strong>3–8 weeks</strong></span>
+          <span>Cutover window<strong>Hours, not days</strong></span>
+        </div>
+      </div>
     </div>
-    <div class="process-grid">
-      <div class="step reveal">
-        <span class="step-num">1</span>
+
+    <ol class="process-list">
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">1</span>
         <div>
           <h3>Assessment</h3>
-          <p>I audit the database, custom modules and integrations, then give you a written plan: risks, timeline, fixed quote.</p>
+          <p>I audit the database, custom modules and integrations, then give you a written plan: risks, timeline and a fixed quote.</p>
         </div>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">2</span>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">2</span>
         <div>
-          <h3>Staging copy</h3>
+          <h3>Staging clone</h3>
           <p>Production is cloned to staging. The upgrade runs there — never on production — and you can test it as long as you need.</p>
         </div>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">3</span>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">3</span>
         <div>
-          <h3>Custom code ported</h3>
-          <p>Every custom module is ported, tested and versioned. Migration scripts handle data where the model changed.</p>
+          <h3>Code ported</h3>
+          <p>Every custom module is ported, tested and versioned. Migration scripts handle the data where the model changed.</p>
         </div>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">4</span>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">4</span>
         <div>
           <h3>Verified, not assumed</h3>
-          <p>Counts, checks and reports are compared side by side. If something doesn't match, we find out before cutover — not after.</p>
+          <p>Counts, checks and reports compared side by side. If something doesn't match, we find out before cutover — not after.</p>
         </div>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">5</span>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">5</span>
         <div>
           <h3>Rehearsed cutover</h3>
-          <p>The switch is rehearsed and timed on staging. On the real day it's a runbook, not an experiment — with rollback ready.</p>
+          <p>The switch is rehearsed and timed on staging. On the day it's a runbook, not an experiment — with rollback ready.</p>
         </div>
-      </div>
-      <div class="step reveal">
-        <span class="step-num">6</span>
+      </li>
+      <li class="process-step">
+        <span class="step-num" aria-hidden="true">6</span>
         <div>
           <h3>Go live &amp; settle</h3>
-          <p>I stay on hand through the first working days, fix whatever appears, then hand over documentation your team can use.</p>
+          <p>I stay through the first working days, fix what appears, then hand over documentation your team can use.</p>
         </div>
+      </li>
+    </ol>
+
+    <div class="version-rail" aria-label="Supported Odoo versions">
+      <span class="rail-label">Supported paths</span>
+      <div class="rail-track" aria-hidden="true">
+        <span>13</span><i></i>
+        <span>14</span><i></i>
+        <span>15</span><i></i>
+        <span>16</span><i></i>
+        <span>17</span><i></i>
+        <span class="is-target">18</span>
       </div>
+      <span class="rail-note">Community &amp; Enterprise</span>
     </div>
   </div>
 </section>
 
-<section class="section" id="case">
-  <div class="container">
-    <div class="case-card reveal">
-      <div class="case-body">
-        <p class="eyebrow">Case study · Odoo 14 → 16</p>
-        <h3>A 5 TB migration for a manufacturer running 500+ users</h3>
-        <p>Fifty custom modules, ten years of history, and production planning running on the database every day. The factory couldn't stop for the upgrade — so it didn't.</p>
-        <a class="link-arrow" href="/projects/">Read the full case study <span class="arrow" aria-hidden="true">→</span></a>
+<section class="work" id="work">
+  <div class="container work-grid">
+    <div class="work-copy">
+      <p class="eyebrow">Selected work · Manufacturing</p>
+      <h2 class="display">5 TB, 500 users, and a factory that <em>couldn't stop.</em></h2>
+      <p>
+        Fifty custom modules, ten years of history, and production planning running
+        on the database every day. The upgrade couldn't interrupt the factory — so it
+        didn't. I ported and cleaned up the custom code in phases, tuned the database,
+        and ran the old and new systems in parallel before the switch.
+      </p>
+      <a class="text-link" href="{{ "/projects/" | relative_url }}">Read the full case study <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="work-panel">
+      <span class="mono-label">Field note 01 · Odoo 14 → 16</span>
+      <div class="work-metrics">
+        <div class="work-metric"><strong>5 TB</strong><span>data migrated</span></div>
+        <div class="work-metric"><strong>50+</strong><span>custom modules</span></div>
+        <div class="work-metric"><strong>500+</strong><span>daily users</span></div>
+        <div class="work-metric"><strong>0 min</strong><span>downtime</span></div>
       </div>
-      <div class="case-stats">
-        <div>
-          <span class="case-stat-value">0 min</span>
-          <span class="case-stat-label">downtime during cutover</span>
-        </div>
-        <div>
-          <span class="case-stat-value">5 TB</span>
-          <span class="case-stat-label">data migrated</span>
-        </div>
-        <div>
-          <span class="case-stat-value">50+</span>
-          <span class="case-stat-label">custom modules ported</span>
-        </div>
-        <div>
-          <span class="case-stat-value">~40%</span>
-          <span class="case-stat-label">faster key operations</span>
-        </div>
-      </div>
+      <blockquote class="work-quote">
+        <p>"Our Odoo v14 to v16 migration was handled flawlessly. With 500+ users and critical production systems, zero downtime was essential — Babatope delivered exactly that, plus significant performance improvements."</p>
+      </blockquote>
+      <cite class="work-cite">IT Director · Global manufacturing enterprise</cite>
     </div>
   </div>
 </section>
 
-<section class="section section-soft" id="testimonials">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">Testimonials</p>
-      <h2 class="section-title">What clients say</h2>
-    </div>
-    <div class="quote-grid">
-      <figure class="quote-card reveal">
-        <p>"Our Odoo v14 to v16 migration was handled flawlessly. With 500+ users and critical production systems, zero downtime was essential. Babatope delivered exactly that, plus significant performance improvements. His migration methodology and attention to detail were exceptional."</p>
-        <figcaption class="quote-cite">
-          <strong>IT Director</strong>
-          Global manufacturing enterprise
-        </figcaption>
-      </figure>
-      <figure class="quote-card reveal">
-        <p>"The API integration platform Babatope developed connected all our systems seamlessly. We now have real-time data synchronization across 6 platforms, which has eliminated manual data entry and improved our data accuracy to 99.9%."</p>
-        <figcaption class="quote-cite">
-          <strong>CTO</strong>
-          Multi-channel retail company
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="faq">
-  <div class="container">
-    <div class="section-head section-head--center">
+<section class="faq-section" id="faq">
+  <div class="container faq-layout">
+    <div class="faq-head">
       <p class="eyebrow">Questions</p>
-      <h2 class="section-title">The things clients ask first</h2>
+      <h2 class="display">Before <em>you ask.</em></h2>
+      <p>Straight answers to the things that usually decide whether a migration happens.</p>
     </div>
-    <div class="faq">
+
+    <div class="faq-list">
       <details class="faq-item">
         <summary>Which Odoo versions do you migrate between?</summary>
         <p>Mostly 13 through 18, Community and Enterprise. Older versions and legacy ERP systems are usually still doable — the assessment tells us for sure.</p>
@@ -316,47 +355,53 @@ description: "Odoo database migration by Babatope Ajepe: version upgrades, custo
   </div>
 </section>
 
-<section class="section section-soft" id="blog">
+<section class="journal" id="writing">
   <div class="container">
-    <div class="section-head-row">
+    <div class="section-head section-head--row">
       <div class="section-head">
-        <p class="eyebrow">Blog</p>
-        <h2 class="section-title">From the field</h2>
+        <p class="eyebrow">Writing</p>
+        <h2 class="display">Notes from <em>the field.</em></h2>
       </div>
-      <a class="link-arrow" href="/blog/">All articles <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="text-link" href="{{ "/blog/" | relative_url }}">All articles <span class="arrow" aria-hidden="true">→</span></a>
     </div>
-    <div class="post-grid">
 
+    <div class="journal-list">
       {% for post in site.posts limit:3 %}
-      <article class="post-card reveal">
-        <a href="{{ post.url | relative_url }}" class="post-card-link">
-          <div class="post-card-meta">
-            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
-            {% if post.categories %}
-            <span class="pill">{{ post.categories | first }}</span>
-            {% endif %}
-          </div>
-          <h3 class="post-card-title">{{ post.title }}</h3>
-          <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
-          <span class="read-more">Read article <span aria-hidden="true">→</span></span>
-        </a>
-      </article>
+      {% assign category = post.categories[1] | default: post.categories[0] %}
+      <a class="journal-row" href="{{ post.url | relative_url }}">
+        <div class="journal-meta">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+          {% if category %}
+          <span class="journal-cat">{{ category }}</span>
+          {% endif %}
+        </div>
+        <div class="journal-body">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt | strip_html | truncatewords: 26 }}</p>
+        </div>
+        <span class="journal-arrow" aria-hidden="true">→</span>
+      </a>
       {% endfor %}
-
     </div>
   </div>
 </section>
 
 <section class="cta-band">
-  <div class="container cta-band-inner">
+  <div class="container cta-grid">
     <div>
-      <h2>Your database, on the current version.</h2>
-      <p>Tell me what you're running — version, size, the modules you can't live without — and you'll get an honest read on what a migration takes.</p>
+      <p class="eyebrow eyebrow--light">Next step</p>
+      <h2 class="display">Your database, <em>on the current version.</em></h2>
     </div>
-    <div class="cta-band-actions">
-      <a href="mailto:{{ site.email }}" class="btn btn-light">Email me</a>
-      <a href="/contact/" class="btn btn-outline-light">Start an assessment</a>
-      <p class="cta-band-note">Replies within 24 hours, usually faster.</p>
+    <div class="cta-side">
+      <p>
+        Tell me what you're running — version, size, the modules you can't live
+        without — and you'll get an honest read on what a migration takes.
+      </p>
+      <div class="cta-actions">
+        <a href="{{ "/contact/" | relative_url }}" class="btn btn-light">Start an assessment <span class="btn-arrow" aria-hidden="true">→</span></a>
+        <a href="mailto:{{ site.email }}" class="btn btn-outline-light">Email me</a>
+      </div>
+      <p class="cta-note">Replies within 24 hours, usually faster · Remote, worldwide</p>
     </div>
   </div>
 </section>
